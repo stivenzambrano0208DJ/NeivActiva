@@ -1,0 +1,303 @@
+/* ============================================================
+   MIS_CERTIFICADOS.CSS — Rediseño Premium SaaS NeivActiva
+   ============================================================ */
+
+/* Layout */
+.split-layout {
+    display: grid;
+    grid-template-columns: minmax(280px, 340px) minmax(0, 1fr);
+    gap: 1.5rem;
+    align-items: start;
+}
+
+.info-sidebar {
+    position: sticky;
+    top: 24px;
+    display: grid;
+    gap: 1.25rem;
+}
+
+/* Cards base */
+.welcome-card-premium,
+.help-card,
+.cert-item-card,
+.empty-state-dash {
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-lg);
+    background: var(--bg-primary);
+    box-shadow: var(--shadow-sm);
+}
+
+.welcome-card-premium {
+    display: grid;
+    gap: 1.25rem;
+    padding: 1.5rem;
+}
+
+/* Eyebrow */
+.cert-eyebrow {
+    color: var(--primary);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.welcome-card-premium h2,
+.welcome-card-premium p { margin: 0; }
+.welcome-card-premium p, .help-card p { color: var(--text-secondary); }
+
+/* Mini stats */
+.stat-mini-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+}
+
+.stat-mini-card {
+    display: grid;
+    gap: 0.5rem;
+    place-items: center;
+    padding: 1.25rem 0.75rem;
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-md);
+    background: var(--bg-secondary);
+    text-align: center;
+    transition: all var(--transition-base);
+}
+
+.stat-mini-card:hover {
+    background: var(--bg-primary);
+    border-color: var(--primary);
+    box-shadow: var(--shadow-md);
+}
+
+.stat-mini-card i { color: var(--primary); font-size: 1.5rem; }
+.stat-mini-card span { color: var(--text-primary); font-size: 1.5rem; font-weight: 800; }
+.stat-mini-card label { color: var(--text-tertiary); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600; }
+
+/* Note */
+.cert-note {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-primary);
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+.cert-note i { color: var(--primary); }
+
+/* Help card */
+.help-card { padding: 1.5rem; }
+.help-card h3 { margin-bottom: 0.5rem; font-size: 1rem; color: var(--text-primary); font-weight: 700; }
+.help-card a { font-size: 0.875rem; font-weight: 700; color: var(--primary); text-decoration: none; display: inline-flex; align-items: center; gap: 0.25rem; transition: color var(--transition-fast); }
+.help-card a:hover { color: var(--primary-dark); text-decoration: underline; }
+
+/* Certs container */
+.certs-container { display: grid; gap: 1.25rem; }
+
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+.section-header h2 { margin: 0; font-size: 1.25rem; color: var(--text-primary); font-weight: 800; }
+
+.records-count, .cert-state-info {
+    color: var(--text-tertiary);
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+/* Cert grid */
+.cert-list-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 1.25rem;
+}
+
+/* Cert card */
+.cert-item-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 240px;
+    padding: 1.5rem;
+    overflow: hidden;
+    transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
+}
+
+.cert-item-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary);
+}
+
+.cert-item-card::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary), var(--teal));
+}
+
+.cert-item-card.is-pending {
+    opacity: 0.85;
+    background: var(--bg-secondary);
+}
+
+/* Cert icon */
+.cert-icon-circle {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 1rem;
+    border-radius: var(--radius-md);
+    background: var(--primary-subtle);
+    color: var(--primary);
+    font-size: 1.5rem;
+    border: 1px solid rgba(99, 102, 241, 0.15);
+}
+
+.cert-item-title { margin-bottom: 0.5rem; font-size: 1.1rem; color: var(--text-primary); font-weight: 700; line-height: 1.4; }
+
+.cert-item-date {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+    color: var(--text-tertiary);
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* Card footer */
+.cert-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-top: auto;
+}
+
+/* Pills */
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    min-height: 26px;
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-full);
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.pill-success { background: var(--success-light); color: var(--success-dark); }
+.pill-wait    { background: var(--info-light); color: var(--info-dark); }
+.pill-fail    { background: var(--danger-light); color: var(--danger-dark); }
+
+/* Action buttons */
+.cert-action-group { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 0.5rem; }
+.cert-action-group form { margin: 0; }
+
+.btn-action-sm {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 36px;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-md);
+    background: var(--text-primary);
+    color: var(--bg-primary);
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: all var(--transition-base);
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.btn-action-sm:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+    background: var(--text-secondary);
+}
+
+.btn-action-sm.email {
+    background: var(--primary-subtle);
+    color: var(--primary);
+    border-color: rgba(99, 102, 241, 0.2);
+}
+
+.btn-action-sm.email:hover {
+    background: var(--primary);
+    color: #ffffff;
+    border-color: var(--primary);
+}
+
+/* Alerts */
+.cert-alert {
+    padding: 1rem 1.25rem;
+    border-radius: var(--radius-md);
+    font-size: 0.875rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    border: 1px solid transparent;
+}
+
+.cert-alert.success { background: var(--success-light); color: var(--success-dark); border-color: rgba(16, 185, 129, 0.2); }
+.cert-alert.error   { background: var(--danger-light); color: var(--danger-dark); border-color: rgba(239, 68, 68, 0.2); }
+
+/* Empty state */
+.empty-state-dash {
+    display: grid;
+    place-items: center;
+    gap: 0.75rem;
+    padding: 3.5rem 1.5rem;
+    color: var(--text-tertiary);
+    text-align: center;
+}
+
+.empty-state-dash i { color: var(--primary); font-size: 3rem; margin-bottom: 0.5rem; }
+.empty-state-dash h3, .empty-state-dash p { margin: 0; }
+.empty-state-dash h3 { color: var(--text-primary); font-weight: 700; }
+
+.btn-explore {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 40px;
+    margin-top: 1rem;
+    padding: 0.625rem 1.25rem;
+    border-radius: var(--radius-md);
+    background: var(--primary);
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 0.875rem;
+    text-decoration: none;
+    box-shadow: 0 4px 12px var(--primary-subtle);
+    transition: all var(--transition-base);
+}
+
+.btn-explore:hover { 
+    transform: translateY(-2px); 
+    box-shadow: 0 6px 16px rgba(99, 102, 241, 0.25);
+    background: var(--primary-hover);
+}
+
+/* Responsive */
+@media (max-width: 1080px) {
+    .split-layout { grid-template-columns: 1fr; }
+    .info-sidebar { position: static; }
+}
+
+@media (max-width: 640px) {
+    .section-header, .cert-card-footer { align-items: flex-start; flex-direction: column; }
+    .cert-action-group, .btn-action-sm { width: 100%; }
+}

@@ -1,0 +1,153 @@
+/* ============================================================
+   CONFIGURACION.CSS — Rediseño Premium SaaS NeivActiva
+   ============================================================ */
+
+.config-grid {
+    display: grid;
+    grid-template-columns: minmax(220px, 270px) minmax(0, 1fr);
+    gap: 1.5rem;
+    align-items: start;
+}
+
+/* Config nav sidebar */
+.config-nav {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-lg);
+    display: grid;
+    gap: 4px;
+    padding: var(--space-sm);
+    box-shadow: var(--shadow-sm);
+}
+
+.config-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 42px;
+    padding: 0.72rem 0.85rem;
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    font-weight: 600;
+    text-decoration: none;
+    transition: all var(--transition-base);
+    font-size: 0.9rem;
+}
+
+.config-nav-item:hover {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+.config-nav-item.active {
+    background: var(--text-primary);
+    color: var(--bg-primary);
+    box-shadow: var(--shadow-sm);
+}
+
+.config-nav-item.active i {
+    color: var(--primary);
+}
+
+/* Settings card */
+.settings-card {
+    display: grid;
+    padding: var(--space-lg);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-lg);
+    background: var(--bg-primary);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Setting rows */
+.setting-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--border-primary);
+}
+
+.setting-row:first-child { padding-top: 0; }
+
+.setting-row-last {
+    align-items: flex-start;
+    border-bottom: 0;
+    padding-bottom: 0;
+}
+
+.setting-info h2 {
+    margin: 0 0 4px;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    font-family: 'Outfit', sans-serif;
+}
+
+.setting-info p {
+    margin: 0;
+    color: var(--text-tertiary);
+    font-size: 0.9rem;
+}
+
+.setting-info-wide { width: 100%; }
+.setting-input { max-width: 360px; margin-top: 14px; }
+
+/* Toggle switch */
+.switch {
+    position: relative;
+    display: inline-block;
+    flex: 0 0 auto;
+    width: 48px;
+    height: 26px;
+}
+
+.switch input { width: 0; height: 0; opacity: 0; }
+
+.slider {
+    position: absolute;
+    inset: 0;
+    cursor: pointer;
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-full);
+    background: var(--bg-tertiary);
+    transition: all 180ms ease;
+}
+
+.slider::before {
+    content: "";
+    position: absolute;
+    left: 3px;
+    bottom: 3px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #FFFFFF;
+    box-shadow: var(--shadow-xs);
+    transition: transform 180ms ease;
+}
+
+.switch input:focus-visible + .slider {
+    box-shadow: 0 0 0 4px var(--primary-subtle);
+}
+
+.switch input:checked + .slider {
+    border-color: var(--primary);
+    background: var(--primary);
+}
+
+.switch input:checked + .slider::before {
+    transform: translateX(22px);
+    background: #FFFFFF;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .config-grid { grid-template-columns: 1fr; }
+    .config-nav { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+}
+
+@media (max-width: 620px) {
+    .setting-row { align-items: flex-start; flex-direction: column; }
+}

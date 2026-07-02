@@ -1,0 +1,401 @@
+/* =========================================================
+   GLOBAL DARK THEME OVERRIDE (GLASSMORPHISM)
+   Se inyecta en todas las vistas internas para modernizarlas
+   ========================================================= */
+
+:root {
+    /* === Brand Colors === */
+    --primary: #6366F1;
+    --primary-dark: #4F46E5;
+    --primary-light: #1E1B4B;
+    --primary-subtle: rgba(99, 102, 241, 0.15);
+    --primary-hover: #818CF8;
+    
+    /* === Semantic Colors === */
+    --success: #10B981;
+    --success-light: #064E3B;
+    --success-dark: #059669;
+    
+    --warning: #F59E0B;
+    --warning-light: #451A03;
+    --warning-dark: #D97706;
+    
+    --danger: #EF4444;
+    --danger-light: #450A0A;
+    --danger-dark: #DC2626;
+    
+    --info: #3B82F6;
+    --info-light: #1E3A8A;
+    --info-dark: #2563EB;
+    
+    --teal: #14B8A6;
+    --teal-light: #115E59;
+    --teal-dark: #0D9488;
+    
+    /* === Neutral Colors === */
+    --bg-primary: #09090B;
+    --bg-secondary: #030303;
+    --bg-tertiary: #18181B;
+    --bg-elevated: #18181B;
+    
+    --text-primary: #FAFAFA;
+    --text-secondary: #E4E4E7;
+    --text-tertiary: #A1A1AA;
+    --text-muted: #71717A;
+    --text-disabled: #27272A;
+    
+    --border-primary: #27272A;
+    --border-secondary: #3F3F46;
+    --border-subtle: #09090B;
+    
+    /* === Shadows === */
+    --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.8);
+    --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.9), 0 1px 2px -1px rgba(0, 0, 0, 0.9);
+    --shadow-md: 0 4px 12px -1px rgba(0, 0, 0, 0.95), 0 2px 4px -2px rgba(0, 0, 0, 0.95);
+    --shadow-lg: 0 10px 25px -3px rgba(0, 0, 0, 0.98), 0 4px 12px -4px rgba(0, 0, 0, 0.98);
+    --shadow-xl: 0 20px 32px -5px rgba(0, 0, 0, 1), 0 8px 16px -6px rgba(0, 0, 0, 1);
+}
+
+/* Forzar fondos oscuros en el body de todas las vistas internas */
+body {
+    background:
+        radial-gradient(circle at 12% -10%, rgba(99, 102, 241, 0.08), transparent 34rem),
+        radial-gradient(circle at 92% 0%, rgba(20, 184, 166, 0.05), transparent 28rem),
+        var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Tablas Modernas y Oscuras */
+.table, table {
+    background: var(--bg-primary) !important;
+    border: 1px solid var(--border-primary) !important;
+    border-radius: var(--radius-lg) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    color: var(--text-primary) !important;
+    overflow: hidden;
+    width: 100%;
+}
+
+table th, table thead th {
+    background: var(--bg-tertiary) !important;
+    color: var(--primary) !important;
+    border-bottom: 1px solid var(--border-secondary) !important;
+    font-weight: 700 !important;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    padding: 1rem !important;
+}
+
+table td {
+    border-bottom: 1px solid var(--border-primary) !important;
+    color: var(--text-secondary) !important;
+    padding: 1rem !important;
+    background: transparent !important;
+}
+
+table tbody tr:hover td {
+    background: var(--primary-subtle) !important;
+}
+
+/* Tarjetas (Cards) genéricas */
+.card, .panel, .box {
+    background: rgba(15, 23, 42, 0.6) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: var(--radius-lg) !important;
+    box-shadow: var(--shadow-xl) !important;
+    backdrop-filter: blur(24px) !important;
+    -webkit-backdrop-filter: blur(24px) !important;
+    color: var(--text-primary) !important;
+}
+
+.card-header, .panel-header {
+    background: transparent !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    color: var(--text-primary) !important;
+}
+
+.card-footer {
+    background: transparent !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.04) !important;
+}
+
+/* Formularios Globales */
+.form-control, input, select, textarea {
+    background: rgba(15, 23, 42, 0.5) !important;
+    border: 1px solid var(--border-primary) !important;
+    color: var(--text-primary) !important;
+    border-radius: var(--radius-md) !important;
+}
+
+.form-control:focus, input:focus, select:focus, textarea:focus {
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 3px var(--primary-subtle) !important;
+    outline: none !important;
+}
+
+.form-control::placeholder, input::placeholder {
+    color: var(--text-muted) !important;
+}
+
+label {
+    color: var(--text-secondary) !important;
+    font-weight: 600 !important;
+}
+
+/* Modales */
+.modal-content, .dialog {
+    background: rgba(15, 23, 42, 0.95) !important;
+    border: 1px solid var(--border-secondary) !important;
+    border-radius: var(--radius-xl) !important;
+    box-shadow: var(--shadow-2xl) !important;
+    backdrop-filter: blur(30px) !important;
+    -webkit-backdrop-filter: blur(30px) !important;
+    color: var(--text-primary) !important;
+}
+
+.modal-header, .modal-footer {
+    border-color: var(--border-primary) !important;
+    background: transparent !important;
+}
+
+/* Textos oscuros forzados a claro */
+h1, h2, h3, h4, h5, h6, .text-dark {
+    color: var(--text-primary) !important;
+}
+
+.text-muted {
+    color: var(--text-tertiary) !important;
+}
+
+/* Sobreescribir fondos blancos duros (`#fff`, `.bg-white`) */
+.bg-white, .bg-light {
+    background-color: transparent !important;
+}
+
+/* Listas y items */
+.list-group-item {
+    background: transparent !important;
+    border-color: var(--border-primary) !important;
+    color: var(--text-secondary) !important;
+}
+
+/* Alertas genéricas */
+.alert-info { background: rgba(59, 130, 246, 0.15) !important; color: #60A5FA !important; border: 1px solid rgba(59, 130, 246, 0.25) !important; }
+.alert-success { background: rgba(16, 185, 129, 0.15) !important; color: #34D399 !important; border: 1px solid rgba(16, 185, 129, 0.25) !important; }
+.alert-warning { background: rgba(245, 158, 11, 0.15) !important; color: #FBBF24 !important; border: 1px solid rgba(245, 158, 11, 0.25) !important; }
+.alert-danger { background: rgba(239, 68, 68, 0.15) !important; color: #F87171 !important; border: 1px solid rgba(239, 68, 68, 0.25) !important; }
+
+/* Botones genéricos */
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--primary-hover)) !important;
+    color: #000000 !important;
+    border: none !important;
+    box-shadow: 0 4px 12px var(--primary-subtle) !important;
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.05) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* === PREMIUM DARK THEME SIDEBAR OVERRIDES === */
+.sidebar {
+    background: rgba(15, 23, 42, 0.75) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    box-shadow: var(--shadow-xl) !important;
+    backdrop-filter: blur(24px) !important;
+    -webkit-backdrop-filter: blur(24px) !important;
+}
+
+.sidebar .logo {
+    color: var(--text-primary) !important;
+}
+
+.sidebar .logo span span {
+    background: linear-gradient(135deg, var(--primary), #FFD166) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+}
+
+.sidebar .user-profile-sm {
+    background: rgba(0, 0, 0, 0.25) !important;
+    border: 1px solid var(--border-primary) !important;
+}
+
+.sidebar .user-profile-sm h4 {
+    color: var(--text-primary) !important;
+}
+
+.sidebar .user-profile-sm p {
+    color: var(--text-tertiary) !important;
+}
+
+.sidebar .nav-section-title {
+    color: var(--text-muted) !important;
+    font-weight: 700 !important;
+}
+
+.sidebar .nav-link {
+    color: var(--text-secondary) !important;
+}
+
+.sidebar .nav-link i {
+    color: var(--text-tertiary) !important;
+}
+
+.sidebar .nav-link:hover {
+    background: rgba(255, 255, 255, 0.04) !important;
+    color: var(--text-primary) !important;
+}
+
+.sidebar .nav-link.active {
+    background: var(--text-primary) !important;
+    color: var(--bg-primary) !important;
+    box-shadow: var(--shadow-md) !important;
+}
+
+.sidebar .nav-link.active i {
+    color: var(--primary) !important;
+}
+
+.sidebar .logout-link:hover {
+    background: rgba(239, 68, 68, 0.1) !important;
+    color: var(--danger) !important;
+}
+
+.sidebar-overlay {
+    backdrop-filter: blur(5px) !important;
+    -webkit-backdrop-filter: blur(5px) !important;
+    background: rgba(0, 0, 0, 0.5) !important;
+}
+
+/* === CALENDAR & INNER PAGES OVERRIDES === */
+.calendar-header, .top-navbar, .dashboard-header {
+    background: transparent !important;
+    border-bottom: none !important;
+}
+
+.calendar-main, .calendar-sidebar .sidebar-section, .stat-item, .category-item, .action-btn,
+.records-card, .scanner-panel, .user-table-card, .user-form-card, .listing-card, .premium-form-card {
+    background: rgba(15, 23, 42, 0.6) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    box-shadow: var(--shadow-lg) !important;
+    backdrop-filter: blur(24px) !important;
+    -webkit-backdrop-filter: blur(24px) !important;
+    color: var(--text-primary) !important;
+}
+
+.featured-event-card {
+    background: rgba(0, 0, 0, 0.3) !important;
+    border: 1px solid rgba(255, 255, 255, 0.06) !important;
+    color: var(--text-primary) !important;
+}
+
+.featured-event-card:hover {
+    background: var(--primary-subtle) !important;
+    border-color: var(--primary) !important;
+}
+
+.category-item {
+    background: rgba(0, 0, 0, 0.2) !important;
+}
+
+.category-item:hover {
+    background: var(--primary-subtle) !important;
+}
+
+.category-count {
+    background: var(--primary-subtle) !important;
+    border: 1px solid rgba(245, 158, 11, 0.3) !important;
+    color: var(--primary) !important;
+}
+
+/* FullCalendar Custom dark overrides */
+.fc .fc-toolbar-title, .fc-col-header-cell-cushion {
+    color: var(--text-primary) !important;
+}
+
+.fc .fc-button {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: var(--text-primary) !important;
+}
+
+.fc .fc-button:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.fc .fc-button-primary {
+    background: linear-gradient(135deg, var(--primary), var(--primary-hover)) !important;
+    border: none !important;
+    color: #000000 !important;
+}
+
+.fc .fc-button-primary:hover {
+    background: linear-gradient(135deg, var(--primary-hover), var(--primary-dark)) !important;
+}
+
+.fc .fc-daygrid-day {
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+.fc .fc-daygrid-day:hover {
+    background: rgba(255, 255, 255, 0.02) !important;
+}
+
+.fc .fc-day-today {
+    background: var(--primary-subtle) !important;
+}
+
+.fc .fc-event {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(217, 119, 6, 0.15)) !important;
+    border: 1px solid rgba(245, 158, 11, 0.3) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Custom modal details override */
+.event-modal {
+    background: rgba(15, 23, 42, 0.95) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(30px) !important;
+    -webkit-backdrop-filter: blur(30px) !important;
+}
+
+.event-modal .modal-title {
+    color: var(--text-primary) !important;
+}
+
+.event-modal .modal-category {
+    background: var(--primary-subtle) !important;
+    border: 1px solid rgba(245, 158, 11, 0.3) !important;
+    color: var(--primary) !important;
+}
+
+.event-modal .modal-close {
+    background: rgba(255, 255, 255, 0.05) !important;
+    color: var(--text-primary) !important;
+}
+
+.event-modal .modal-close:hover {
+    background: rgba(239, 68, 68, 0.15) !important;
+    color: var(--danger) !important;
+}
+
+.search-modern input {
+    background: rgba(0, 0, 0, 0.3) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: var(--text-primary) !important;
+}
+
+.search-modern input:focus {
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 3px var(--primary-subtle) !important;
+}
+
+/* Ensure body transitions are smooth */
+body {
+    transition: background-color 0.3s ease, color 0.3s ease !important;
+}
+

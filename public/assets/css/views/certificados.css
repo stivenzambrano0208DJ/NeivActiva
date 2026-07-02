@@ -1,0 +1,182 @@
+/* ============================================================
+   CERTIFICADOS.CSS — Rediseño Premium SaaS NeivActiva
+   ============================================================ */
+
+.top-navbar { height: 75px !important; }
+.dashboard-content { padding: 1.5rem 2rem !important; }
+
+.cert-manager-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 1.75rem;
+    margin-top: 1rem;
+}
+
+@media (max-width: 1024px) {
+    .cert-manager-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.cert-template-box {
+    background: var(--bg-primary);
+    border-radius: var(--radius-xl);
+    padding: 4.5rem;
+    box-shadow: var(--shadow-xl);
+    border: 8px double var(--border-primary);
+    position: relative;
+    text-align: center;
+    min-height: 580px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 0 auto;
+    max-width: 800px;
+    background-image: radial-gradient(circle at 50% 50%, #fafafa 0%, var(--bg-primary) 100%);
+    transition: all var(--transition-base);
+}
+
+.cert-template-box::before {
+    content: ''; 
+    position: absolute; 
+    top: 12px; 
+    left: 12px; 
+    right: 12px; 
+    bottom: 12px;
+    border: 2px solid var(--primary); 
+    pointer-events: none; 
+    opacity: 0.15;
+    border-radius: var(--radius-lg);
+}
+
+.cert-brand i { 
+    font-size: 3.2rem !important; 
+    color: var(--primary); 
+    margin-bottom: 1.5rem; 
+    display: block; 
+    filter: drop-shadow(0 4px 6px rgba(99, 102, 241, 0.15));
+}
+
+.cert-title-big { 
+    font-size: 2.75rem !important; 
+    font-weight: 800 !important; 
+    color: var(--text-primary); 
+    margin-bottom: 0.75rem !important; 
+    letter-spacing: 4px !important; 
+    font-family: var(--font-family); 
+}
+
+.cert-subtitle { 
+    font-size: 0.875rem !important; 
+    font-weight: 700 !important; 
+    color: var(--text-tertiary); 
+    text-transform: uppercase; 
+    letter-spacing: 3px; 
+    margin-bottom: 2.5rem !important; 
+}
+
+.cert-name-line { 
+    font-size: 2.25rem !important; 
+    font-family: var(--font-family); 
+    color: var(--primary); 
+    font-weight: 800; 
+    border-bottom: 2px solid var(--border-primary); 
+    display: inline-block; 
+    padding: 0 2rem 0.5rem; 
+    margin-bottom: 2rem !important; 
+}
+
+.cert-text { 
+    font-size: 1rem !important; 
+    color: var(--text-secondary); 
+    line-height: 1.8; 
+    margin-bottom: 3rem !important; 
+    max-width: 85% !important; 
+    margin-left: auto !important; 
+    margin-right: auto !important; 
+}
+
+.cert-signatures {
+    display: flex;
+    justify-content: center;
+    gap: 4rem;
+    margin-top: auto;
+}
+
+.sig-block { 
+    border-top: 1px solid var(--border-primary); 
+    padding-top: 0.75rem; 
+    width: 200px !important; 
+    font-size: 0.8rem !important; 
+    font-weight: 600; 
+    color: var(--text-secondary); 
+}
+
+.control-card { 
+    padding: 1.5rem !important; 
+    border-radius: var(--radius-lg) !important; 
+    margin-bottom: 1.25rem; 
+    background: var(--bg-primary);
+    border: 1px solid var(--border-primary);
+    box-shadow: var(--shadow-sm);
+}
+
+.control-card h3 { 
+    font-size: 0.95rem !important; 
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1.25rem !important; 
+}
+
+.form-control-modern { 
+    padding: 0.65rem 1rem 0.65rem 2.75rem !important; 
+    font-size: 0.875rem !important; 
+    border-radius: var(--radius-md) !important; 
+    border: 1px solid var(--border-primary);
+    background: var(--bg-secondary);
+    transition: all var(--transition-base);
+}
+
+.form-control-modern:focus {
+    border-color: var(--primary);
+    background: var(--bg-primary);
+    box-shadow: 0 0 0 4px var(--primary-subtle);
+}
+
+.input-group-modern i { 
+    font-size: 1.1rem !important; 
+    left: 1.1rem !important; 
+    color: var(--text-tertiary);
+}
+
+/* ── Toast de notificación ── */
+.cert-toast {
+    align-items: center;
+    border-radius: var(--radius-md);
+    border: 1px solid;
+    display: flex;
+    font-size: 0.875rem;
+    font-weight: 600;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+    padding: 0.875rem 1.25rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.cert-toast.success {
+    background: var(--success-light);
+    border-color: rgba(16, 185, 129, 0.2);
+    color: var(--success-dark);
+}
+
+.cert-toast.warning {
+    background: var(--warning-light);
+    border-color: rgba(245, 158, 11, 0.2);
+    color: var(--warning-dark);
+}
+
+.cert-toast.error {
+    background: var(--danger-light);
+    border-color: rgba(239, 68, 68, 0.2);
+    color: var(--danger-dark);
+}

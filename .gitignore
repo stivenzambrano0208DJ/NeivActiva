@@ -1,0 +1,12 @@
+/.env
+/vendor/
+/composer.phar
+/composer-setup.php
+
+/storage/logs/*.log
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+
+.DS_Store
+Thumbs.db
