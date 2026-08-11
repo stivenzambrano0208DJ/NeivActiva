@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NeivActiva – Gestionar Inscripciones</title>
-    <link rel="stylesheet" href="/NeivActiva/public/assets/css/neivactiva-2026.css">
+    <link rel="stylesheet" href="/assets/css/neivactiva-2026.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="/NeivActiva/public/assets/css/views/gestionar_inscripciones.css">
+    <link rel="stylesheet" href="/assets/css/views/gestionar_inscripciones.css">
 </head>
 <body>
 
@@ -169,7 +169,7 @@
                             </td>
 
                             <td class="gi-td-actions">
-                                    <form method="POST" action="/NeivActiva/public/admin/inscripciones" class="gi-inline-form">
+                                    <form method="POST" action="/admin/inscripciones" class="gi-inline-form">
                                     <input type="hidden" name="accion"          value="actualizar_asistencia">
                                     <input type="hidden" name="inscripcion_id"  value="<?php echo $inscId; ?>">
                                     <input type="hidden" name="csrf_token"      value="<?php echo htmlspecialchars($_SESSION['csrf_token'] ?? ''); ?>">

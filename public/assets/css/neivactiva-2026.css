@@ -734,7 +734,7 @@ table tbody tr:hover td {
     grid-template-columns: minmax(320px, 0.95fr) minmax(360px, 1.05fr) !important;
     background:
         linear-gradient(120deg, rgba(17, 24, 39, 0.92), rgba(17, 24, 39, 0.72)),
-        url("/NeivActiva/public/assets/img/Neiva,_La_Gaitana_monumento_emblematico_de_la_ciudad.jpg") center/cover no-repeat !important;
+        url("/assets/img/Neiva,_La_Gaitana_monumento_emblematico_de_la_ciudad.jpg") center/cover no-repeat !important;
 }
 
 .login-hero {

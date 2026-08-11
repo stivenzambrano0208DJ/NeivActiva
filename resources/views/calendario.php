@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NeivActiva - Calendario de Eventos</title>
-    <link rel="stylesheet" href="/NeivActiva/public/assets/css/neivactiva-2026.css">
+    <link rel="stylesheet" href="/assets/css/neivactiva-2026.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,7 +17,7 @@
             console.error('FullCalendar no se cargó correctamente');
         }
     </script>
-    <link rel="stylesheet" href="/NeivActiva/public/assets/css/views/calendario.css">
+    <link rel="stylesheet" href="/assets/css/views/calendario.css">
 </head>
 <body class="calendar-body">
 
@@ -120,11 +120,11 @@
                     <?php if (isset($featuredEvents) && !empty($featuredEvents)): ?>
                         <?php foreach ($featuredEvents as $event): ?>
                             <?php 
-                                $imagePath = $event['ruta_imagen'] ? (strpos($event['ruta_imagen'], '/NeivActiva/') === 0 ? $event['ruta_imagen'] : '/NeivActiva/' . ltrim($event['ruta_imagen'], '/')) : '/NeivActiva/public/assets/images/event-placeholder.jpg';
+                                $imagePath = $event['ruta_imagen'] ? (strpos($event['ruta_imagen'], '/') === 0 ? $event['ruta_imagen'] : '/' . ltrim($event['ruta_imagen'], '/')) : '/assets/images/event-placeholder.jpg';
                                 $fechaFormateada = date('d M', strtotime($event['fecha_evento']));
                             ?>
                             <div class="featured-event-card" onclick="openEventModal(<?php echo $event['id']; ?>)">
-                                <img src="<?php echo htmlspecialchars($imagePath); ?>" alt="<?php echo htmlspecialchars($event['titulo']); ?>" onerror="this.src='/NeivActiva/public/assets/images/event-placeholder.jpg'">
+                                <img src="<?php echo htmlspecialchars($imagePath); ?>" alt="<?php echo htmlspecialchars($event['titulo']); ?>" onerror="this.src='/assets/images/event-placeholder.jpg'">
                                 <div class="featured-info">
                                     <span class="featured-date"><?php echo $fechaFormateada; ?></span>
                                     <h4><?php echo htmlspecialchars($event['titulo']); ?></h4>
@@ -369,7 +369,7 @@ function openEventModal(eventOrId) {
         .then(data => {
             if (data.success && data.event) {
                 const event = data.event;
-                document.getElementById('modalImg').src = event.ruta_imagen ? (event.ruta_imagen.startsWith('/NeivActiva/') ? event.ruta_imagen : '/NeivActiva/' + event.ruta_imagen.replace(/^\/+/, '')) : '/NeivActiva/public/assets/images/event-placeholder.jpg';
+                document.getElementById('modalImg').src = event.ruta_imagen ? (event.ruta_imagen.startsWith('/') ? event.ruta_imagen : '/' + event.ruta_imagen.replace(/^\/+/, '')) : '/assets/images/event-placeholder.jpg';
                 document.getElementById('modalCategory').textContent = event.categoria || 'Otro';
                 document.getElementById('modalTitle').textContent = event.titulo;
                 document.getElementById('modalDate').textContent = new Date(event.fecha_evento).toLocaleDateString('es-ES', { 

@@ -7,22 +7,22 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@600;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/NeivActiva/public/assets/css/neivactiva-2026.css">
+    <link rel="stylesheet" href="/assets/css/neivactiva-2026.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body class="public-shell">
     <div class="ambient-bg"></div>
     <nav class="navbar">
         <div class="container navbar-content">
-            <a href="/NeivActiva/" class="brand-logo">
+            <a href="/" class="brand-logo">
                 <i class="bi bi-lightning-charge-fill"></i>
                 <span>NeivActiva</span>
             </a>
             <ul class="nav-links">
-                <li><a href="/NeivActiva/">Inicio</a></li>
-                <li><a href="/NeivActiva/calendario">Calendario</a></li>
-                <li><a href="/NeivActiva/login">Iniciar sesion</a></li>
-                <li><a href="/NeivActiva/register" class="btn btn-primary btn-sm">Crear cuenta</a></li>
+                <li><a href="/">Inicio</a></li>
+                <li><a href="/calendario">Calendario</a></li>
+                <li><a href="/login">Iniciar sesion</a></li>
+                <li><a href="/register" class="btn btn-primary btn-sm">Crear cuenta</a></li>
             </ul>
         </div>
     </nav>
@@ -55,7 +55,7 @@
                             $hora = $evento['hora_evento'] ?? '';
                             $categoria = $evento['categoria'] ?? 'General';
                             $imagen = $evento['ruta_imagen'] ?? '';
-                            $imagen = $imagen !== '' ? $imagen : '/NeivActiva/public/assets/img/Capilla_de_La_Inmaculada_Concepción.jpg';
+                            $imagen = $imagen !== '' ? $imagen : '/assets/img/Capilla_de_La_Inmaculada_Concepción.jpg';
                             $fechaTexto = $fecha ? date('d/m/Y', strtotime($fecha)) : 'Fecha por confirmar';
                             $horaTexto = $hora ? date('g:i A', strtotime($hora)) : '';
                         ?>
@@ -70,7 +70,7 @@
                                     <span><i class="bi bi-geo-alt-fill"></i> <?php echo htmlspecialchars($ubicacion); ?></span>
                                     <span><i class="bi bi-clock"></i> <?php echo htmlspecialchars(trim($fechaTexto . ' ' . $horaTexto)); ?></span>
                                 </div>
-                                <a href="/NeivActiva/evento/<?php echo $eventoId; ?>" class="btn btn-primary">
+                                <a href="/evento/<?php echo $eventoId; ?>" class="btn btn-primary">
                                     Ver detalles
                                     <i class="bi bi-arrow-right"></i>
                                 </a>

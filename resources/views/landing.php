@@ -10,32 +10,32 @@ $usuarioLogueado = isset($_SESSION['usuario_id']);
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@600;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/NeivActiva/public/assets/css/neivactiva-2026.css">
-    <link rel="stylesheet" href="/NeivActiva/public/assets/css/views/landing.css">
+    <link rel="stylesheet" href="/assets/css/neivactiva-2026.css">
+    <link rel="stylesheet" href="/assets/css/views/landing.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body>
     <nav class="landing-nav">
-        <a href="/NeivActiva/" class="nav-brand">
+        <a href="/" class="nav-brand">
             <i class="bi bi-lightning-charge-fill"></i>
             <span>Neiv<em>Activa</em></span>
         </a>
         <ul class="nav-links-list">
-            <li><a href="/NeivActiva/eventos">Eventos</a></li>
-            <li><a href="/NeivActiva/calendario">Calendario</a></li>
+            <li><a href="/eventos">Eventos</a></li>
+            <li><a href="/calendario">Calendario</a></li>
             <?php if ($usuarioLogueado): ?>
-                <li><a href="/NeivActiva/dashboard">Dashboard</a></li>
-                <li><a href="/NeivActiva/logout" class="nav-cta">Cerrar sesión</a></li>
+                <li><a href="/dashboard">Dashboard</a></li>
+                <li><a href="/logout" class="nav-cta">Cerrar sesión</a></li>
             <?php else: ?>
-                <li><a href="/NeivActiva/login">Iniciar sesión</a></li>
-                <li><a href="/NeivActiva/register" class="nav-cta">Crear cuenta</a></li>
+                <li><a href="/login">Iniciar sesión</a></li>
+                <li><a href="/register" class="nav-cta">Crear cuenta</a></li>
             <?php endif; ?>
         </ul>
     </nav>
 
     <section class="landing-hero">
         <div class="landing-hero-bg">
-            <img src="/NeivActiva/public/assets/img/Neiva,_La_Gaitana_monumento_emblematico_de_la_ciudad.jpg" alt="Monumento La Gaitana en Neiva">
+            <img src="/assets/img/Neiva,_La_Gaitana_monumento_emblematico_de_la_ciudad.jpg" alt="Monumento La Gaitana en Neiva">
         </div>
         <div class="landing-hero-content">
             <div class="hero-text">
@@ -45,15 +45,15 @@ $usuarioLogueado = isset($_SESSION['usuario_id']);
                 <h1>Creamos eventos <br><span>para tu ciudad.</span></h1>
                 <p>Una plataforma moderna para descubrir, inscribirte y disfrutar los mejores eventos artísticos, tradicionales y deportivos de Neiva. Reserva tu cupo con QR y descarga certificados al instante.</p>
                 <div class="hero-buttons">
-                    <a href="/NeivActiva/eventos" class="hero-btn-primary">
+                    <a href="/eventos" class="hero-btn-primary">
                         <i class="bi bi-calendar-check"></i> Explorar eventos
                     </a>
                     <?php if ($usuarioLogueado): ?>
-                        <a href="/NeivActiva/dashboard" class="hero-btn-secondary">
+                        <a href="/dashboard" class="hero-btn-secondary">
                             <i class="bi bi-graph-up-arrow"></i> Dashboard
                         </a>
                     <?php else: ?>
-                        <a href="/NeivActiva/register" class="hero-btn-secondary">
+                        <a href="/register" class="hero-btn-secondary">
                             <i class="bi bi-person-plus"></i> Crear cuenta gratis
                         </a>
                     <?php endif; ?>
@@ -64,7 +64,7 @@ $usuarioLogueado = isset($_SESSION['usuario_id']);
                     <i class="bi bi-calendar-check-fill"></i> +50 eventos activos
                 </div>
                 <div class="hero-image-card">
-                    <img src="/NeivActiva/public/assets/img/Capilla_de_La_Inmaculada_Concepción.jpg" alt="Capilla de la Inmaculada Concepción">
+                    <img src="/assets/img/Capilla_de_La_Inmaculada_Concepción.jpg" alt="Capilla de la Inmaculada Concepción">
                 </div>
                 <div class="hero-stat hero-stat-bottom">
                     <i class="bi bi-qr-code-scan"></i> Acceso con QR
@@ -75,31 +75,31 @@ $usuarioLogueado = isset($_SESSION['usuario_id']);
 
     <section class="categories-bar">
         <div class="categories-grid">
-            <a href="/NeivActiva/eventos" class="category-icon-item">
+            <a href="/eventos" class="category-icon-item">
                 <div class="icon-circle">
                     <i class="bi bi-palette"></i>
                 </div>
                 <span>Cultura</span>
             </a>
-            <a href="/NeivActiva/eventos" class="category-icon-item">
+            <a href="/eventos" class="category-icon-item">
                 <div class="icon-circle">
                     <i class="bi bi-megaphone"></i>
                 </div>
                 <span>Eventos</span>
             </a>
-            <a href="/NeivActiva/eventos" class="category-icon-item">
+            <a href="/eventos" class="category-icon-item">
                 <div class="icon-circle">
                     <i class="bi bi-trophy"></i>
                 </div>
                 <span>Deporte</span>
             </a>
-            <a href="/NeivActiva/eventos" class="category-icon-item">
+            <a href="/eventos" class="category-icon-item">
                 <div class="icon-circle">
                     <i class="bi bi-mortarboard"></i>
                 </div>
                 <span>Educación</span>
             </a>
-            <a href="/NeivActiva/eventos" class="category-icon-item">
+            <a href="/eventos" class="category-icon-item">
                 <div class="icon-circle">
                     <i class="bi bi-grid-fill"></i>
                 </div>
@@ -132,11 +132,11 @@ $usuarioLogueado = isset($_SESSION['usuario_id']);
                             $hora = $evento['hora_evento'] ?? '';
                             $categoria = $evento['categoria'] ?? 'Otro';
                             $imagen = $evento['ruta_imagen'] ?? '';
-                            $imagen = $imagen !== '' ? $imagen : '/NeivActiva/public/assets/img/Capilla_de_La_Inmaculada_Concepción.jpg';
+                            $imagen = $imagen !== '' ? $imagen : '/assets/img/Capilla_de_La_Inmaculada_Concepción.jpg';
                             $fechaTexto = $fecha ? date('d/m/Y', strtotime($fecha)) : 'Fecha por confirmar';
                             $horaTexto = $hora ? date('g:i A', strtotime($hora)) : '';
                         ?>
-                        <a href="/NeivActiva/evento/<?php echo $eventoId; ?>" class="event-showcase-card">
+                        <a href="/evento/<?php echo $eventoId; ?>" class="event-showcase-card">
                             <div class="event-card-img">
                                 <img src="<?php echo htmlspecialchars($imagen); ?>" alt="<?php echo htmlspecialchars($titulo); ?>">
                                 <span class="event-card-badge"><?php echo htmlspecialchars($categoria); ?></span>
@@ -167,7 +167,7 @@ $usuarioLogueado = isset($_SESSION['usuario_id']);
             <div class="how-it-works-inner">
                 <div class="how-image-side">
                     <div class="how-image-card">
-                        <img src="/NeivActiva/public/assets/img/unnamed.jpg" alt="Proceso de inscripción">
+                        <img src="/assets/img/unnamed.jpg" alt="Proceso de inscripción">
                     </div>
                 </div>
                 <div class="how-text-side">
@@ -208,10 +208,10 @@ $usuarioLogueado = isset($_SESSION['usuario_id']);
                         </div>
                     </div>
                     <div class="how-step-cta">
-                        <a href="/NeivActiva/eventos" class="hero-btn-primary">
+                        <a href="/eventos" class="hero-btn-primary">
                             <i class="bi bi-calendar2-event"></i> Ver eventos
                         </a>
-                        <a href="/NeivActiva/register" class="hero-btn-secondary">
+                        <a href="/register" class="hero-btn-secondary">
                             <i class="bi bi-person-plus"></i> Registrarse
                         </a>
                     </div>
@@ -229,7 +229,7 @@ $usuarioLogueado = isset($_SESSION['usuario_id']);
                 <div class="events-showcase">
                     <div class="event-showcase-card" style="cursor: default;">
                         <div class="event-card-img">
-                            <img src="/NeivActiva/public/assets/img/unnamed.jpg" alt="Talleres Artísticos">
+                            <img src="/assets/img/unnamed.jpg" alt="Talleres Artísticos">
                             <span class="event-card-badge" style="background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border-primary);">Cultura</span>
                         </div>
                         <div class="event-card-body">
@@ -240,7 +240,7 @@ $usuarioLogueado = isset($_SESSION['usuario_id']);
 
                     <div class="event-showcase-card" style="cursor: default;">
                         <div class="event-card-img">
-                            <img src="/NeivActiva/public/assets/img/Neiva,_La_Gaitana_monumento_emblematico_de_la_ciudad.jpg" alt="Deportes al aire libre">
+                            <img src="/assets/img/Neiva,_La_Gaitana_monumento_emblematico_de_la_ciudad.jpg" alt="Deportes al aire libre">
                             <span class="event-card-badge" style="background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border-primary);">Deporte</span>
                         </div>
                         <div class="event-card-body">
@@ -251,7 +251,7 @@ $usuarioLogueado = isset($_SESSION['usuario_id']);
 
                     <div class="event-showcase-card" style="cursor: default;">
                         <div class="event-card-img">
-                            <img src="/NeivActiva/public/assets/img/Capilla_de_La_Inmaculada_Concepción.jpg" alt="Historia y Educación">
+                            <img src="/assets/img/Capilla_de_La_Inmaculada_Concepción.jpg" alt="Historia y Educación">
                             <span class="event-card-badge" style="background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border-primary);">Educación</span>
                         </div>
                         <div class="event-card-body">
@@ -290,14 +290,14 @@ $usuarioLogueado = isset($_SESSION['usuario_id']);
                         </div>
                     </div>
                     <div style="margin-top: 0.5rem;">
-                        <a href="/NeivActiva/eventos" class="hero-btn-primary">
+                        <a href="/eventos" class="hero-btn-primary">
                             <i class="bi bi-rocket-takeoff"></i> Comenzar ahora
                         </a>
                     </div>
                 </div>
                 <div class="about-image-side">
                     <div class="about-img-main">
-                        <img src="/NeivActiva/public/assets/img/Neiva,_La_Gaitana_monumento_emblematico_de_la_ciudad.jpg" alt="La Gaitana - Neiva">
+                        <img src="/assets/img/Neiva,_La_Gaitana_monumento_emblematico_de_la_ciudad.jpg" alt="La Gaitana - Neiva">
                     </div>
                 </div>
             </div>
@@ -309,11 +309,11 @@ $usuarioLogueado = isset($_SESSION['usuario_id']);
                 <p>Inscríbete en cualquier evento, accede de forma segura con tu código QR generado automáticamente y descarga tu certificado digital una vez confirmada tu asistencia.</p>
                 <div class="hero-buttons" style="justify-content: center;">
                     <?php if ($usuarioLogueado): ?>
-                        <a href="/NeivActiva/mis-eventos" class="hero-btn-primary">
+                        <a href="/mis-eventos" class="hero-btn-primary">
                             <i class="bi bi-qr-code"></i> Mis Eventos Inscritos
                         </a>
                     <?php else: ?>
-                        <a href="/NeivActiva/register" class="hero-btn-primary">
+                        <a href="/register" class="hero-btn-primary">
                             <i class="bi bi-person-plus"></i> Registrarse Ahora
                         </a>
                     <?php endif; ?>
@@ -394,8 +394,8 @@ $usuarioLogueado = isset($_SESSION['usuario_id']);
                 </div>
                 <div class="footer-col">
                     <h4>Enlaces</h4>
-                    <a href="/NeivActiva/eventos">Ver eventos</a>
-                    <a href="/NeivActiva/calendario">Calendario</a>
+                    <a href="/eventos">Ver eventos</a>
+                    <a href="/calendario">Calendario</a>
                 </div>
                 <div class="footer-col">
                     <h4>Soporte</h4>

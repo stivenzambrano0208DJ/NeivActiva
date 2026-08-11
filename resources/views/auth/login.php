@@ -11,7 +11,7 @@
             </div>
         <?php endif; ?>
 
-        <form action="/NeivActiva/login" method="POST">
+        <form action="/login" method="POST">
             <div class="form-group">
                 <label class="form-label" for="email">Correo Electrónico</label>
                 <input type="email" id="email" name="email" class="form-control" placeholder="ejemplo@correo.com" required>
@@ -26,7 +26,7 @@
                 <label style="display: flex; align-items: center; gap: 0.5rem; color: var(--text-secondary); cursor: pointer;">
                     <input type="checkbox" name="remember" style="accent-color: var(--primary-color);"> Recordarme
                 </label>
-                <a href="/NeivActiva/recovery" style="font-size: 0.875rem;">¿Olvidaste tu contraseña?</a>
+                <a href="/recovery" style="font-size: 0.875rem;">¿Olvidaste tu contraseña?</a>
             </div>
 
             <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
@@ -35,7 +35,7 @@
         </form>
         
         <div class="text-center mt-4">
-            <p class="text-muted">¿No tienes cuenta? <a href="/NeivActiva/register">Regístrate aquí</a></p>
+            <p class="text-muted">¿No tienes cuenta? <a href="/register">Regístrate aquí</a></p>
         </div>
     </div>
 </div>

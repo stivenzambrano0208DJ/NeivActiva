@@ -8,9 +8,9 @@ $msgErr = ['csrf'=>'Sesión expirada.','datos'=>'Selecciona participante y event
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NeivActiva – Inscripción Directa</title>
-    <link rel="stylesheet" href="/NeivActiva/public/assets/css/neivactiva-2026.css">
+    <link rel="stylesheet" href="/assets/css/neivactiva-2026.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="/NeivActiva/public/assets/css/views/inscripciones_admin.css">
+    <link rel="stylesheet" href="/assets/css/views/inscripciones_admin.css">
 </head>
 <body>
 <?php include 'partials/sidebar.php'; ?>
@@ -27,10 +27,10 @@ $msgErr = ['csrf'=>'Sesión expirada.','datos'=>'Selecciona participante y event
             </div>
         </div>
         <div class="ia-topbar-right">
-            <a href="/NeivActiva/public/admin/participantes" class="ia-btn-secondary">
+            <a href="/admin/participantes" class="ia-btn-secondary">
                 <i class="bi bi-people"></i> Participantes
             </a>
-            <a href="/NeivActiva/public/admin/carga-masiva" class="ia-btn-secondary">
+            <a href="/admin/carga-masiva" class="ia-btn-secondary">
                 <i class="bi bi-upload"></i> Carga masiva
             </a>
         </div>
@@ -61,7 +61,7 @@ $msgErr = ['csrf'=>'Sesión expirada.','datos'=>'Selecciona participante y event
                     <i class="bi bi-person-plus-fill"></i> Inscribir participante
                 </h2>
             </div>
-            <form method="POST" action="/NeivActiva/public/admin/inscripciones-directas" class="ia-form">
+            <form method="POST" action="/admin/inscripciones-directas" class="ia-form">
                 <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrfToken); ?>">
 
                 <div class="ia-field">

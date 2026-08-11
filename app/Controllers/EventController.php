@@ -478,7 +478,7 @@ class EventController extends Controller {
             exit();
         }
 
-        return '/NeivActiva/public/uploads/eventos/' . $nombreArchivo;
+        return '/uploads/eventos/' . $nombreArchivo;
     }
 
     protected function datosEventoDesdePost($rutaImagen = null) {

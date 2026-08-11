@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NeivActiva - Mis Eventos Inscritos</title>
-    <link rel="stylesheet" href="/NeivActiva/public/assets/css/neivactiva-2026.css">
+    <link rel="stylesheet" href="/assets/css/neivactiva-2026.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/NeivActiva/public/assets/css/views/mis_eventos_inscritos.css">
+    <link rel="stylesheet" href="/assets/css/views/mis_eventos_inscritos.css">
 </head>
 <body class="events-body">
 
@@ -151,7 +151,7 @@
                     <strong>¿No ves eventos próximos?</strong>
                     <p>Esta sección muestra solo los eventos en los que <em>te has inscrito</em>. Si publicaste un evento como organizador, búscalo en el catálogo e inscríbete para verlo aquí.</p>
                 </div>
-                <a href="/NeivActiva/public/eventos" class="mei-callout-btn">
+                <a href="/eventos" class="mei-callout-btn">
                     <i class="bi bi-calendar-event"></i> Ver eventos disponibles
                 </a>
             </div>
@@ -162,7 +162,7 @@
                     <?php foreach ($events as $event): ?>
                         <?php 
                             $status = $event['status_info'];
-                            $imagePath = $event['ruta_imagen'] ? (strpos($event['ruta_imagen'], '/NeivActiva/') === 0 ? $event['ruta_imagen'] : '/NeivActiva/' . ltrim($event['ruta_imagen'], '/')) : '/NeivActiva/public/assets/images/event-placeholder.jpg';
+                            $imagePath = $event['ruta_imagen'] ? (strpos($event['ruta_imagen'], '/') === 0 ? $event['ruta_imagen'] : '/' . ltrim($event['ruta_imagen'], '/')) : '/assets/images/event-placeholder.jpg';
                             $fechaFormateada = date('d M', strtotime($event['fecha_evento']));
                             $horaFormateada = $event['hora_evento'] ? date('H:i', strtotime($event['hora_evento'])) : '--:--';
                             $year = date('Y', strtotime($event['fecha_evento']));

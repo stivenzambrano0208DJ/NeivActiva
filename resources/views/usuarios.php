@@ -23,9 +23,9 @@ $iniciales = function($nombre) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NeivActiva – Usuarios</title>
-    <link rel="stylesheet" href="/NeivActiva/public/assets/css/neivactiva-2026.css">
+    <link rel="stylesheet" href="/assets/css/neivactiva-2026.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="/NeivActiva/public/assets/css/views/usuarios.css">
+    <link rel="stylesheet" href="/assets/css/views/usuarios.css">
 </head>
 <body>
 <?php include 'partials/sidebar.php'; ?>
@@ -147,7 +147,7 @@ $iniciales = function($nombre) {
                                         <i class="bi bi-pencil-square"></i>
                                     </a>
                                     <?php if (!$esYo): ?>
-                                    <form method="POST" action="/NeivActiva/public/admin/usuarios" class="usr-inline-form"
+                                    <form method="POST" action="/admin/usuarios" class="usr-inline-form"
                                           onsubmit="return confirm('¿Eliminar a <?php echo addslashes($nombre); ?>? Esta acción no se puede deshacer.')">
                                         <input type="hidden" name="accion"     value="eliminar">
                                         <input type="hidden" name="usuario_id" value="<?php echo $uId; ?>">
@@ -193,7 +193,7 @@ $iniciales = function($nombre) {
                     </div>
                 <?php endif; ?>
 
-                <form method="POST" action="/NeivActiva/public/admin/usuarios" class="usr-form">
+                <form method="POST" action="/admin/usuarios" class="usr-form">
                     <input type="hidden" name="csrf_token"  value="<?php echo htmlspecialchars($csrfToken); ?>">
                     <input type="hidden" name="accion"      value="<?php echo $editando ? 'actualizar' : 'crear'; ?>">
                     <?php if ($editando): ?>

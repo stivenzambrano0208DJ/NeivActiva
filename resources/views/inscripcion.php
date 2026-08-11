@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NeivActiva - Inscripcion</title>
-    <link rel="stylesheet" href="/NeivActiva/public/assets/css/neivactiva-2026.css">
+    <link rel="stylesheet" href="/assets/css/neivactiva-2026.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="/NeivActiva/public/assets/css/views/inscripcion.css">
+    <link rel="stylesheet" href="/assets/css/views/inscripcion.css">
 </head>
 <body>
 
@@ -102,7 +102,7 @@
         <?php if (!empty($ultimaInscripcion) && isset($_GET['exito'])): ?>
         <?php
             $qrToken = $_SESSION['ultimo_qr_token'] ?? ($ultimaInscripcion['token_qr'] ?? $ultimaInscripcion['datos_qr']);
-            $qrUrl = '/NeivActiva' . $ultimaInscripcion['ruta_qr'];
+            $qrUrl = str_replace('/public/', '/', $ultimaInscripcion['ruta_qr']);
             $downloadUrl = '?view=descargar_qr&id=' . (int) $ultimaInscripcion['id'] . '&token=' . urlencode($qrToken);
         ?>
         <section class="qr-success-card">

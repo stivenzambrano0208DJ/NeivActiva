@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NeivActiva – Control de Asistencia</title>
-    <link rel="stylesheet" href="/NeivActiva/public/assets/css/neivactiva-2026.css">
+    <link rel="stylesheet" href="/assets/css/neivactiva-2026.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="/NeivActiva/public/assets/css/views/asistencia.css">
+    <link rel="stylesheet" href="/assets/css/views/asistencia.css">
     <!-- Html5-QrCode library -->
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 </head>
@@ -277,7 +277,7 @@
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content
             || '<?php echo htmlspecialchars($_SESSION['csrf_token'] ?? ''); ?>';
 
-        fetch('/NeivActiva/public/ajax/buscar-qr', {
+        fetch('/ajax/buscar-qr', {
             method : 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body   : 'codigo=' + encodeURIComponent(code) + '&csrf_token=' + encodeURIComponent(csrfToken)

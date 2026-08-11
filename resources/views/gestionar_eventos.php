@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NeivActiva – Publicar Eventos</title>
-    <link rel="stylesheet" href="/NeivActiva/public/assets/css/neivactiva-2026.css">
+    <link rel="stylesheet" href="/assets/css/neivactiva-2026.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="/NeivActiva/public/assets/css/views/gestionar_eventos.css">
+    <link rel="stylesheet" href="/assets/css/views/gestionar_eventos.css">
 </head>
 <body>
 
@@ -116,7 +116,7 @@
                         $cupo     = (int)($ev['cupo_maximo'] ?? 0);
                         $estado   = $ev['estado_evento'] ?? 'Activo';
                         $pct      = $cupo > 0 ? min(100, round($inscritos / $cupo * 100)) : 0;
-                        $img      = !empty($ev['ruta_imagen']) ? (strpos($ev['ruta_imagen'], '/NeivActiva/') === 0 ? $ev['ruta_imagen'] : '/NeivActiva/' . ltrim($ev['ruta_imagen'], '/')) : null;
+                        $img      = !empty($ev['ruta_imagen']) ? (strpos($ev['ruta_imagen'], '/') === 0 ? $ev['ruta_imagen'] : '/' . ltrim($ev['ruta_imagen'], '/')) : null;
                         $catColor = match($cat) {
                             'Cultural'   => 'purple',
                             'Deportivo'  => 'blue',
@@ -168,7 +168,7 @@
                                 <i class="bi bi-pencil-square"></i>
                             </button>
                             <?php if ($estado === 'Activo'): ?>
-                            <form method="POST" action="/NeivActiva/public/admin/eventos" class="ge-inline-form"
+                            <form method="POST" action="/admin/eventos" class="ge-inline-form"
                                   onsubmit="return confirm('¿Marcar este evento como terminado?')">
                                 <input type="hidden" name="accion" value="terminar_evento">
                                 <input type="hidden" name="evento_id" value="<?php echo $eId; ?>">
@@ -192,7 +192,7 @@
                 <h2 class="ge-card-title"><i class="bi bi-plus-circle-fill"></i> Nuevo evento</h2>
             </div>
 
-            <form method="POST" action="/NeivActiva/public/admin/eventos" enctype="multipart/form-data" class="ge-form" id="createForm">
+            <form method="POST" action="/admin/eventos" enctype="multipart/form-data" class="ge-form" id="createForm">
                 <input type="hidden" name="accion" value="crear_evento">
                 <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token'] ?? ''); ?>">
 
@@ -273,7 +273,7 @@
             <h3 class="ge-modal-title"><i class="bi bi-pencil-square"></i> Editar evento</h3>
             <button class="ge-modal-close" data-close-edit><i class="bi bi-x"></i></button>
         </div>
-        <form method="POST" action="/NeivActiva/public/admin/eventos" enctype="multipart/form-data" class="ge-form" id="editForm">
+        <form method="POST" action="/admin/eventos" enctype="multipart/form-data" class="ge-form" id="editForm">
             <input type="hidden" name="accion" value="editar_evento">
             <input type="hidden" name="evento_id" id="editId">
             <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token'] ?? ''); ?>">

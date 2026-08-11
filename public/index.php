@@ -106,7 +106,7 @@ if (isset($_GET['view'])) {
         $params = $_GET;
         unset($params['view']);
         $qs = http_build_query($params);
-        $scriptDir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/NeivActiva/public/index.php'));
+        $scriptDir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php'));
         $scriptDir = $scriptDir === '/' ? '' : rtrim($scriptDir, '/');
         $_SERVER['REQUEST_URI'] = $scriptDir . $mapeoVistas[$view] . ($qs ? '?' . $qs : '');
     }

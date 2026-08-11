@@ -1,5 +1,5 @@
 <div class="ambient-bg"></div>
-<link rel="stylesheet" href="/NeivActiva/public/assets/css/neivactiva-2026.css">
+<link rel="stylesheet" href="/assets/css/neivactiva-2026.css">
 <?php
 $rol = $_SESSION['rol'] ?? 'invitado';
 $nombre = $_SESSION['usuario_nombre'] ?? 'Invitado';

@@ -20,7 +20,7 @@
 .db-hero-bg {
     position: absolute; inset: 0;
     background:
-        url("/NeivActiva/public/assets/img/Neiva,_La_Gaitana_monumento_emblematico_de_la_ciudad.jpg")
+        url("/assets/img/Neiva,_La_Gaitana_monumento_emblematico_de_la_ciudad.jpg")
         center 35% / cover no-repeat;
     opacity: .38;
     transform: scale(1.04);

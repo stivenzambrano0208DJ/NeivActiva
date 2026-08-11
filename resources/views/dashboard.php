@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NeivActiva – Dashboard</title>
-    <link rel="stylesheet" href="/NeivActiva/public/assets/css/neivactiva-2026.css">
+    <link rel="stylesheet" href="/assets/css/neivactiva-2026.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="/NeivActiva/public/assets/css/views/dashboard.css">
+    <link rel="stylesheet" href="/assets/css/views/dashboard.css">
 </head>
 <body>
 <?php
@@ -19,7 +19,7 @@ foreach (($eventos_inscritos ?? []) as $i) {
 }
 $eventos           = $lista_eventos ?? [];
 $eventosDestacados = array_slice($eventos, 0, 3);
-$imgFallback       = '/NeivActiva/public/assets/img/Capilla_de_La_Inmaculada_Concepción.jpg';
+$imgFallback       = '/assets/img/Capilla_de_La_Inmaculada_Concepción.jpg';
 $fmtFecha = fn($f) => $f ? date('d M Y', strtotime($f)) : 'Por confirmar';
 $fmtHora  = fn($h) => $h ? date('g:i A', strtotime($h)) : '';
 $catIcon  = fn($c) => match($c) {
@@ -56,18 +56,18 @@ $catIcon  = fn($c) => match($c) {
                     <p class="db-hero-sub">Tu centro de actividad cultural en Neiva</p>
                 </div>
                 <div class="db-hero-actions">
-                    <a href="/NeivActiva/public/eventos" class="db-btn-primary">
+                    <a href="/eventos" class="db-btn-primary">
                         <i class="bi bi-calendar-event-fill"></i> Explorar eventos
                     </a>
                     <?php if ($esGuest): ?>
-                        <a href="/NeivActiva/public/login" class="db-btn-ghost">
+                        <a href="/login" class="db-btn-ghost">
                             <i class="bi bi-box-arrow-in-right"></i> Iniciar sesión
                         </a>
-                        <a href="/NeivActiva/public/register" class="db-btn-ghost">
+                        <a href="/register" class="db-btn-ghost">
                             <i class="bi bi-person-plus"></i> Crear cuenta
                         </a>
                     <?php else: ?>
-                        <a href="/NeivActiva/public/dashboard?view=inscripcion" class="db-btn-ghost">
+                        <a href="/dashboard?view=inscripcion" class="db-btn-ghost">
                             <i class="bi bi-ticket-perforated"></i> Nueva inscripción
                         </a>
                     <?php endif; ?>
@@ -110,7 +110,7 @@ $catIcon  = fn($c) => match($c) {
                         <span class="db-kicker">Recomendados</span>
                         <h2 class="db-card-title">Eventos destacados</h2>
                     </div>
-                    <a href="/NeivActiva/public/calendario" class="db-btn-outline">
+                    <a href="/calendario" class="db-btn-outline">
                         Ver agenda <i class="bi bi-arrow-right"></i>
                     </a>
                 </div>
@@ -136,7 +136,7 @@ $catIcon  = fn($c) => match($c) {
                             $pct       = min(100, round($inscritos / $cupoMax * 100));
                             $inscrito  = in_array($evId, $inscritosIds, true);
                             $lleno     = $cupos <= 0;
-                            $img       = !empty($ev['ruta_imagen']) ? (strpos($ev['ruta_imagen'], '/NeivActiva/') === 0 ? $ev['ruta_imagen'] : '/NeivActiva/'.ltrim($ev['ruta_imagen'],'/')) : $imgFallback;
+                            $img       = !empty($ev['ruta_imagen']) ? (strpos($ev['ruta_imagen'], '/') === 0 ? $ev['ruta_imagen'] : '/'.ltrim($ev['ruta_imagen'],'/')) : $imgFallback;
                             $canEnroll = !$inscrito && !$lleno && in_array($rol, ['cliente','participante','organizador','admin'], true);
                         ?>
                         <article class="db-ev-card<?php echo $inscrito ? ' db-ev-inscrito' : ''; ?>"
@@ -176,7 +176,7 @@ $catIcon  = fn($c) => match($c) {
                             </div>
 
                             <div class="db-ev-footer">
-                                <a class="db-ev-btn-detail" href="/NeivActiva/public/dashboard?view=detalle_evento&id=<?php echo $evId; ?>">
+                                <a class="db-ev-btn-detail" href="/dashboard?view=detalle_evento&id=<?php echo $evId; ?>">
                                     Detalles
                                 </a>
                                 <button type="button"
@@ -208,28 +208,28 @@ $catIcon  = fn($c) => match($c) {
                         <h2 class="db-card-title">Accesos rápidos</h2>
                     </div>
                     <nav class="db-quick-nav">
-                        <a href="/NeivActiva/public/dashboard?view=mis_eventos_inscritos" class="db-quick-item">
+                        <a href="/dashboard?view=mis_eventos_inscritos" class="db-quick-item">
                             <span class="db-qi-icon db-qi-orange"><i class="bi bi-calendar-check-fill"></i></span>
                             <span class="db-qi-label">Mis eventos</span>
                             <i class="bi bi-chevron-right db-qi-arrow"></i>
                         </a>
-                        <a href="/NeivActiva/public/dashboard?view=mis_qr" class="db-quick-item">
+                        <a href="/dashboard?view=mis_qr" class="db-quick-item">
                             <span class="db-qi-icon db-qi-blue"><i class="bi bi-qr-code-scan"></i></span>
                             <span class="db-qi-label">Mis QR</span>
                             <i class="bi bi-chevron-right db-qi-arrow"></i>
                         </a>
-                        <a href="/NeivActiva/public/dashboard?view=mis_certificados" class="db-quick-item">
+                        <a href="/dashboard?view=mis_certificados" class="db-quick-item">
                             <span class="db-qi-icon db-qi-purple"><i class="bi bi-award-fill"></i></span>
                             <span class="db-qi-label">Certificados</span>
                             <i class="bi bi-chevron-right db-qi-arrow"></i>
                         </a>
-                        <a href="/NeivActiva/public/calendario" class="db-quick-item">
+                        <a href="/calendario" class="db-quick-item">
                             <span class="db-qi-icon db-qi-teal"><i class="bi bi-calendar-month-fill"></i></span>
                             <span class="db-qi-label">Calendario</span>
                             <i class="bi bi-chevron-right db-qi-arrow"></i>
                         </a>
                         <?php if (in_array($rol, ['admin','organizador'], true)): ?>
-                        <a href="/NeivActiva/public/dashboard?view=asistencia" class="db-quick-item db-quick-item--primary">
+                        <a href="/dashboard?view=asistencia" class="db-quick-item db-quick-item--primary">
                             <span class="db-qi-icon db-qi-white"><i class="bi bi-upc-scan"></i></span>
                             <span class="db-qi-label">Validar asistencia</span>
                             <i class="bi bi-chevron-right db-qi-arrow"></i>
@@ -244,10 +244,10 @@ $catIcon  = fn($c) => match($c) {
                     <div class="db-cta-icon"><i class="bi bi-person-plus-fill"></i></div>
                     <h3>Únete a NeivActiva</h3>
                     <p>Crea tu cuenta gratis y accede a inscripciones, QR y certificados digitales.</p>
-                    <a href="/NeivActiva/public/register" class="db-btn-primary db-btn-full">
+                    <a href="/register" class="db-btn-primary db-btn-full">
                         <i class="bi bi-person-plus-fill"></i> Crear cuenta gratis
                     </a>
-                    <a href="/NeivActiva/public/login" class="db-btn-outline db-btn-full" style="margin-top:.5rem;">
+                    <a href="/login" class="db-btn-outline db-btn-full" style="margin-top:.5rem;">
                         <i class="bi bi-box-arrow-in-right"></i> Iniciar sesión
                     </a>
                 </div>
@@ -295,6 +295,6 @@ $catIcon  = fn($c) => match($c) {
     </div>
 </div>
 
-<script src="/NeivActiva/public/assets/js/dashboard.js"></script>
+<script src="/assets/js/dashboard.js"></script>
 </body>
 </html>

@@ -114,7 +114,7 @@ class CalendarService {
                         'category' => $event['categoria'] ?? '',
                         'capacity' => $event['cupo_maximo'] ?? 0,
                         'cost' => 0,
-                        'image' => $event['ruta_imagen'] ? (strpos($event['ruta_imagen'], '/NeivActiva/') === 0 ? $event['ruta_imagen'] : '/NeivActiva/' . ltrim($event['ruta_imagen'], '/')) : '/NeivActiva/public/assets/images/event-placeholder.jpg',
+                        'image' => $event['ruta_imagen'] ? (strpos($event['ruta_imagen'], '/') === 0 ? $event['ruta_imagen'] : '/' . ltrim($event['ruta_imagen'], '/')) : '/assets/images/event-placeholder.jpg',
                         'isFull' => ($event['inscritos_actuales'] ?? 0) >= ($event['cupo_maximo'] ?? 0),
                         'isFree' => true
                     ]

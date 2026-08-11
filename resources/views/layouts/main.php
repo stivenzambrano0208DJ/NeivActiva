@@ -7,25 +7,25 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;600;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/NeivActiva/public/assets/css/neivactiva-2026.css">
+    <link rel="stylesheet" href="/assets/css/neivactiva-2026.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body class="public-shell">
     <nav class="navbar">
         <div class="container navbar-content">
-            <a href="/NeivActiva/" class="brand-logo">
+            <a href="/" class="brand-logo">
                 <i class="bi bi-lightning-charge-fill"></i>
                 <span>NeivActiva</span>
             </a>
             <ul class="nav-links">
                 <?php if (isset($_SESSION['usuario_id'])): ?>
-                    <li><a href="/NeivActiva/dashboard">Dashboard</a></li>
-                    <li><a href="/NeivActiva/eventos">Eventos</a></li>
-                    <li><a href="/NeivActiva/logout" class="btn btn-secondary btn-sm">Salir</a></li>
+                    <li><a href="/dashboard">Dashboard</a></li>
+                    <li><a href="/eventos">Eventos</a></li>
+                    <li><a href="/logout" class="btn btn-secondary btn-sm">Salir</a></li>
                 <?php else: ?>
-                    <li><a href="/NeivActiva/eventos">Eventos</a></li>
-                    <li><a href="/NeivActiva/login">Iniciar sesion</a></li>
-                    <li><a href="/NeivActiva/register" class="btn btn-primary btn-sm">Registrarse</a></li>
+                    <li><a href="/eventos">Eventos</a></li>
+                    <li><a href="/login">Iniciar sesion</a></li>
+                    <li><a href="/register" class="btn btn-primary btn-sm">Registrarse</a></li>
                 <?php endif; ?>
             </ul>
         </div>

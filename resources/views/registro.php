@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NeivActiva – Crear cuenta</title>
-    <link rel="stylesheet" href="/NeivActiva/public/assets/css/neivactiva-2026.css">
+    <link rel="stylesheet" href="/assets/css/neivactiva-2026.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="/NeivActiva/public/assets/css/views/registro.css">
+    <link rel="stylesheet" href="/assets/css/views/registro.css">
 </head>
 <body class="rg-body">
 
@@ -50,7 +50,7 @@ $err = $_GET['error'] ?? '';
         <div class="rg-card">
 
             <!-- Brand -->
-            <a href="/NeivActiva/public/dashboard" class="rg-brand">
+            <a href="/dashboard" class="rg-brand">
                 <span class="rg-brand-icon"><i class="bi bi-sun-fill"></i></span>
                 <span class="rg-brand-name">Neiv<em>Activa</em></span>
             </a>
@@ -71,7 +71,7 @@ $err = $_GET['error'] ?? '';
             <?php endif; ?>
 
             <!-- Form -->
-            <form method="POST" action="/NeivActiva/public/register" class="rg-form" id="registerForm" novalidate>
+            <form method="POST" action="/register" class="rg-form" id="registerForm" novalidate>
                 <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrfToken ?? ''); ?>">
 
                 <!-- Nombre -->
@@ -157,10 +157,10 @@ $err = $_GET['error'] ?? '';
 
             <!-- Footer -->
             <div class="rg-footer">
-                <a href="/NeivActiva/public/dashboard" class="rg-guest">
+                <a href="/dashboard" class="rg-guest">
                     <i class="bi bi-eye"></i> Explorar como invitado
                 </a>
-                <p>¿Ya tienes cuenta? <a href="/NeivActiva/public/login">Inicia sesión</a></p>
+                <p>¿Ya tienes cuenta? <a href="/login">Inicia sesión</a></p>
             </div>
 
         </div>

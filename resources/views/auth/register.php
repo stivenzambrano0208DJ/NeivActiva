@@ -11,7 +11,7 @@
             </div>
         <?php endif; ?>
 
-        <form action="/NeivActiva/register" method="POST">
+        <form action="/register" method="POST">
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                 <div class="form-group">
                     <label class="form-label" for="nombres">Nombres</label>
@@ -50,7 +50,7 @@
         </form>
         
         <div class="text-center mt-4">
-            <p class="text-muted">¿Ya tienes cuenta? <a href="/NeivActiva/login">Inicia sesión</a></p>
+            <p class="text-muted">¿Ya tienes cuenta? <a href="/login">Inicia sesión</a></p>
         </div>
     </div>
 </div>

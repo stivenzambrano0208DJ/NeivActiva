@@ -36,7 +36,7 @@
     position: absolute;
     inset: 0;
     background:
-        url("/NeivActiva/public/assets/img/Neiva,_La_Gaitana_monumento_emblematico_de_la_ciudad.jpg")
+        url("/assets/img/Neiva,_La_Gaitana_monumento_emblematico_de_la_ciudad.jpg")
         center / cover no-repeat;
     transition: transform 8s ease;
 }
