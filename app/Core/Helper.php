@@ -41,7 +41,7 @@ class Helper {
     public static function routeUrl($path = '/') {
         $appUrl = rtrim($_ENV['APP_URL'] ?? (defined('APP_URL') ? APP_URL : 'http://localhost/NeivActiva'), '/');
         $path = '/' . ltrim((string) $path, '/');
-        return $appUrl . '/public' . ($path === '/' ? '/' : $path);
+        return $appUrl . ($path === '/' ? '/' : $path);
     }
 
     /**

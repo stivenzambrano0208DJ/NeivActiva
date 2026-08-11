@@ -50,7 +50,7 @@ class MailService {
             $mensaje = "Hola {$datos['nombre_completo']},\n\n";
             $mensaje .= "Se creo tu cuenta en NeivActiva para gestionar tus inscripciones, QR y certificados.\n\n";
             $appUrl = rtrim($_ENV['APP_URL'] ?? (defined('APP_URL') ? APP_URL : 'http://localhost/NeivActiva'), '/');
-            $mensaje .= "Acceso: {$appUrl}/public/login\n";
+            $mensaje .= "Acceso: {$appUrl}/login\n";
             $mensaje .= "Correo: {$datos['correo_electronico']}\n";
             $mensaje .= "Contrasena temporal: {$passwordPlano}\n\n";
             $mensaje .= "Por seguridad, cambia tu contrasena despues de ingresar.\n\n";

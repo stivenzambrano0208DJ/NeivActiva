@@ -47,7 +47,7 @@ class Auth {
     public static function redirect($url) {
         $appUrl = rtrim($_ENV['APP_URL'] ?? (defined('APP_URL') ? APP_URL : 'http://localhost/NeivActiva'), '/');
         $url = '/' . ltrim((string) $url, '/');
-        header("Location: " . $appUrl . '/public' . ($url === '/' ? '/' : $url));
+        header("Location: " . $appUrl . ($url === '/' ? '/' : $url));
         exit;
     }
 
