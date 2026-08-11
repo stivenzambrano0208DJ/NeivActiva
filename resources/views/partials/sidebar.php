@@ -67,13 +67,6 @@ $navItem = function ($target, $icon, $label) use ($view) {
                 <?php $navItem('carga_masiva', 'bi-file-earmark-arrow-up', 'Carga Masiva'); ?>
             <?php endif; ?>
         <?php endif; ?>
-
-        <?php if ($rol === 'admin'): ?>
-            <div class="nav-section-title">Administracion</div>
-            <?php $navItem('usuarios', 'bi-person-gear', 'Usuarios'); ?>
-            <?php $navItem('estadisticas', 'bi-bar-chart-fill', 'Estadisticas'); ?>
-            <?php $navItem('configuracion', 'bi-gear-fill', 'Configuracion'); ?>
-        <?php endif; ?>
     </nav>
 
     <div class="sidebar-session">
