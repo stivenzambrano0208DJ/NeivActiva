@@ -120,7 +120,7 @@
                     <?php if (isset($featuredEvents) && !empty($featuredEvents)): ?>
                         <?php foreach ($featuredEvents as $event): ?>
                             <?php 
-                                $imagePath = $event['ruta_imagen'] ? '/NeivActiva/' . ltrim($event['ruta_imagen'], '/') : '/NeivActiva/public/assets/images/event-placeholder.jpg';
+                                $imagePath = $event['ruta_imagen'] ? (strpos($event['ruta_imagen'], '/NeivActiva/') === 0 ? $event['ruta_imagen'] : '/NeivActiva/' . ltrim($event['ruta_imagen'], '/')) : '/NeivActiva/public/assets/images/event-placeholder.jpg';
                                 $fechaFormateada = date('d M', strtotime($event['fecha_evento']));
                             ?>
                             <div class="featured-event-card" onclick="openEventModal(<?php echo $event['id']; ?>)">
@@ -251,6 +251,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 week: 'Semana',
                 day: 'Día'
             },
+            eventDisplay: 'block',
+            dayMaxEvents: 3,
             events: function(info, successCallback, failureCallback) {
                 // Cargar eventos dinámicamente vía AJAX
                 const start = info.start.toISOString().split('T')[0];
@@ -354,7 +356,7 @@ function openEventModal(eventOrId) {
     let eventId;
     
     if (typeof eventOrId === 'object') {
-        eventId = eventOrId.event.id;
+        eventId = (eventOrId.event && eventOrId.event.id) ? eventOrId.event.id : eventOrId.id;
     } else {
         eventId = eventOrId;
     }
@@ -367,7 +369,7 @@ function openEventModal(eventOrId) {
         .then(data => {
             if (data.success && data.event) {
                 const event = data.event;
-                document.getElementById('modalImg').src = event.ruta_imagen ? '/NeivActiva/' + ltrim(event.ruta_imagen, '/') : '/NeivActiva/public/assets/images/event-placeholder.jpg';
+                document.getElementById('modalImg').src = event.ruta_imagen ? (event.ruta_imagen.startsWith('/NeivActiva/') ? event.ruta_imagen : '/NeivActiva/' + event.ruta_imagen.replace(/^\/+/, '')) : '/NeivActiva/public/assets/images/event-placeholder.jpg';
                 document.getElementById('modalCategory').textContent = event.categoria || 'Otro';
                 document.getElementById('modalTitle').textContent = event.titulo;
                 document.getElementById('modalDate').textContent = new Date(event.fecha_evento).toLocaleDateString('es-ES', { 

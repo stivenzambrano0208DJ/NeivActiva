@@ -1,0 +1,53 @@
+# --- Version control ---------------------------------------------------------
+.git
+.gitignore
+.gitattributes
+
+# --- Secrets / environment ---------------------------------------------------
+.env
+.env.*
+!.env.example
+
+# --- Dependencies (rebuilt in the Docker build stage) ------------------------
+vendor
+node_modules
+
+# --- Composer installer artifacts (not needed at runtime) --------------------
+composer.phar
+composer-setup.php
+
+# --- Dev / scratch / maintenance scripts -------------------------------------
+scratch
+limpiar_datos.php
+
+# --- Database dumps / migrations (run manually, not shipped in the image) -----
+database
+*.sql
+
+# --- Editor / IDE ------------------------------------------------------------
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# --- Logs / temp -------------------------------------------------------------
+*.log
+storage/logs
+tmp
+temp
+
+# --- Documentation -----------------------------------------------------------
+README.md
+*.md
+
+# --- Docker / CI -------------------------------------------------------------
+Dockerfile
+.dockerignore
+docker-compose*.yml
+.github
+
+# --- Root .htaccess (not used: DocumentRoot is public/) ----------------------
+/.htaccess

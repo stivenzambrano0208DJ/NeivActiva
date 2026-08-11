@@ -116,7 +116,7 @@
                         $cupo     = (int)($ev['cupo_maximo'] ?? 0);
                         $estado   = $ev['estado_evento'] ?? 'Activo';
                         $pct      = $cupo > 0 ? min(100, round($inscritos / $cupo * 100)) : 0;
-                        $img      = !empty($ev['ruta_imagen']) ? '/NeivActiva/' . ltrim($ev['ruta_imagen'], '/') : null;
+                        $img      = !empty($ev['ruta_imagen']) ? (strpos($ev['ruta_imagen'], '/NeivActiva/') === 0 ? $ev['ruta_imagen'] : '/NeivActiva/' . ltrim($ev['ruta_imagen'], '/')) : null;
                         $catColor = match($cat) {
                             'Cultural'   => 'purple',
                             'Deportivo'  => 'blue',

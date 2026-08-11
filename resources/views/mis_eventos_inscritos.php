@@ -162,7 +162,7 @@
                     <?php foreach ($events as $event): ?>
                         <?php 
                             $status = $event['status_info'];
-                            $imagePath = $event['ruta_imagen'] ? '/NeivActiva/' . ltrim($event['ruta_imagen'], '/') : '/NeivActiva/public/assets/images/event-placeholder.jpg';
+                            $imagePath = $event['ruta_imagen'] ? (strpos($event['ruta_imagen'], '/NeivActiva/') === 0 ? $event['ruta_imagen'] : '/NeivActiva/' . ltrim($event['ruta_imagen'], '/')) : '/NeivActiva/public/assets/images/event-placeholder.jpg';
                             $fechaFormateada = date('d M', strtotime($event['fecha_evento']));
                             $horaFormateada = $event['hora_evento'] ? date('H:i', strtotime($event['hora_evento'])) : '--:--';
                             $year = date('Y', strtotime($event['fecha_evento']));

@@ -136,7 +136,7 @@ $catIcon  = fn($c) => match($c) {
                             $pct       = min(100, round($inscritos / $cupoMax * 100));
                             $inscrito  = in_array($evId, $inscritosIds, true);
                             $lleno     = $cupos <= 0;
-                            $img       = !empty($ev['ruta_imagen']) ? '/NeivActiva/'.ltrim($ev['ruta_imagen'],'/') : $imgFallback;
+                            $img       = !empty($ev['ruta_imagen']) ? (strpos($ev['ruta_imagen'], '/NeivActiva/') === 0 ? $ev['ruta_imagen'] : '/NeivActiva/'.ltrim($ev['ruta_imagen'],'/')) : $imgFallback;
                             $canEnroll = !$inscrito && !$lleno && in_array($rol, ['cliente','participante','organizador','admin'], true);
                         ?>
                         <article class="db-ev-card<?php echo $inscrito ? ' db-ev-inscrito' : ''; ?>"

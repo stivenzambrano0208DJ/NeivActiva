@@ -47,9 +47,9 @@ class CalendarService {
                 $params[':end_date'] = $endDate;
             }
 
-            // Filtro eventos gratuitos
+            // Filtro eventos gratuitos (todos son gratuitos por defecto)
             if ($freeOnly) {
-                $whereConditions[] = "(e.costo = 0 OR e.costo IS NULL)";
+                // Sin condición extra ya que no hay columna costo
             }
 
             // Filtro próximos eventos
@@ -75,7 +75,6 @@ class CalendarService {
                     e.categoria,
                     e.cupo_maximo,
                     e.inscritos_actuales,
-                    e.costo,
                     e.ruta_imagen,
                     e.estado_evento,
                     e.creado_en
@@ -114,11 +113,10 @@ class CalendarService {
                         'location' => $event['ubicacion'] ?? '',
                         'category' => $event['categoria'] ?? '',
                         'capacity' => $event['cupo_maximo'] ?? 0,
-                        'registered' => $event['inscritos_actuales'] ?? 0,
-                        'cost' => $event['costo'] ?? 0,
-                        'image' => $event['ruta_imagen'] ? '/NeivActiva/' . ltrim($event['ruta_imagen'], '/') : '/NeivActiva/public/assets/images/event-placeholder.jpg',
+                        'cost' => 0,
+                        'image' => $event['ruta_imagen'] ? (strpos($event['ruta_imagen'], '/NeivActiva/') === 0 ? $event['ruta_imagen'] : '/NeivActiva/' . ltrim($event['ruta_imagen'], '/')) : '/NeivActiva/public/assets/images/event-placeholder.jpg',
                         'isFull' => ($event['inscritos_actuales'] ?? 0) >= ($event['cupo_maximo'] ?? 0),
-                        'isFree' => $event['costo'] == 0 || $event['costo'] === null
+                        'isFree' => true
                     ]
                 ];
             }, $events);
@@ -229,7 +227,6 @@ class CalendarService {
                     e.categoria,
                     e.cupo_maximo,
                     e.inscritos_actuales,
-                    e.costo,
                     e.ruta_imagen,
                     e.estado_evento,
                     e.organizador_id
@@ -254,7 +251,7 @@ class CalendarService {
                     COUNT(*) as total_events,
                     SUM(CASE WHEN fecha_evento >= CURDATE() THEN 1 ELSE 0 END) as upcoming_events,
                     SUM(CASE WHEN fecha_evento < CURDATE() THEN 1 ELSE 0 END) as past_events,
-                    SUM(CASE WHEN costo = 0 OR costo IS NULL THEN 1 ELSE 0 END) as free_events,
+                    COUNT(*) as free_events,
                     SUM(inscritos_actuales) as total_registrations
                     FROM eventos
                     WHERE estado_evento = 'Activo'";

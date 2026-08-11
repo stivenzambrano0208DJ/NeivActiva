@@ -3,6 +3,9 @@
 /composer.phar
 /composer-setup.php
 
+# Dump de datos (contiene datos reales, no versionar)
+/neivactiva_db_export.sql
+
 /storage/logs/*.log
 /storage/framework/cache/*
 /storage/framework/sessions/*

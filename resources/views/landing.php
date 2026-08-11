@@ -117,8 +117,8 @@ $usuarioLogueado = isset($_SESSION['usuario_id']);
             </div>
 
             <?php if (empty($eventos)): ?>
-                <div style="text-align: center; padding: 3rem 0; color: var(--cafe-muted);">
-                    <i class="bi bi-calendar-x" style="font-size: 3rem; margin-bottom: 1rem; color: var(--cafe-accent-dark);"></i>
+                <div style="text-align: center; padding: 3rem 0; color: var(--text-tertiary);">
+                    <i class="bi bi-calendar-x" style="font-size: 3rem; margin-bottom: 1rem; color: var(--primary);"></i>
                     <p>No hay eventos programados en este momento. Vuelve pronto.</p>
                 </div>
             <?php else: ?>
@@ -230,33 +230,33 @@ $usuarioLogueado = isset($_SESSION['usuario_id']);
                     <div class="event-showcase-card" style="cursor: default;">
                         <div class="event-card-img">
                             <img src="/NeivActiva/public/assets/img/unnamed.jpg" alt="Talleres Artísticos">
-                            <span class="event-card-badge" style="background: var(--cafe-bg-alt); color: var(--cafe-dark); border: 1px solid var(--cafe-border);">Cultura</span>
+                            <span class="event-card-badge" style="background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border-primary);">Cultura</span>
                         </div>
                         <div class="event-card-body">
                             <h3>Talleres Artísticos y Danza</h3>
-                            <p style="font-size: 0.88rem; color: var(--cafe-text); line-height: 1.6; margin: 0.5rem 0 0;">Talleres semanales gratuitos de danza tradicional (Sanjuanero Huilense), pintura y música en el Parque de la Música Jorge Villamil Cordovez.</p>
+                            <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6; margin: 0.5rem 0 0;">Talleres semanales gratuitos de danza tradicional (Sanjuanero Huilense), pintura y música en el Parque de la Música Jorge Villamil Cordovez.</p>
                         </div>
                     </div>
 
                     <div class="event-showcase-card" style="cursor: default;">
                         <div class="event-card-img">
                             <img src="/NeivActiva/public/assets/img/Neiva,_La_Gaitana_monumento_emblematico_de_la_ciudad.jpg" alt="Deportes al aire libre">
-                            <span class="event-card-badge" style="background: var(--cafe-bg-alt); color: var(--cafe-dark); border: 1px solid var(--cafe-border);">Deporte</span>
+                            <span class="event-card-badge" style="background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border-primary);">Deporte</span>
                         </div>
                         <div class="event-card-body">
                             <h3>Ciclovía y Recreación Dominical</h3>
-                            <p style="font-size: 0.88rem; color: var(--cafe-text); line-height: 1.6; margin: 0.5rem 0 0;">Cada domingo recorre la Av. Tenerife en bicicleta, patines o corriendo. Actividades dirigidas de aeróbicos y yoga al aire libre para toda la familia.</p>
+                            <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6; margin: 0.5rem 0 0;">Cada domingo recorre la Av. Tenerife en bicicleta, patines o corriendo. Actividades dirigidas de aeróbicos y yoga al aire libre para toda la familia.</p>
                         </div>
                     </div>
 
                     <div class="event-showcase-card" style="cursor: default;">
                         <div class="event-card-img">
                             <img src="/NeivActiva/public/assets/img/Capilla_de_La_Inmaculada_Concepción.jpg" alt="Historia y Educación">
-                            <span class="event-card-badge" style="background: var(--cafe-bg-alt); color: var(--cafe-dark); border: 1px solid var(--cafe-border);">Educación</span>
+                            <span class="event-card-badge" style="background: var(--bg-tertiary); color: var(--text-primary); border: 1px solid var(--border-primary);">Educación</span>
                         </div>
                         <div class="event-card-body">
                             <h3>Rutas Históricas e Identidad</h3>
-                            <p style="font-size: 0.88rem; color: var(--cafe-text); line-height: 1.6; margin: 0.5rem 0 0;">Recorridos guiados gratuitos por los monumentos históricos de la ciudad de Neiva, conociendo la leyenda del Mohán, la Gaitana y más.</p>
+                            <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6; margin: 0.5rem 0 0;">Recorridos guiados gratuitos por los monumentos históricos de la ciudad de Neiva, conociendo la leyenda del Mohán, la Gaitana y más.</p>
                         </div>
                     </div>
                 </div>
@@ -426,6 +426,32 @@ $usuarioLogueado = isset($_SESSION['usuario_id']);
                 nav.classList.remove('scrolled');
             }
         });
+
+        /* ── Scroll reveal ─────────────────────────────── */
+        (function () {
+            const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const targets = document.querySelectorAll(
+                '.section-header, .event-showcase-card, .how-step, .how-image-card, ' +
+                '.about-stat-card, .about-img-main, .testimonial-card, .cta-banner-content'
+            );
+            if (reduce || !('IntersectionObserver' in window)) {
+                targets.forEach(el => el.classList.add('is-visible'));
+                return;
+            }
+            targets.forEach((el, i) => {
+                el.classList.add('reveal');
+                el.style.transitionDelay = (Math.min(i % 4, 3) * 80) + 'ms';
+            });
+            const io = new IntersectionObserver((entries, obs) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        obs.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+            targets.forEach(el => io.observe(el));
+        })();
     </script>
 </body>
 </html>

@@ -357,6 +357,16 @@ a:hover { color: var(--info); }
     transition: border-color .2s ease, box-shadow .2s ease !important;
 }
 
+/* Shadow + border appear once user scrolls */
+.top-navbar.nav-scrolled,
+.admin-topbar.nav-scrolled,
+.compact-navbar.nav-scrolled,
+.page-header.nav-scrolled,
+.dashboard-header.nav-scrolled {
+    border-bottom-color: var(--border-primary) !important;
+    box-shadow: 0 2px 12px rgba(44,37,32,.06) !important;
+}
+
 .page-title,
 .top-navbar h1,
 .calendar-header h1,
@@ -987,11 +997,10 @@ img {
 }
 
 /* Reduce paint on scroll */
-.main-wrapper,
 .calendar-body,
 .dashboard-body,
 .events-body {
-    contain: layout style paint;
+    contain: style;   /* solo style, NO layout ni paint — esos rompen position:fixed */
 }
 
 /* Optimize animations for reduced motion */
@@ -2223,3 +2232,84 @@ html {
     min-height: 100vh;
 }
 
+
+
+/* =====================================================
+   STICKY TOPBARS — todos los headers de vistas custom
+   quedan fijos al hacer scroll (sidebar ya es fixed)
+   ===================================================== */
+
+.ge-topbar,
+.gi-topbar,
+.as-topbar,
+.pt-topbar,
+.usr-topbar,
+.ia-topbar {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 40 !important;
+    backdrop-filter: blur(18px) !important;
+    -webkit-backdrop-filter: blur(18px) !important;
+    background: rgba(255,255,255,.92) !important;
+    border-bottom: 1px solid transparent !important;
+    transition: border-color .2s ease, box-shadow .2s ease !important;
+}
+
+.ge-topbar.nav-scrolled,
+.gi-topbar.nav-scrolled,
+.as-topbar.nav-scrolled,
+.pt-topbar.nav-scrolled,
+.usr-topbar.nav-scrolled,
+.ia-topbar.nav-scrolled {
+    border-bottom-color: var(--border-primary) !important;
+    box-shadow: 0 2px 12px rgba(44,37,32,.06) !important;
+}
+
+/* =====================================================
+   SIDEBAR — pulido premium 2026
+   ===================================================== */
+.logo i {
+    box-shadow: 0 6px 16px rgba(255,107,53,0.32) !important;
+    transition: transform var(--transition-base);
+}
+.logo:hover i { transform: rotate(-8deg) scale(1.06); }
+
+.user-profile-sm {
+    transition: box-shadow var(--transition-base), transform var(--transition-base) !important;
+}
+.user-profile-sm:hover {
+    box-shadow: var(--shadow-md) !important;
+    transform: translateY(-1px);
+}
+
+/* Active nav item — indicador en píldora con degradado + glow cálido */
+.nav-link { position: relative !important; }
+.nav-link.active {
+    background: linear-gradient(135deg, #35241b 0%, var(--text-primary) 100%) !important;
+    color: #fff !important;
+    box-shadow: 0 6px 18px rgba(44,37,32,0.22) !important;
+    border-left: none !important;
+}
+.nav-link.active::before {
+    content: '';
+    position: absolute;
+    left: 5px; top: 50%;
+    transform: translateY(-50%);
+    width: 3px; height: 18px;
+    background: linear-gradient(180deg, var(--primary), #FFB347);
+    border-radius: 99px;
+    box-shadow: 0 0 9px rgba(255,107,53,0.6);
+}
+.nav-link.active i { color: var(--primary) !important; }
+
+/* Botón "Cerrar sesión" con acento de peligro al hover */
+.logout-link:hover {
+    background: var(--danger-light) !important;
+    color: var(--danger-dark) !important;
+}
+.logout-link:hover i { color: var(--danger-dark) !important; }
+
+@media (prefers-reduced-motion: reduce) {
+    .logo:hover i,
+    .user-profile-sm:hover { transform: none; }
+}

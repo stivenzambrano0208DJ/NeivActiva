@@ -93,14 +93,30 @@ $navItem = function ($target, $icon, $label) use ($view) {
 <script>
 (() => {
     const body = document.body;
+
+    /* ── Sidebar toggle (mobile) ── */
     document.addEventListener('click', event => {
         if (event.target.closest('[data-sidebar-toggle]')) {
             body.classList.toggle('sidebar-open');
         }
-
         if (event.target.closest('[data-sidebar-close]') || event.target.closest('.sidebar .nav-link')) {
             body.classList.remove('sidebar-open');
         }
     });
+
+    /* ── Sticky navbar scroll effect ── */
+    const navbars = document.querySelectorAll(
+        '.top-navbar, .admin-topbar, .compact-navbar, .page-header, .dashboard-header, ' +
+        '.ge-topbar, .gi-topbar, .as-topbar, .pt-topbar, .usr-topbar, .ia-topbar'
+    );
+
+    if (navbars.length) {
+        const onScroll = () => {
+            const scrolled = window.scrollY > 8;
+            navbars.forEach(nav => nav.classList.toggle('nav-scrolled', scrolled));
+        };
+        window.addEventListener('scroll', onScroll, { passive: true });
+        onScroll(); /* run once on load */
+    }
 })();
 </script>
