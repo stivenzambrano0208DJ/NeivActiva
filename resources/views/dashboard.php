@@ -37,26 +37,22 @@ $catIcon  = fn($c) => match($c) {
          HERO BANNER
     ══════════════════════════════════════════ -->
     <div class="db-hero">
-        <div class="db-hero-bg"></div>
-        <div class="db-hero-glow"></div>
-        <div class="db-hero-inner">
+        <div class="db-hero-main">
             <div class="db-hero-left">
-                <div class="db-hero-greeting">
-                    <span class="db-greeting-pill">
-                        <i class="bi bi-sun-fill"></i>
-                        <?php
-                            $h = (int)date('H');
-                            echo $h < 12 ? 'Buenos días' : ($h < 19 ? 'Buenas tardes' : 'Buenas noches');
-                        ?>
-                    </span>
-                    <h1 class="db-hero-title">
-                        Hola, <span><?php echo htmlspecialchars($nombreUsuario); ?></span>
-                    </h1>
-                    <p class="db-hero-sub">Tu centro de actividad cultural en Neiva</p>
-                </div>
+                <span class="db-greeting-pill">
+                    <i class="bi bi-sun-fill"></i>
+                    <?php
+                        $h = (int)date('H');
+                        echo $h < 12 ? 'Buenos días' : ($h < 19 ? 'Buenas tardes' : 'Buenas noches');
+                    ?>
+                </span>
+                <h1 class="db-hero-title">
+                    Hola, <span><?php echo htmlspecialchars($nombreUsuario); ?></span>
+                </h1>
+                <p class="db-hero-sub">Descubre, inscríbete y vive las mejores experiencias culturales de Neiva.</p>
                 <div class="db-hero-actions">
                     <a href="/eventos" class="db-btn-primary">
-                        <i class="bi bi-calendar-event-fill"></i> Explorar eventos
+                        <i class="bi bi-compass"></i> Explorar eventos
                     </a>
                     <?php if ($esGuest): ?>
                         <a href="/login" class="db-btn-ghost">
@@ -72,7 +68,14 @@ $catIcon  = fn($c) => match($c) {
                     <?php endif; ?>
                 </div>
             </div>
-            <div class="db-hero-stats">
+            <div class="db-hero-media">
+                <img src="/assets/img/Neiva,_La_Gaitana_monumento_emblematico_de_la_ciudad.jpg"
+                     alt="Neiva, Huila" loading="lazy"
+                     onerror="this.style.display='none'">
+                <span class="db-hero-media-badge"><i class="bi bi-geo-alt-fill"></i> Neiva, Huila</span>
+            </div>
+        </div>
+        <div class="db-hero-stats">
                 <div class="db-hstat">
                     <span class="db-hstat-ico"><i class="bi bi-calendar-event"></i></span>
                     <span class="db-hstat-val stat-big-number"><?php echo (int)($metricas['eventos_activos'] ?? count($eventos)); ?></span>
@@ -97,7 +100,6 @@ $catIcon  = fn($c) => match($c) {
                     <span class="db-hstat-lbl">Certificados</span>
                 </div>
             </div>
-        </div>
     </div>
 
     <!-- ══════════════════════════════════════════

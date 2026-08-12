@@ -12,35 +12,14 @@
 .db-hero {
     position: relative;
     overflow: hidden;
-    display: flex;
-    flex-direction: column;       /* title top, stats bottom */
-    /* Rich warm base so the photo reads as a branded backdrop, not a raw image. */
-    background: linear-gradient(135deg, #1c0e06 0%, #0f0804 55%, #24120a 100%);
-}
-
-.db-hero-bg {
-    position: absolute; inset: 0;
+    margin: 1.25rem 2rem 0;
+    /* Light, clean hero card: white with a soft warm glow. */
     background:
-        url("/assets/img/Neiva,_La_Gaitana_monumento_emblematico_de_la_ciudad.jpg")
-        center 32% / cover no-repeat;
-    opacity: .32;
-    /* Warm duotone tint + gentle darkening for a premium, cohesive look. */
-    filter: sepia(.4) saturate(1.15) contrast(1.04) brightness(.82);
-    transform: scale(1.05);
-    transition: opacity 1.2s ease, transform 14s ease;
-}
-.db-hero:hover .db-hero-bg { opacity: .4; transform: scale(1); }
-
-.db-hero::after {
-    content: ''; position: absolute; inset: 0;
-    background:
-        /* bottom-to-top fade so the stats bar sits on solid ground */
-        linear-gradient(0deg,   rgba(12,6,2,.99) 0%, rgba(12,6,2,.62) 48%, rgba(12,6,2,.22) 100%),
-        /* left + right darkening keeps the title and stats crisp */
-        linear-gradient(90deg,  rgba(12,6,2,.72) 0%, rgba(12,6,2,.12) 52%, rgba(12,6,2,.48) 100%),
-        /* soft vignette around the edges */
-        radial-gradient(130% 120% at 50% -10%, transparent 42%, rgba(12,6,2,.55) 100%);
-    z-index: 1;
+        radial-gradient(ellipse 70% 130% at 100% 0%, #FFEAD5 0%, transparent 55%),
+        linear-gradient(120deg, #FFFFFF 0%, #FFF7EF 100%);
+    border: 1px solid var(--border-primary);
+    border-radius: 24px;
+    box-shadow: var(--shadow-md);
 }
 
 .db-hero-glow {
@@ -57,38 +36,60 @@
     100% { transform: translate3d(-1.4%,1.8%,0) scale(1.03); opacity: .95; }
 }
 
-/* ── Text + buttons row ────────────────────────── */
-.db-hero-inner {
+/* ── Two-column hero: text left, framed image right ── */
+.db-hero-main {
     position: relative; z-index: 2;
-    padding: 2.75rem 2.5rem 2rem;
-    display: flex;
-    align-items: flex-start;        /* text aligned to top */
-    justify-content: flex-start;
-    flex-wrap: wrap;
-    gap: 1.5rem;
+    display: grid;
+    grid-template-columns: 1.08fr 0.92fr;
+    gap: 2.25rem;
+    align-items: center;
+    padding: 2.4rem 2.5rem;
 }
 
-.db-hero-left { display: flex; flex-direction: column; }
+.db-hero-left { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; }
+
+/* Framed hero image (like the reference) */
+.db-hero-media {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    aspect-ratio: 16 / 11;
+    border: 5px solid #fff;
+    box-shadow: var(--shadow-lg);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+}
+.db-hero-media img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+    transition: transform 8s ease;
+}
+.db-hero-media:hover img { transform: scale(1.06); }
+.db-hero-media-badge {
+    position: absolute; left: .8rem; bottom: .8rem;
+    display: inline-flex; align-items: center; gap: .35rem;
+    background: rgba(255,255,255,.94); color: var(--text-primary);
+    padding: .4rem .8rem; border-radius: 100px;
+    font-size: .72rem; font-weight: 700;
+    box-shadow: var(--shadow-sm); backdrop-filter: blur(6px);
+}
+.db-hero-media-badge i { color: var(--primary); }
 
 .db-greeting-pill {
     display: inline-flex; align-items: center; gap: .4rem;
-    background: rgba(255,122,0,.18);
-    border: 1px solid rgba(255,122,0,.4);
-    backdrop-filter: blur(8px);
-    color: #FFB48A;
-    padding: .3rem .9rem; border-radius: 100px;
-    font-size: .65rem; font-weight: 800;
-    letter-spacing: .1em; text-transform: uppercase;
-    margin-bottom: .75rem; width: fit-content;
+    background: var(--primary-light);
+    border: 1px solid rgba(255,122,0,.22);
+    color: var(--primary-dark);
+    padding: .35rem .9rem; border-radius: 100px;
+    font-size: .66rem; font-weight: 800;
+    letter-spacing: .09em; text-transform: uppercase;
+    margin-bottom: 1rem; width: fit-content;
 }
 
 .db-hero-title {
-    font-size: clamp(2rem, 3.2vw, 3rem);
-    font-weight: 900; color: #fff;
-    margin: 0 0 .4rem;
+    font-size: clamp(2rem, 3.4vw, 3rem);
+    font-weight: 900; color: var(--text-primary);
+    margin: 0 0 .55rem;
     font-family: 'Outfit', var(--font-family);
-    letter-spacing: -.04em; line-height: 1.08;
-    text-shadow: 0 2px 24px rgba(0,0,0,.45);
+    letter-spacing: -.04em; line-height: 1.05;
 }
 .db-hero-title span {
     color: var(--primary);
@@ -105,61 +106,54 @@
 }
 
 .db-hero-sub {
-    font-size: .87rem; color: rgba(255,255,255,.55);
-    margin: 0 0 1.4rem; line-height: 1.55;
+    font-size: .95rem; color: var(--text-tertiary);
+    margin: 0 0 1.6rem; line-height: 1.6; max-width: 44ch;
 }
 
 .db-hero-actions {
     display: flex; align-items: center; gap: .6rem; flex-wrap: wrap;
 }
 
-/* ── Stats bar — full width, bottom of hero ─────── */
+/* ── Stats strip — light, full width, bottom of hero ─────── */
 .db-hero-stats {
     position: relative; z-index: 2;
     display: flex; align-items: stretch;
-    background: rgba(0,0,0,.35);
-    border-top: 1px solid rgba(255,255,255,.07);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
+    background: rgba(255,255,255,.55);
+    border-top: 1px solid var(--border-subtle);
 }
 
 .db-hstat {
     flex: 1;
     display: flex; flex-direction: column; align-items: center;
-    justify-content: center; gap: .3rem;
-    padding: 1.15rem 1.25rem;
+    justify-content: center; gap: .35rem;
+    padding: 1.2rem 1rem;
     text-align: center;
     position: relative;
 }
 
 .db-hstat-ico {
-    width: 36px; height: 36px; border-radius: 11px;
+    width: 38px; height: 38px; border-radius: 11px;
     display: flex; align-items: center; justify-content: center;
-    background: rgba(255,122,0,.16); color: #FFB48A;
-    border: 1px solid rgba(255,122,0,.3);
-    font-size: 1rem; margin-bottom: .12rem;
-}
-
-.db-hstat + .db-hstat::before {
-    content: ''; position: absolute; left: 0; top: 22%; bottom: 22%;
-    width: 1px; background: rgba(255,255,255,.1);
+    background: var(--primary-light); color: var(--primary);
+    border: 1px solid rgba(255,122,0,.2);
+    font-size: 1.05rem; margin-bottom: .12rem;
 }
 
 .db-hstat-val {
-    font-size: 1.9rem; font-weight: 900;
-    color: #fff; line-height: 1;
-    letter-spacing: -.05em;
+    font-size: 1.75rem; font-weight: 900;
+    color: var(--text-primary); line-height: 1;
+    letter-spacing: -.045em;
     font-family: 'Outfit', var(--font-family);
 }
 
 .db-hstat-lbl {
-    font-size: .6rem; font-weight: 700;
-    color: rgba(255,255,255,.48);
-    text-transform: uppercase; letter-spacing: .09em;
-    display: flex; align-items: center; gap: .28rem;
+    font-size: .62rem; font-weight: 700;
+    color: var(--text-tertiary);
+    text-transform: uppercase; letter-spacing: .08em;
 }
 
-.db-hstat-div { display: none; }
+/* Thin divider between stats */
+.db-hstat-div { align-self: center; width: 1px; height: 42px; background: var(--border-subtle); }
 
 /* ── Hero buttons ────────────────────────────────── */
 .db-btn-primary {
@@ -186,15 +180,14 @@
 
 .db-btn-ghost {
     display: inline-flex; align-items: center; gap: .5rem;
-    padding: .68rem 1.3rem;
-    background: rgba(255,255,255,.08);
-    border: 1.5px solid rgba(255,255,255,.18);
-    color: rgba(255,255,255,.85); border-radius: var(--radius-full);
-    font-size: .88rem; font-weight: 600; text-decoration: none;
-    backdrop-filter: blur(6px);
+    padding: .7rem 1.3rem;
+    background: #fff;
+    border: 1.5px solid var(--border-primary);
+    color: var(--text-secondary); border-radius: var(--radius-full);
+    font-size: .88rem; font-weight: 700; text-decoration: none;
     transition: all var(--transition-fast); white-space: nowrap;
 }
-.db-btn-ghost:hover { background: rgba(255,255,255,.16); border-color: rgba(255,255,255,.38); color: #fff; text-decoration: none; transform: translateY(-1px); }
+.db-btn-ghost:hover { background: var(--primary-light); border-color: var(--primary); color: var(--primary); text-decoration: none; transform: translateY(-1px); }
 
 .db-btn-outline {
     display: inline-flex; align-items: center; gap: .4rem;
@@ -528,15 +521,25 @@
     .db-features { grid-template-columns: repeat(2, 1fr); }
 }
 
+@media (max-width: 980px) {
+    .db-hero { margin: 1rem 1.25rem 0; }
+    .db-hero-main { grid-template-columns: 1fr; gap: 1.5rem; padding: 2rem 1.75rem; }
+    .db-hero-media { aspect-ratio: 16 / 9; order: -1; }   /* image on top on narrow screens */
+}
+
 @media (max-width: 900px) {
-    .db-hero-inner { padding: 2rem 1.5rem 1.5rem; }
     .db-hstat { padding: .9rem 1rem; }
     .db-content { padding: 1.5rem 1.25rem 2.5rem; }
     .db-explore-inner { padding: 1.5rem 1.35rem; }
 }
 
 @media (max-width: 640px) {
+    .db-hero { margin: .85rem 1rem 0; }
+    .db-hero-main { padding: 1.5rem 1.25rem; }
     .db-hero-title { font-size: 1.85rem; }
+    .db-hero-stats { flex-wrap: wrap; }
+    .db-hstat { flex-basis: 50%; }
+    .db-hstat-div { display: none; }
     .db-hstat-val { font-size: 1.55rem; }
     .db-events-grid { grid-template-columns: 1fr; }
     .db-content { padding: 1.25rem 1rem 2rem; }
