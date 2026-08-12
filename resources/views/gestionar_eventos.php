@@ -6,7 +6,7 @@
     <title>NeivActiva – Publicar Eventos</title>
     <link rel="stylesheet" href="/assets/css/neivactiva-2026.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="/assets/css/views/gestionar_eventos.css">
+    <link rel="stylesheet" href="/assets/css/views/gestionar_eventos.css?v=<?php echo @filemtime(ROOT_PATH . '/public/assets/css/views/gestionar_eventos.css'); ?>">
 </head>
 <body>
 

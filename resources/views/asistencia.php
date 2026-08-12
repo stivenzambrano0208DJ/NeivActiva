@@ -6,7 +6,7 @@
     <title>NeivActiva – Control de Asistencia</title>
     <link rel="stylesheet" href="/assets/css/neivactiva-2026.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="/assets/css/views/asistencia.css">
+    <link rel="stylesheet" href="/assets/css/views/asistencia.css?v=<?php echo @filemtime(ROOT_PATH . '/public/assets/css/views/asistencia.css'); ?>">
     <!-- Html5-QrCode library -->
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 </head>

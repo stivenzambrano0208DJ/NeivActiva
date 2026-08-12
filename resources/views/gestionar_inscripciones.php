@@ -6,7 +6,7 @@
     <title>NeivActiva – Gestionar Inscripciones</title>
     <link rel="stylesheet" href="/assets/css/neivactiva-2026.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="/assets/css/views/gestionar_inscripciones.css">
+    <link rel="stylesheet" href="/assets/css/views/gestionar_inscripciones.css?v=<?php echo @filemtime(ROOT_PATH . '/public/assets/css/views/gestionar_inscripciones.css'); ?>">
 </head>
 <body>
 
