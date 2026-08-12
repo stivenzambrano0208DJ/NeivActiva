@@ -32,9 +32,6 @@
                     <i class="bi bi-download"></i>
                     <span>Exportar</span>
                 </button>
-                <button class="btn btn-secondary btn-dark-mode" onclick="toggleDarkMode()">
-                    <i class="bi bi-moon" id="darkModeIcon"></i>
-                </button>
             </div>
         </div>
         
@@ -434,12 +431,9 @@ window.addEventListener('load', function() {
     }, 300);
 });
 
-// Cargar modo oscuro
-if (localStorage.getItem('darkMode') === 'true') {
-    document.body.classList.add('dark-mode');
-    const icon = document.getElementById('darkModeIcon');
-    if (icon) icon.className = 'bi bi-sun';
-}
+// Modo oscuro eliminado: limpiar cualquier estado previo guardado.
+localStorage.removeItem('darkMode');
+document.body.classList.remove('dark-mode');
 
 // Marcar filtro activo
 if (currentStatus) {

@@ -36,9 +36,6 @@
                     <i class="bi bi-search"></i>
                     <input type="text" id="searchInput" placeholder="Buscar eventos..." value="<?php echo htmlspecialchars($_GET['search'] ?? ''); ?>">
                 </div>
-                <button class="btn btn-primary" onclick="toggleDarkMode()">
-                    <i class="bi bi-moon" id="darkModeIcon"></i>
-                </button>
             </div>
         </div>
         
@@ -387,12 +384,9 @@ function toggleDarkMode() {
     localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
 }
 
-// Cargar modo oscuro
-if (localStorage.getItem('darkMode') === 'true') {
-    document.body.classList.add('dark-mode');
-    const icon = document.getElementById('darkModeIcon');
-    if (icon) icon.className = 'bi bi-sun';
-}
+// Modo oscuro eliminado: limpiar cualquier estado previo guardado.
+localStorage.removeItem('darkMode');
+document.body.classList.remove('dark-mode');
 
 // Exportar
 function exportCalendar() {
