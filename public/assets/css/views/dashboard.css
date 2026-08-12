@@ -14,25 +14,32 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;       /* title top, stats bottom */
-    background: #0f0804;
+    /* Rich warm base so the photo reads as a branded backdrop, not a raw image. */
+    background: linear-gradient(135deg, #1c0e06 0%, #0f0804 55%, #24120a 100%);
 }
 
 .db-hero-bg {
     position: absolute; inset: 0;
     background:
         url("/assets/img/Neiva,_La_Gaitana_monumento_emblematico_de_la_ciudad.jpg")
-        center 35% / cover no-repeat;
-    opacity: .38;
-    transform: scale(1.04);
-    transition: opacity 1s ease, transform 12s ease;
+        center 32% / cover no-repeat;
+    opacity: .32;
+    /* Warm duotone tint + gentle darkening for a premium, cohesive look. */
+    filter: sepia(.4) saturate(1.15) contrast(1.04) brightness(.82);
+    transform: scale(1.05);
+    transition: opacity 1.2s ease, transform 14s ease;
 }
-.db-hero:hover .db-hero-bg { opacity: .46; transform: scale(1); }
+.db-hero:hover .db-hero-bg { opacity: .4; transform: scale(1); }
 
 .db-hero::after {
     content: ''; position: absolute; inset: 0;
     background:
-        linear-gradient(0deg,   rgba(10,5,2,.98) 0%, rgba(10,5,2,.6) 50%, transparent 80%),
-        linear-gradient(90deg,  rgba(10,5,2,.45) 0%, transparent 65%);
+        /* bottom-to-top fade so the stats bar sits on solid ground */
+        linear-gradient(0deg,   rgba(12,6,2,.99) 0%, rgba(12,6,2,.62) 48%, rgba(12,6,2,.22) 100%),
+        /* left + right darkening keeps the title and stats crisp */
+        linear-gradient(90deg,  rgba(12,6,2,.72) 0%, rgba(12,6,2,.12) 52%, rgba(12,6,2,.48) 100%),
+        /* soft vignette around the edges */
+        radial-gradient(130% 120% at 50% -10%, transparent 42%, rgba(12,6,2,.55) 100%);
     z-index: 1;
 }
 
