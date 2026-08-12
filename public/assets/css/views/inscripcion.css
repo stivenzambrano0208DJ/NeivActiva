@@ -747,3 +747,89 @@ select.form-control-modern {
         justify-content: center;
     }
 }
+
+/* ============================================================
+   Mejoras de estilo 2026 — página de inscripción
+   (bloque añadido; sobreescribe reglas previas por cascada)
+   ============================================================ */
+
+/* Tarjeta del evento seleccionado: acento naranja + realce */
+.selected-event-card {
+    background: linear-gradient(135deg, var(--primary-subtle), var(--bg-primary) 60%);
+    border: 1px solid rgba(255, 107, 53, 0.22);
+    border-left: 4px solid var(--primary);
+    padding: 1rem 1.1rem;
+    box-shadow: var(--shadow-sm);
+}
+.selected-event-card .event-card-icon {
+    background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+    color: #fff;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+    box-shadow: 0 6px 14px rgba(255, 107, 53, 0.28);
+}
+
+/* Selector de categoría: tarjetas verticales más vistosas */
+.radio-group {
+    gap: 0.7rem;
+}
+.radio-label {
+    flex-direction: column;
+    gap: 0.4rem;
+    min-height: 92px;
+    border-radius: var(--radius-md);
+    border-width: 1.5px;
+    font-size: 0.82rem;
+    padding: 0.9rem 0.6rem;
+    background: var(--bg-secondary);
+}
+.radio-label i {
+    font-size: 1.5rem;
+}
+.radio-label:hover {
+    background: var(--primary-subtle);
+    box-shadow: 0 8px 18px rgba(255, 107, 53, 0.12);
+}
+/* Estado seleccionado: gradiente naranja de marca */
+.radio-item input:checked + .radio-label {
+    background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+    border-color: var(--primary);
+    color: #fff;
+    box-shadow: 0 10px 22px rgba(255, 107, 53, 0.3);
+    transform: translateY(-2px);
+}
+.radio-item input:checked + .radio-label i {
+    color: #fff;
+}
+.radio-item input:focus-visible + .radio-label {
+    outline: 3px solid var(--primary-subtle);
+    outline-offset: 2px;
+}
+
+/* Botón de envío: sombra naranja coherente (antes era morada) */
+.submit-enrollment {
+    min-height: 48px;
+    font-size: 0.95rem;
+    letter-spacing: 0.01em;
+    box-shadow: 0 8px 20px rgba(255, 107, 53, 0.25);
+}
+.submit-enrollment:hover:not(:disabled) {
+    box-shadow: 0 12px 26px rgba(255, 107, 53, 0.35);
+    transform: translateY(-2px);
+}
+
+/* Inputs: foco y hover un poco más marcados */
+.input-wrapper:focus-within {
+    transform: translateY(-1px);
+}
+.form-control-modern:focus {
+    box-shadow: 0 0 0 4px var(--primary-subtle);
+}
+
+/* Encabezado de sección con acento */
+.form-section-title i {
+    color: var(--primary);
+}
