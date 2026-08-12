@@ -295,11 +295,13 @@
                     setFeedback('idle', 'Listo', 'Escanea el siguiente QR');
                 }, 2500);
             } else {
-                const isWarn = data.code === 'duplicado';
+                const isWarn = data.code === 'duplicado' || data.code === 'evento_futuro';
+                const statusText = data.code === 'evento_futuro' ? 'Aún no disponible'
+                    : (data.code === 'duplicado' ? 'Ya registrado' : 'Acceso denegado');
                 setFeedback(isWarn ? 'warn' : 'error',
-                    isWarn ? 'Ya registrado' : 'Acceso denegado',
+                    statusText,
                     data.msg || 'QR no reconocido');
-                if (isWarn && data.registro) addRecordRow(data.registro, 'QR');
+                if (data.code === 'duplicado' && data.registro) addRecordRow(data.registro, 'QR');
                 setTimeout(() => {
                     scanLocked = false;
                     lastCode   = '';

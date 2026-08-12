@@ -670,6 +670,24 @@ class EventController extends Controller {
             exit();
         }
 
+        // La asistencia solo puede registrarse a partir del dia del evento.
+        $fechaEvento = $inscripcion['fecha_evento'] ?? null;
+        if (!empty($fechaEvento)) {
+            // El '!' fija la hora a medianoche (createFromFormat usa la hora
+            // actual para los campos no especificados), asi el mismo dia del
+            // evento se permite y solo se bloquean fechas futuras.
+            $diaEvento = \DateTime::createFromFormat('!Y-m-d', substr($fechaEvento, 0, 10));
+            $hoy = new \DateTime('today');
+            if ($diaEvento && $diaEvento > $hoy) {
+                echo json_encode([
+                    'ok' => false,
+                    'code' => 'evento_futuro',
+                    'msg' => 'El evento aun no ha comenzado. La asistencia se habilita el ' . $diaEvento->format('d/m/Y') . '.'
+                ]);
+                exit();
+            }
+        }
+
         if (($inscripcion['estado_asistencia'] ?? 'Pendiente') === 'Asistio') {
             echo json_encode([
                 'ok' => false,

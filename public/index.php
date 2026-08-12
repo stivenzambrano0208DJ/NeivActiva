@@ -18,6 +18,11 @@ ini_set('default_charset', 'utf-8');
 define('ROOT_PATH', dirname(__DIR__));
 define('APP_PATH', ROOT_PATH . '/app');
 
+// Zona horaria de Colombia (UTC-5, sin horario de verano). Afecta a todas
+// las funciones date()/strtotime() de la app. La sesion de MySQL se fija
+// aparte en App\Core\Database para que NOW()/CURRENT_TIMESTAMP concuerden.
+date_default_timezone_set('America/Bogota');
+
 // Autoload (Composer PSR-4)
 if (file_exists(ROOT_PATH . '/vendor/autoload.php')) {
     require ROOT_PATH . '/vendor/autoload.php';
