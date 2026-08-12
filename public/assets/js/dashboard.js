@@ -504,7 +504,8 @@ function initEventEnrollment() {
 
         button.addEventListener('click', () => {
             if (button.disabled || button.classList.contains('is-loading')) return;
-            inscribirEvento(card, button);
+            // Siempre pedir los datos (cédula, nombre, teléfono) antes de inscribir.
+            openProfileModal(card, null);
         });
     });
 

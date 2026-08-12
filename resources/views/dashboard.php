@@ -351,6 +351,6 @@ $catIcon  = fn($c) => match($c) {
     </div>
 </div>
 
-<script src="/assets/js/dashboard.js"></script>
+<script src="/assets/js/dashboard.js?v=<?php echo @filemtime(ROOT_PATH . '/public/assets/js/dashboard.js'); ?>"></script>
 </body>
 </html>
