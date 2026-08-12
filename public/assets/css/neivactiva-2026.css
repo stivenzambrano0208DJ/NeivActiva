@@ -125,7 +125,7 @@
     --na-shadow: var(--shadow-xl);
     --na-shadow-sm: var(--shadow-md);
     --primary-color: var(--primary);
-    --primary-hover: var(--primary-hover);
+    --primary-hover: #E0531F;
     --secondary-color: var(--teal);
     --accent-color: var(--danger);
     --text-dark: var(--text-primary);
