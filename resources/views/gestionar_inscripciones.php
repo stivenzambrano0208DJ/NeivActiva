@@ -173,7 +173,8 @@
                             $cat       = htmlspecialchars($r['categoria_participacion'] ?? 'General');
                             $ea        = $r['estado_asistencia'] ?? 'Pendiente';
                             $ei        = $r['estado_inscripcion'] ?? 'Confirmada';
-                            $fechaInsc = !empty($r['created_at']) ? date('d/m/Y', strtotime($r['created_at'])) : '—';
+                            $fechaFuente = $r['fecha_inscripcion'] ?? $r['created_at'] ?? '';
+                            $fechaInsc = !empty($fechaFuente) ? date('d/m/Y', strtotime($fechaFuente)) : '—';
                             $ini       = $iniciales($r['nombre_completo'] ?? '');
                             $eaClass   = match($ea) {
                                 'Asistio' => 'gi-badge--green',
