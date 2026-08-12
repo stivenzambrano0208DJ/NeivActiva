@@ -74,23 +74,27 @@ $catIcon  = fn($c) => match($c) {
             </div>
             <div class="db-hero-stats">
                 <div class="db-hstat">
+                    <span class="db-hstat-ico"><i class="bi bi-calendar-event"></i></span>
                     <span class="db-hstat-val stat-big-number"><?php echo (int)($metricas['eventos_activos'] ?? count($eventos)); ?></span>
-                    <span class="db-hstat-lbl"><i class="bi bi-calendar-event"></i> Eventos activos</span>
+                    <span class="db-hstat-lbl">Eventos activos</span>
                 </div>
                 <div class="db-hstat-div"></div>
                 <div class="db-hstat">
+                    <span class="db-hstat-ico"><i class="bi bi-people"></i></span>
                     <span class="db-hstat-val stat-big-number"><?php echo (int)($metricas['total_inscritos'] ?? 0); ?></span>
-                    <span class="db-hstat-lbl"><i class="bi bi-people"></i> Inscritos</span>
+                    <span class="db-hstat-lbl">Inscritos</span>
                 </div>
                 <div class="db-hstat-div"></div>
                 <div class="db-hstat">
+                    <span class="db-hstat-ico"><i class="bi bi-check2-circle"></i></span>
                     <span class="db-hstat-val"><?php echo htmlspecialchars((string)($metricas['tasa_asistencia'] ?? '0%')); ?></span>
-                    <span class="db-hstat-lbl"><i class="bi bi-check2-circle"></i> Asistencia</span>
+                    <span class="db-hstat-lbl">Asistencia</span>
                 </div>
                 <div class="db-hstat-div"></div>
                 <div class="db-hstat">
+                    <span class="db-hstat-ico"><i class="bi bi-award"></i></span>
                     <span class="db-hstat-val stat-big-number"><?php echo (int)($metricas['certificados'] ?? 0); ?></span>
-                    <span class="db-hstat-lbl"><i class="bi bi-award"></i> Certificados</span>
+                    <span class="db-hstat-lbl">Certificados</span>
                 </div>
             </div>
         </div>
@@ -219,25 +223,21 @@ $catIcon  = fn($c) => match($c) {
                         <a href="/dashboard?view=mis_eventos_inscritos" class="db-quick-item">
                             <span class="db-qi-icon db-qi-orange"><i class="bi bi-calendar-check-fill"></i></span>
                             <span class="db-qi-label">Mis eventos</span>
-                            <i class="bi bi-chevron-right db-qi-arrow"></i>
                         </a>
                         <a href="/dashboard?view=mis_qr" class="db-quick-item">
                             <span class="db-qi-icon db-qi-blue"><i class="bi bi-qr-code-scan"></i></span>
                             <span class="db-qi-label">Mis QR</span>
-                            <i class="bi bi-chevron-right db-qi-arrow"></i>
                         </a>
                         <a href="/dashboard?view=mis_certificados" class="db-quick-item">
                             <span class="db-qi-icon db-qi-purple"><i class="bi bi-award-fill"></i></span>
                             <span class="db-qi-label">Certificados</span>
-                            <i class="bi bi-chevron-right db-qi-arrow"></i>
                         </a>
                         <a href="/calendario" class="db-quick-item">
                             <span class="db-qi-icon db-qi-teal"><i class="bi bi-calendar-month-fill"></i></span>
                             <span class="db-qi-label">Calendario</span>
-                            <i class="bi bi-chevron-right db-qi-arrow"></i>
                         </a>
                         <?php if (in_array($rol, ['admin','organizador'], true)): ?>
-                        <a href="/dashboard?view=asistencia" class="db-quick-item db-quick-item--primary">
+                        <a href="/dashboard?view=asistencia" class="db-quick-item db-quick-item--primary db-quick-item--wide">
                             <span class="db-qi-icon db-qi-white"><i class="bi bi-upc-scan"></i></span>
                             <span class="db-qi-label">Validar asistencia</span>
                             <i class="bi bi-chevron-right db-qi-arrow"></i>
