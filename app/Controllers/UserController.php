@@ -171,65 +171,6 @@ class UserController extends Controller {
         require ROOT_PATH . '/resources/views/participantes.php';
     }
 
-    public function inscripciones_admin() {
-        $this->requireRole(['organizador', 'admin']);
-
-        $csrfToken = $this->csrfToken();
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (!$this->validarCsrf()) {
-                header("Location: ?view=inscripciones_admin&error=csrf");
-                exit();
-            }
-
-            $participanteId = (int) ($_POST['participante_id'] ?? 0);
-            $eventoId = (int) ($_POST['evento_id'] ?? 0);
-            $participante = $this->participantes->find($participanteId);
-            $evento = $this->eventos->obtenerDisponiblePorId($eventoId);
-
-            if (!$participante || !$evento) {
-                header("Location: ?view=inscripciones_admin&error=datos");
-                exit();
-            }
-
-            if ($this->inscripciones->existeParticipanteEnEvento($participanteId, $eventoId)) {
-                header("Location: ?view=inscripciones_admin&error=duplicado");
-                exit();
-            }
-
-            $pdo = Database::getInstance()->getConnection();
-            try {
-                $pdo->beginTransaction();
-
-                if (!$this->eventos->actualizarCupo($eventoId)) {
-                    $pdo->rollBack();
-                    header("Location: ?view=inscripciones_admin&error=cupo");
-                    exit();
-                }
-
-                $tokenQr = bin2hex(random_bytes(32));
-                $inscripcionId = $this->inscripciones->registrarParticipanteEvento($participante, $eventoId, $tokenQr);
-                $this->prepararQrInscripcionAdmin($inscripcionId, $tokenQr, $evento['titulo']);
-
-                $pdo->commit();
-                header("Location: ?view=inscripciones_admin&msg=inscrito");
-                exit();
-            } catch (Throwable $e) {
-                if ($pdo->inTransaction()) {
-                    $pdo->rollBack();
-                }
-                $this->logError('Error creando inscripcion administrativa', ['error' => $e->getMessage()]);
-                header("Location: ?view=inscripciones_admin&error=bd");
-                exit();
-            }
-        }
-
-        $lista_participantes = $this->participantes->listar();
-        $lista_eventos = $this->eventos->obtenerEventosDisponibles();
-        $recientes = $this->inscripciones->obtenerRecientesAdmin(500);
-        require ROOT_PATH . '/resources/views/inscripciones_admin.php';
-    }
-
     protected function leerArchivoCargaMasiva($ruta, $extension) {
         $extension = strtolower(trim((string) $extension));
 

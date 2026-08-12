@@ -62,7 +62,6 @@ $navItem = function ($target, $icon, $label) use ($view) {
 
             <div class="nav-section-title">Participantes</div>
             <?php $navItem('participantes', 'bi-person-lines-fill', 'Participantes'); ?>
-            <?php $navItem('inscripciones_admin', 'bi-ticket-perforated', 'Inscripcion Directa'); ?>
             <?php if ($rol === 'admin'): ?>
                 <?php $navItem('carga_masiva', 'bi-file-earmark-arrow-up', 'Carga Masiva'); ?>
             <?php endif; ?>

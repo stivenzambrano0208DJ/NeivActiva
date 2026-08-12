@@ -168,27 +168,6 @@ class RegistrationModel extends BaseModel {
         return $this->db->query($sql, [(int) $eventoId])->fetchAll();
     }
 
-    public function obtenerRecientesAdmin($limite = 500) {
-        $limite = max(1, (int) $limite);
-        return $this->db->query(
-            "SELECT i.*,
-                    e.titulo AS evento_titulo,
-                    e.fecha_evento,
-                    e.hora_evento,
-                    e.estado_evento,
-                    p.nombre,
-                    p.documento,
-                    p.correo,
-                    p.ciudad,
-                    p.institucion
-             FROM {$this->table} i
-             LEFT JOIN eventos e ON i.evento_id = e.id
-             LEFT JOIN participantes p ON i.participante_id = p.id
-             ORDER BY i.fecha_inscripcion DESC
-             LIMIT $limite"
-        )->fetchAll();
-    }
-
     public function obtenerRecientes($limite = 10) {
         $limite = (int) $limite;
         return $this->db->query("SELECT i.*, e.titulo as evento_titulo, e.fecha_evento, e.hora_evento, e.estado_evento

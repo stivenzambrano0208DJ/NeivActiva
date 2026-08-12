@@ -86,7 +86,6 @@ if (isset($_GET['view'])) {
         'gestionar_inscripciones'=> '/admin/inscripciones',
         'asistencia'             => '/admin/asistencia',
         'participantes'          => '/admin/participantes',
-        'inscripciones_admin'    => '/admin/inscripciones-directas',
         'carga_masiva'           => '/admin/carga-masiva',
         'usuarios'               => '/admin/usuarios',
         'estadisticas'           => '/admin/estadisticas',
@@ -178,8 +177,6 @@ $router->get('/admin/asistencia',              ['App\Controllers\EventController
 $router->post('/admin/asistencia',             ['App\Controllers\EventController',  'asistencia']);
 $router->get('/admin/participantes',           ['App\Controllers\UserController',   'participantes']);
 $router->post('/admin/participantes',          ['App\Controllers\UserController',   'participantes']);
-$router->get('/admin/inscripciones-directas',  ['App\Controllers\UserController',   'inscripciones_admin']);
-$router->post('/admin/inscripciones-directas', ['App\Controllers\UserController',   'inscripciones_admin']);
 $router->get('/admin/carga-masiva',            ['App\Controllers\UserController',   'carga_masiva']);
 $router->post('/admin/carga-masiva',           ['App\Controllers\UserController',   'carga_masiva']);
 $router->get('/admin/usuarios',                ['App\Controllers\UserController',   'usuarios']);
