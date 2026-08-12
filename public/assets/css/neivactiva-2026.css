@@ -610,9 +610,13 @@ label,
 .input-wrapper input {
     border: 0 !important;
     box-shadow: none !important;
+    padding-left: 2.5rem !important;
 }
 
-.input-wrapper > i { color: var(--na-muted) !important; }
+.input-wrapper > i {
+    color: var(--na-muted) !important;
+    z-index: 2;
+}
 
 .table-container,
 .table-scroll,
