@@ -57,6 +57,13 @@ if (($_ENV['APP_ENV'] ?? 'development') !== 'production') {
     ini_set('display_errors', 0);
 }
 
+// Auto-provisionar/normalizar el esquema de base de datos (columnas e índices nuevos)
+try {
+    (new App\Services\SchemaService())->ensureOnce();
+} catch (Throwable $e) {
+    error_log('[SchemaService] No se pudo verificar el esquema: ' . $e->getMessage());
+}
+
 // ──────────────────────────────────────────────────────────────
 // MODO COMPATIBILIDAD: si viene ?view=X, resolver como ruta limpia sin perder POST.
 // ──────────────────────────────────────────────────────────────

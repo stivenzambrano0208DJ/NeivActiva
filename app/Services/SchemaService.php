@@ -2,11 +2,28 @@
 
 namespace App\Services;
 
+use App\Core\Database;
+use Throwable;
+
 class SchemaService {
+    // Subir esta version obliga a revalidar el esquema tras un despliegue.
+    private const VERSION = '2026-08-12';
+
     private $db;
 
     public function __construct() {
         $this->db = Database::getInstance();
+    }
+
+    // Evita repetir ~45 consultas a information_schema en cada request.
+    public function ensureOnce() {
+        $marcador = sys_get_temp_dir() . '/neivactiva_schema_' . self::VERSION . '.ok';
+        if (is_file($marcador)) {
+            return;
+        }
+
+        $this->ensure();
+        @touch($marcador);
     }
 
     public function ensure() {
@@ -48,6 +65,7 @@ class SchemaService {
 
         $this->agregarColumna('eventos', 'hora_evento', 'TIME NULL AFTER fecha_evento');
         $this->agregarColumna('eventos', 'organizador_id', 'INT NULL AFTER ruta_imagen');
+        $this->agregarColumna('eventos', 'formulario_campos', 'TEXT NULL AFTER organizador_id');
         $this->agregarColumna('eventos', 'creado_en', 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP');
         $this->agregarColumna('usuarios', 'documento_identidad', 'VARCHAR(50) NULL AFTER correo');
         $this->agregarColumna('usuarios', 'telefono', 'VARCHAR(20) NULL AFTER documento_identidad');
@@ -78,6 +96,7 @@ class SchemaService {
         $this->agregarColumna('inscripciones', 'asistencia_en', 'DATETIME NULL AFTER estado_asistencia');
         $this->agregarColumna('inscripciones', 'asistencia_usuario_id', 'INT NULL AFTER asistencia_en');
         $this->agregarColumna('inscripciones', 'fecha_inscripcion', 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP');
+        $this->agregarColumna('inscripciones', 'respuestas_campos', 'TEXT NULL');
 
         $this->agregarIndice('inscripciones', 'idx_inscripciones_token_qr', 'INDEX idx_inscripciones_token_qr (token_qr)');
         $this->agregarIndice('usuarios', 'uq_usuario_documento', 'UNIQUE KEY uq_usuario_documento (documento_identidad)');
@@ -93,8 +112,6 @@ class SchemaService {
         );
 
         $this->sincronizarColumnasCompatibilidad();
-        $this->eliminarColumnaSiExiste('participantes', 'nom' . 'bres');
-        $this->eliminarColumnaSiExiste('participantes', 'apel' . 'lidos');
     }
 
     private function sincronizarColumnasCompatibilidad() {
@@ -159,18 +176,6 @@ class SchemaService {
             $this->db->query("ALTER TABLE $tabla ADD COLUMN $columna $definicion");
         } catch (Throwable $e) {
             error_log('[SchemaService] No se pudo agregar columna ' . $tabla . '.' . $columna . ': ' . $e->getMessage());
-        }
-    }
-
-    private function eliminarColumnaSiExiste($tabla, $columna) {
-        if (!$this->existeTabla($tabla) || !$this->existeColumna($tabla, $columna)) {
-            return;
-        }
-
-        try {
-            $this->db->query("ALTER TABLE $tabla DROP COLUMN $columna");
-        } catch (Throwable $e) {
-            error_log('[SchemaService] No se pudo eliminar columna ' . $tabla . '.' . $columna . ': ' . $e->getMessage());
         }
     }
 
