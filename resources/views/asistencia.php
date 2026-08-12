@@ -155,8 +155,10 @@
                                     : '—';
                                 $ini     = $iniciales($r['nombre_completo'] ?? '');
                                 $badgeClass = $ea === 'Asistio' ? 'as-badge--green' : ($ea === 'Ausente' ? 'as-badge--red' : 'as-badge--amber');
+                                $metodo = ($ea === 'Asistio' && !empty($r['asistencia_en'])) ? 'QR' : 'Manual';
+                                $metodoIco = $metodo === 'QR' ? 'bi-qr-code' : 'bi-person-check';
                             ?>
-                            <tr class="as-row">
+                            <tr class="as-row" data-inscripcion-id="<?php echo (int)($r['id'] ?? 0); ?>">
                                 <td class="as-td-participant">
                                     <div class="as-avatar"><?php echo $ini; ?></div>
                                     <div class="as-pinfo">
@@ -173,7 +175,7 @@
                                 </td>
                                 <td>
                                     <span class="as-method-badge">
-                                        <i class="bi bi-person-check"></i> Manual
+                                        <i class="bi <?php echo $metodoIco; ?>"></i> <?php echo $metodo; ?>
                                     </span>
                                 </td>
                             </tr>
@@ -311,40 +313,58 @@
         });
     }
 
-    /* ── Add row to table ─────────────────────────── */
+    /* ── Add or update a row (upsert by inscription id) ── */
     function addRecordRow(record, method) {
         // Remove empty-state row if present
         const emptyRow = recordsBody.querySelector('.as-empty-row');
         if (emptyRow) emptyRow.remove();
 
+        const inscId = String(record.id || record.inscripcion_id || '');
         const nombre = esc(record.nombre || '—');
         const ini    = (nombre.trim().split(/\s+/).map(w => w[0] || '').join('').toUpperCase()).substring(0, 2) || 'NA';
-        const doc    = esc(record.doc || 'Sin documento');
+        const doc    = esc(record.documento || record.doc || 'Sin documento');
         const evento = esc(record.evento || '—');
-        const hora   = esc(record.hora || new Date().toLocaleTimeString('es-CO', { hour:'2-digit', minute:'2-digit' }));
+        const hora   = esc((record.hora && record.hora !== '--:--')
+            ? record.hora
+            : new Date().toLocaleTimeString('es-CO', { hour:'2-digit', minute:'2-digit' }));
         const estado = record.estado || 'Asistio';
-        const bClass = estado === 'Asistio' ? 'as-badge--green' : 'as-badge--amber';
-        const label  = estado === 'Asistio' ? 'Asistió' : estado;
+        const bClass = estado === 'Asistio' ? 'as-badge--green' : (estado === 'Ausente' ? 'as-badge--red' : 'as-badge--amber');
+        const label  = estado === 'Asistio' ? 'Asistió' : (estado === 'Ausente' ? 'Ausente' : 'Pendiente');
         const methIco= method === 'QR' ? 'bi-qr-code' : 'bi-person-check';
 
-        const tr = document.createElement('tr');
-        tr.className = 'as-row as-row-new';
-        tr.innerHTML = `
-            <td class="as-td-participant">
-                <div class="as-avatar">${ini}</div>
-                <div class="as-pinfo">
-                    <span class="as-pname">${nombre}</span>
-                    <span class="as-psub">${doc}</span>
-                </div>
-            </td>
-            <td class="as-td-event">${evento}</td>
-            <td class="as-td-time">${hora}</td>
-            <td><span class="as-badge ${bClass}">${label}</span></td>
-            <td><span class="as-method-badge"><i class="bi ${methIco}"></i> ${esc(method)}</span></td>
-        `;
+        // If a row for this inscription already exists, update it in place
+        // instead of adding a duplicate.
+        let tr = inscId ? recordsBody.querySelector('tr[data-inscripcion-id="' + inscId + '"]') : null;
 
-        recordsBody.prepend(tr);
-        setTimeout(() => tr.classList.remove('as-row-new'), 1200);
+        if (tr) {
+            const badge = tr.querySelector('.as-badge');
+            if (badge) { badge.className = 'as-badge ' + bClass; badge.textContent = label; }
+            const timeCell = tr.querySelector('.as-td-time');
+            if (timeCell) timeCell.textContent = hora;
+            const methBadge = tr.querySelector('.as-method-badge');
+            if (methBadge) methBadge.innerHTML = '<i class="bi ' + methIco + '"></i> ' + esc(method);
+            tr.classList.add('as-row-new');
+            setTimeout(() => tr.classList.remove('as-row-new'), 1200);
+        } else {
+            tr = document.createElement('tr');
+            tr.className = 'as-row as-row-new';
+            if (inscId) tr.dataset.inscripcionId = inscId;
+            tr.innerHTML = `
+                <td class="as-td-participant">
+                    <div class="as-avatar">${ini}</div>
+                    <div class="as-pinfo">
+                        <span class="as-pname">${nombre}</span>
+                        <span class="as-psub">${doc}</span>
+                    </div>
+                </td>
+                <td class="as-td-event">${evento}</td>
+                <td class="as-td-time">${hora}</td>
+                <td><span class="as-badge ${bClass}">${label}</span></td>
+                <td><span class="as-method-badge"><i class="bi ${methIco}"></i> ${esc(method)}</span></td>
+            `;
+            recordsBody.prepend(tr);
+            setTimeout(() => tr.classList.remove('as-row-new'), 1200);
+        }
 
         const total = recordsBody.querySelectorAll('tr:not(.as-empty-row)').length;
         if (recordsCount) recordsCount.textContent = total + ' registros';
