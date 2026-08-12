@@ -35,7 +35,8 @@
                     <h1>Agenda NeivActiva</h1>
                     <p class="text-muted">Encuentra actividades abiertas y revisa sus detalles antes de inscribirte.</p>
                 </div>
-                <input type="search" class="form-control" id="eventSearch" placeholder="Buscar eventos..." aria-label="Buscar eventos">
+                <input type="search" class="form-control" id="eventSearch" placeholder="Buscar eventos..." aria-label="Buscar eventos"
+                       value="<?php echo htmlspecialchars($_GET['q'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
             </header>
 
             <?php if (empty($eventos)): ?>
@@ -92,12 +93,19 @@
         const eventSearch = document.getElementById('eventSearch');
         const eventCards = Array.from(document.querySelectorAll('[data-event-card]'));
 
-        eventSearch?.addEventListener('input', () => {
+        const filtrarEventos = () => {
             const query = eventSearch.value.toLowerCase().trim();
             eventCards.forEach(card => {
                 card.hidden = query !== '' && !(card.dataset.search || '').includes(query);
             });
-        });
+        };
+
+        eventSearch?.addEventListener('input', filtrarEventos);
+
+        // Aplicar el filtro al cargar si viene ?q= desde el dashboard.
+        if (eventSearch && eventSearch.value.trim() !== '') {
+            filtrarEventos();
+        }
     </script>
 </body>
 </html>

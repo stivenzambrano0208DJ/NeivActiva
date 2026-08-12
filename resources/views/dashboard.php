@@ -104,6 +104,48 @@ $catIcon  = fn($c) => match($c) {
          MAIN CONTENT
     ══════════════════════════════════════════ -->
     <div class="db-content">
+
+        <!-- ── Benefits strip ─────────────────── -->
+        <div class="db-features">
+            <div class="db-feat">
+                <span class="db-feat-ico"><i class="bi bi-lightning-charge-fill"></i></span>
+                <div class="db-feat-txt"><strong>Inscripción rápida</strong><span>En segundos, sin filas</span></div>
+            </div>
+            <div class="db-feat">
+                <span class="db-feat-ico"><i class="bi bi-qr-code"></i></span>
+                <div class="db-feat-txt"><strong>Acceso con QR</strong><span>Tu entrada digital</span></div>
+            </div>
+            <div class="db-feat">
+                <span class="db-feat-ico"><i class="bi bi-award-fill"></i></span>
+                <div class="db-feat-txt"><strong>Certificados</strong><span>Descarga al instante</span></div>
+            </div>
+            <div class="db-feat">
+                <span class="db-feat-ico"><i class="bi bi-broadcast"></i></span>
+                <div class="db-feat-txt"><strong>Cupos en vivo</strong><span>Disponibilidad real</span></div>
+            </div>
+        </div>
+
+        <!-- ── Explore section ────────────────── -->
+        <section class="db-explore">
+            <div class="db-explore-inner">
+                <span class="db-kicker">Explorar</span>
+                <h2 class="db-explore-title">¿Qué quieres vivir en Neiva?</h2>
+                <p class="db-explore-sub">Descubre experiencias culturales, deportivas y educativas cerca de ti.</p>
+                <form class="db-explore-search" action="/eventos" method="get" role="search">
+                    <i class="bi bi-search"></i>
+                    <input type="text" name="q" placeholder="Busca por evento, lugar o categoría…" aria-label="Buscar eventos">
+                    <button type="submit"><i class="bi bi-compass"></i> Explorar</button>
+                </form>
+                <div class="db-explore-chips">
+                    <a href="/eventos" class="db-chip db-chip--all"><i class="bi bi-grid-fill"></i> Todos</a>
+                    <a href="/eventos?q=Cultural" class="db-chip"><i class="bi bi-palette-fill"></i> Cultural</a>
+                    <a href="/eventos?q=Deportivo" class="db-chip"><i class="bi bi-trophy-fill"></i> Deportivo</a>
+                    <a href="/eventos?q=Educativo" class="db-chip"><i class="bi bi-mortarboard-fill"></i> Educativo</a>
+                    <a href="/calendario" class="db-chip"><i class="bi bi-calendar-month-fill"></i> Calendario</a>
+                </div>
+            </div>
+        </section>
+
         <div class="db-grid">
 
             <!-- ── Events column ────────────────── -->
