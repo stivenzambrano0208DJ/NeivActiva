@@ -195,7 +195,7 @@ $catIcon  = fn($c) => match($c) {
                                  data-inscritos="<?php echo $inscritos; ?>"
                                  data-cupos="<?php echo $cupos; ?>">
 
-                            <div class="db-ev-img db-ev-ph-<?php echo $catColor; ?>">
+                            <a class="db-ev-img db-ev-ph-<?php echo $catColor; ?>" href="/dashboard?view=detalle_evento&id=<?php echo $evId; ?>" aria-label="Ver detalles de <?php echo $titulo; ?>">
                                 <div class="db-ev-img-ph"><i class="bi <?php echo $catIcon($cat); ?>"></i></div>
                                 <?php if ($imgReal): ?>
                                     <img src="<?php echo $imgReal; ?>" alt="<?php echo $titulo; ?>" loading="lazy" onerror="this.remove()">
@@ -208,11 +208,15 @@ $catIcon  = fn($c) => match($c) {
                                     <span class="db-ev-badge db-ev-badge--ok"><i class="bi bi-check2-circle"></i> Inscrito</span>
                                 <?php elseif ($lleno): ?>
                                     <span class="db-ev-badge db-ev-badge--err"><i class="bi bi-x-circle"></i> Lleno</span>
+                                <?php else: ?>
+                                    <span class="db-ev-pill"><i class="bi bi-people-fill"></i> <span class="card-cupos"><?php echo $cupos; ?></span> cupos</span>
                                 <?php endif; ?>
-                            </div>
+                            </a>
 
                             <div class="db-ev-body">
-                                <h3 class="db-ev-title"><?php echo $titulo; ?></h3>
+                                <a class="db-ev-title-link" href="/dashboard?view=detalle_evento&id=<?php echo $evId; ?>">
+                                    <h3 class="db-ev-title"><?php echo $titulo; ?></h3>
+                                </a>
                                 <div class="db-ev-meta">
                                     <span><i class="bi bi-geo-alt-fill"></i> <?php echo $ubicacion; ?></span>
                                     <span><i class="bi bi-calendar3"></i> <?php echo htmlspecialchars(trim($fmtFecha($fecha).' '.$fmtHora($hora))); ?></span>
@@ -223,16 +227,16 @@ $catIcon  = fn($c) => match($c) {
                                     </div>
                                     <span class="db-ev-cap-txt">
                                         <span class="card-inscritos"><?php echo $inscritos; ?></span> /
-                                        <?php echo $cupoMax; ?> ·
-                                        <span class="card-cupos"><?php echo $cupos; ?></span> cupos libres
+                                        <?php echo $cupoMax; ?> inscritos
                                     </span>
                                 </div>
                             </div>
 
                             <div class="db-ev-footer">
-                                <a class="db-ev-btn-detail" href="/dashboard?view=detalle_evento&id=<?php echo $evId; ?>">
-                                    Detalles
-                                </a>
+                                <div class="db-ev-price">
+                                    <span class="db-ev-price-lbl">Entrada</span>
+                                    <strong>Gratis</strong>
+                                </div>
                                 <button type="button"
                                         class="db-ev-btn-enroll<?php echo $inscrito ? ' is-registered' : ($lleno ? ' is-full' : ''); ?>"
                                         data-action="inscribir-evento"
