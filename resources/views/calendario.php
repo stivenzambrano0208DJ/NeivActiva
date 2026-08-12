@@ -141,21 +141,6 @@
                     <?php endif; ?>
                 </div>
             </div>
-            
-            <!-- Acciones Rápidas -->
-            <div class="sidebar-section">
-                <h3 class="sidebar-title">
-                    <i class="bi bi-lightning"></i> Acciones
-                </h3>
-                <div class="quick-actions">
-                    <button class="action-btn" onclick="exportCalendar()">
-                        <i class="bi bi-download"></i> Exportar
-                    </button>
-                    <button class="action-btn" onclick="shareCalendar()">
-                        <i class="bi bi-share"></i> Compartir
-                    </button>
-                </div>
-            </div>
         </aside>
     </div>
 </main>
