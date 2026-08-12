@@ -57,7 +57,7 @@ $navItem = function ($target, $icon, $label) use ($view) {
         <?php if (in_array($rol, ['organizador', 'admin'], true)): ?>
             <div class="nav-section-title">Gestion de Eventos</div>
             <?php $navItem('gestionar_eventos', 'bi-calendar-event', 'Publicar Eventos'); ?>
-            <?php $navItem('gestionar_inscripciones', 'bi-people', 'Inscripciones'); ?>
+            <?php $navItem('gestionar_inscripciones', 'bi-people', 'Gestionar Inscripciones'); ?>
             <?php $navItem('asistencia', 'bi-qr-code-scan', 'Asistencia'); ?>
 
             <div class="nav-section-title">Participantes</div>
