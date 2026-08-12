@@ -18,6 +18,12 @@ $msgs = [
     'limite' => 'Demasiados intentos. Inténtalo en unos minutos.',
 ];
 $err = $_GET['error'] ?? '';
+
+$successMsgs = [
+    'cuenta_creada'        => '¡Ya estás registrado! Te enviamos un correo de bienvenida. Inicia sesión para continuar.',
+    'password_actualizada' => 'Tu contraseña se actualizó correctamente. Ya puedes iniciar sesión.',
+];
+$okMsg = $_GET['msg'] ?? '';
 ?>
 
 <div class="lg-wrap">
@@ -57,6 +63,14 @@ $err = $_GET['error'] ?? '';
                 <p>Ingresa con tu correo o documento. NeivActiva detectará tu rol automáticamente.</p>
             </div>
 
+            <!-- Success alert -->
+            <?php if (isset($successMsgs[$okMsg])): ?>
+            <div class="lg-alert lg-alert--ok">
+                <i class="bi bi-check-circle-fill"></i>
+                <span><?php echo htmlspecialchars($successMsgs[$okMsg]); ?></span>
+            </div>
+            <?php endif; ?>
+
             <!-- Error alert -->
             <?php if (isset($msgs[$err])): ?>
             <div class="lg-alert">
@@ -84,7 +98,7 @@ $err = $_GET['error'] ?? '';
                 <div class="lg-field">
                     <div class="lg-label-row">
                         <label class="lg-label" for="password">Contraseña</label>
-                        <a href="#" class="lg-forgot">¿Olvidaste tu contraseña?</a>
+                        <a href="/forgot-password" class="lg-forgot">¿Olvidaste tu contraseña?</a>
                     </div>
                     <div class="lg-input-wrap lg-pwd-wrap">
                         <i class="bi bi-lock lg-ico"></i>

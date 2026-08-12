@@ -96,6 +96,12 @@ class AuthController extends Controller {
 
             $usuarioId = $this->usuarios->registrar($datos);
             if ($usuarioId) {
+                // Notificación de bienvenida por correo (no debe bloquear el registro).
+                try {
+                    (new MailService())->enviarBienvenidaRegistro($datos);
+                } catch (Throwable $e) {
+                    error_log('Registro: fallo al enviar correo de bienvenida: ' . $e->getMessage());
+                }
                 $this->redirect('/login?msg=cuenta_creada');
             } else {
                 $this->redirect('/register?error=1');
@@ -107,5 +113,77 @@ class AuthController extends Controller {
     public function logout() {
         \App\Core\Auth::logout();
         $this->redirect('/');
+    }
+
+    /**
+     * Solicitud de recuperación: el usuario ingresa su correo y se le
+     * envía un enlace con token. Respuesta genérica (anti-enumeración).
+     */
+    public function forgotPassword() {
+        $csrfToken = $this->csrfToken();
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!$this->validarCsrf()) {
+                $this->redirect('/forgot-password?error=csrf');
+            }
+
+            $correo = strtolower($this->limpiarTexto($_POST['correo'] ?? ''));
+            if (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
+                $this->redirect('/forgot-password?error=correo');
+            }
+
+            try {
+                $resultado = $this->usuarios->generarTokenReset($correo);
+                if ($resultado) {
+                    $appUrl = rtrim($_ENV['APP_URL'] ?? (defined('APP_URL') ? APP_URL : 'http://localhost/NeivActiva'), '/');
+                    $resetUrl = $appUrl . '/reset-password?token=' . $resultado['token'];
+                    (new MailService())->enviarEnlaceRecuperacion(
+                        $correo,
+                        $resultado['usuario']['nombre'] ?? '',
+                        $resetUrl
+                    );
+                }
+            } catch (Throwable $e) {
+                error_log('ForgotPassword: ' . $e->getMessage());
+            }
+
+            // Mismo mensaje exista o no el correo.
+            $this->redirect('/forgot-password?msg=enviado');
+        }
+
+        require ROOT_PATH . '/resources/views/forgot_password.php';
+    }
+
+    /**
+     * Restablecimiento: valida el token y permite definir la nueva contraseña.
+     */
+    public function resetPassword() {
+        $csrfToken = $this->csrfToken();
+        $token = $this->limpiarTexto($_GET['token'] ?? ($_POST['token'] ?? ''));
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!$this->validarCsrf()) {
+                $this->redirect('/reset-password?token=' . urlencode($token) . '&error=csrf');
+            }
+
+            $password = (string) ($_POST['password'] ?? '');
+            $confirmacion = (string) ($_POST['password_confirmacion'] ?? '');
+
+            if (strlen($password) < 8) {
+                $this->redirect('/reset-password?token=' . urlencode($token) . '&error=password');
+            }
+            if (!hash_equals($password, $confirmacion)) {
+                $this->redirect('/reset-password?token=' . urlencode($token) . '&error=confirmacion');
+            }
+
+            if ($this->usuarios->restablecerPasswordConToken($token, $password)) {
+                $this->redirect('/login?msg=password_actualizada');
+            }
+            $this->redirect('/reset-password?token=' . urlencode($token) . '&error=token');
+        }
+
+        // GET: ¿el token sigue siendo válido?
+        $tokenValido = $token !== '' && $this->usuarios->buscarTokenResetValido($token) !== null;
+        require ROOT_PATH . '/resources/views/reset_password.php';
     }
 }

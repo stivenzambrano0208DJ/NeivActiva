@@ -257,6 +257,13 @@
     margin-bottom: 1rem;
 }
 
+/* Success variant */
+.lg-alert--ok {
+    background: var(--success-light);
+    border-color: rgba(16,185,129,.25);
+    color: var(--success-dark);
+}
+
 /* Form */
 .lg-form {
     display: flex;

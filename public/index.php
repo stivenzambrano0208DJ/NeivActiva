@@ -67,6 +67,8 @@ if (isset($_GET['view'])) {
         'registro'               => '/register',
         'register'               => '/register',
         'logout'                 => '/logout',
+        'forgot_password'        => '/forgot-password',
+        'reset_password'         => '/reset-password',
         'dashboard'              => '/dashboard',
         'calendario'             => '/calendario',
         'inscripcion'            => '/inscripcion',
@@ -123,6 +125,10 @@ $router->post('/login',   ['App\Controllers\AuthController', 'login']);
 $router->get('/register', ['App\Controllers\AuthController', 'registro']);
 $router->post('/register',['App\Controllers\AuthController', 'registro']);
 $router->get('/logout',   ['App\Controllers\AuthController', 'logout']);
+$router->get('/forgot-password',  ['App\Controllers\AuthController', 'forgotPassword']);
+$router->post('/forgot-password', ['App\Controllers\AuthController', 'forgotPassword']);
+$router->get('/reset-password',   ['App\Controllers\AuthController', 'resetPassword']);
+$router->post('/reset-password',  ['App\Controllers\AuthController', 'resetPassword']);
 
 // --- Páginas públicas ---
 $router->get('/',          ['App\Controllers\DashboardController', 'landing']);

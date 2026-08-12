@@ -261,4 +261,99 @@ class UsuarioModel extends BaseModel {
             'password' => password_hash((string) $password, PASSWORD_DEFAULT),
         ]);
     }
+
+    // ──────────────────────────────────────────────────────────
+    //  RECUPERACIÓN DE CONTRASEÑA
+    // ──────────────────────────────────────────────────────────
+
+    /** Crea la tabla de tokens si aún no existe (auto-provisión). */
+    private function asegurarTablaResets() {
+        $this->db->query(
+            "CREATE TABLE IF NOT EXISTS password_resets (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                correo VARCHAR(255) NOT NULL,
+                token_hash CHAR(64) NOT NULL,
+                expira_en DATETIME NOT NULL,
+                usado TINYINT(1) NOT NULL DEFAULT 0,
+                creado_en DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                INDEX idx_prst_token (token_hash),
+                INDEX idx_prst_correo (correo)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4"
+        );
+    }
+
+    /**
+     * Genera un token de recuperación para un correo existente.
+     * Devuelve ['token' => rawToken, 'usuario' => fila] o null si el correo
+     * no está registrado (el controlador muestra un mensaje genérico igual).
+     */
+    public function generarTokenReset($correo) {
+        $correo = strtolower(trim((string) $correo));
+        $usuario = $this->buscarPorCorreo($correo);
+        if (!$usuario) {
+            return null;
+        }
+
+        $this->asegurarTablaResets();
+        // Invalida cualquier token previo pendiente de ese correo.
+        $this->db->query(
+            "UPDATE password_resets SET usado = 1 WHERE correo = ? AND usado = 0",
+            [$correo]
+        );
+
+        $tokenRaw  = bin2hex(random_bytes(32));
+        $tokenHash = hash('sha256', $tokenRaw);
+
+        // La expiración se calcula con el reloj de MySQL (mismo que valida el
+        // lookup con NOW()), evitando desfases de zona horaria PHP↔MySQL.
+        $this->db->query(
+            "INSERT INTO password_resets (correo, token_hash, expira_en, usado, creado_en)
+             VALUES (?, ?, DATE_ADD(NOW(), INTERVAL 1 HOUR), 0, NOW())",
+            [$correo, $tokenHash]
+        );
+
+        return ['token' => $tokenRaw, 'usuario' => $usuario];
+    }
+
+    /** Devuelve la fila del token si es válido (no usado y no expirado), o null. */
+    public function buscarTokenResetValido($tokenRaw) {
+        $tokenRaw = trim((string) $tokenRaw);
+        if ($tokenRaw === '' || !ctype_xdigit($tokenRaw)) {
+            return null;
+        }
+
+        $this->asegurarTablaResets();
+        $tokenHash = hash('sha256', $tokenRaw);
+        $row = $this->db->query(
+            "SELECT * FROM password_resets
+             WHERE token_hash = ? AND usado = 0 AND expira_en > NOW()
+             LIMIT 1",
+            [$tokenHash]
+        )->fetch();
+
+        return $row ?: null;
+    }
+
+    /** Restablece la contraseña usando un token válido y lo marca como usado. */
+    public function restablecerPasswordConToken($tokenRaw, $password) {
+        $row = $this->buscarTokenResetValido($tokenRaw);
+        if (!$row) {
+            return false;
+        }
+
+        $usuario = $this->buscarPorCorreo($row['correo']);
+        if (!$usuario) {
+            return false;
+        }
+
+        $this->update((int) $usuario['id'], [
+            'password' => password_hash((string) $password, PASSWORD_DEFAULT),
+        ]);
+        $this->db->query(
+            "UPDATE password_resets SET usado = 1 WHERE id = ?",
+            [(int) $row['id']]
+        );
+
+        return true;
+    }
 }
