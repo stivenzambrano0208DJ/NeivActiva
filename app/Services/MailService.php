@@ -245,42 +245,92 @@ class MailService {
 
     public function enviarCorreoQr($inscripcion) {
         try {
-            if (trim((string) ($inscripcion['correo_electronico'] ?? '')) === '') {
+            $correo = trim((string) ($inscripcion['correo_electronico'] ?? ''));
+            if ($correo === '' || !filter_var($correo, FILTER_VALIDATE_EMAIL)) {
                 return false;
             }
 
-            if (empty($inscripcion['ruta_qr'])) {
-                return false;
-            }
+            $appName = $_ENV['APP_NAME'] ?? (defined('APP_NAME') ? APP_NAME : 'NeivActiva');
+            $nombre  = trim((string) ($inscripcion['nombre_completo'] ?? '')) ?: 'participante';
+            $titulo  = (string) ($inscripcion['evento_titulo'] ?? 'el evento');
+            $ubic    = trim((string) ($inscripcion['ubicacion'] ?? ''));
 
-            $rutaFisica = ROOT_PATH . $inscripcion['ruta_qr'];
-            if (!file_exists($rutaFisica)) {
-                return false;
-            }
+            $fechaEvento = !empty($inscripcion['fecha_evento'])
+                ? date('d/m/Y', strtotime($inscripcion['fecha_evento'])) : 'Por confirmar';
+            $horaEvento = !empty($inscripcion['hora_evento'])
+                ? date('g:i A', strtotime($inscripcion['hora_evento'])) : 'Por confirmar';
+
+            $asunto = "¡Te has inscrito correctamente! · {$titulo}";
+
+            $texto  = "Hola {$nombre},\n\n";
+            $texto .= "¡Te has inscrito correctamente al evento \"{$titulo}\"!\n\n";
+            $texto .= "Fecha: {$fechaEvento}\n";
+            $texto .= "Hora: {$horaEvento}\n";
+            if ($ubic !== '') { $texto .= "Lugar: {$ubic}\n"; }
+            $texto .= "\nAdjuntamos tu código QR. Preséntalo en la entrada del evento para validar tu inscripción.\n\n{$appName}\n";
+
+            $html = $this->plantillaInscripcionHtml(
+                $appName,
+                htmlspecialchars($nombre, ENT_QUOTES, 'UTF-8'),
+                htmlspecialchars($titulo, ENT_QUOTES, 'UTF-8'),
+                htmlspecialchars($fechaEvento, ENT_QUOTES, 'UTF-8'),
+                htmlspecialchars($horaEvento, ENT_QUOTES, 'UTF-8'),
+                htmlspecialchars($ubic, ENT_QUOTES, 'UTF-8')
+            );
+
+            // El QR es un adjunto opcional: si por algún motivo no existe,
+            // el correo de confirmación se envía igualmente.
+            $rutaFisica = !empty($inscripcion['ruta_qr']) ? ROOT_PATH . $inscripcion['ruta_qr'] : '';
+            $tieneQr = $rutaFisica !== '' && file_exists($rutaFisica);
 
             $mail = $this->configureMailer();
-            $asunto = 'Confirmacion de inscripcion - NeivActiva';
-            
-            $fechaEvento = date('d/m/Y', strtotime($inscripcion['fecha_evento']));
-            $mensaje = "Hola {$inscripcion['nombre_completo']},\n\n";
-            $mensaje .= "Tu inscripcion al evento {$inscripcion['evento_titulo']} del {$fechaEvento} fue confirmada.\n";
-            $mensaje .= "Adjuntamos tu codigo QR. Presentalo en la entrada del evento para validar tu inscripcion.\n\n";
-            $mensaje .= "NeivActiva\n";
 
             if ($this->simularEnvio) {
-                return $this->guardarCorreoSimulado($inscripcion['correo_electronico'], $asunto, $mensaje . "\n\n[Adjunto simulado: QR de inscripcion]");
+                return $this->guardarCorreoSimulado($correo, $asunto, $texto . ($tieneQr ? "\n\n[Adjunto: QR de inscripción]" : ""));
             }
 
-            $mail->addAddress($inscripcion['correo_electronico'], $inscripcion['nombre_completo']);
+            $mail->addAddress($correo, $nombre);
             $mail->Subject = $asunto;
-            $mail->Body = $mensaje;
-            $mail->addAttachment($rutaFisica, 'qr_neivactiva_' . (int) $inscripcion['id'] . '.png');
-            
+            $mail->isHTML(true);
+            $mail->Body    = $html;
+            $mail->AltBody = $texto;
+            if ($tieneQr) {
+                $mail->addAttachment($rutaFisica, 'qr_neivactiva_' . (int) ($inscripcion['id'] ?? 0) . '.png');
+            }
+
             return $mail->send();
         } catch (Throwable $e) {
             error_log('Error en MailService (QR): ' . $e->getMessage());
             return false;
         }
+    }
+
+    private function plantillaInscripcionHtml($appName, $nombre, $titulo, $fecha, $hora, $ubicacion) {
+        $appNameHtml = htmlspecialchars($appName, ENT_QUOTES, 'UTF-8');
+        $fila = function ($icono, $label, $valor) {
+            if (trim((string) $valor) === '') { return ''; }
+            return '<tr><td style="padding:10px 0;border-bottom:1px solid #F6F3EB;font-size:14px;color:#8F8177;width:90px;">' . $icono . ' ' . $label . '</td>'
+                 . '<td style="padding:10px 0;border-bottom:1px solid #F6F3EB;font-size:15px;color:#2C2520;font-weight:700;">' . $valor . '</td></tr>';
+        };
+        return '<!DOCTYPE html><html lang="es"><body style="margin:0;padding:0;background:#FDFCF9;font-family:Segoe UI,Arial,sans-serif;">'
+            . '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FDFCF9;padding:32px 16px;"><tr><td align="center">'
+            . '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background:#ffffff;border:1px solid #EAE3D5;border-radius:20px;overflow:hidden;">'
+            . '<tr><td style="background:linear-gradient(135deg,#FF6B35,#C93F10);padding:32px;text-align:center;">'
+            . '<div style="font-size:22px;font-weight:800;color:#ffffff;letter-spacing:-0.5px;">☀ ' . $appNameHtml . '</div>'
+            . '<div style="margin-top:10px;font-size:24px;font-weight:800;color:#ffffff;">¡Inscripción confirmada! ✓</div>'
+            . '</td></tr>'
+            . '<tr><td style="padding:32px;">'
+            . '<p style="margin:0 0 16px;font-size:16px;color:#2C2520;">Hola <strong>' . $nombre . '</strong>,</p>'
+            . '<p style="margin:0 0 20px;font-size:15px;line-height:1.7;color:#5E534C;">Te has inscrito correctamente al evento <strong>' . $titulo . '</strong>. Aquí están los detalles:</p>'
+            . '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 20px;">'
+            . $fila('📅', 'Fecha', $fecha)
+            . $fila('🕒', 'Hora', $hora)
+            . $fila('📍', 'Lugar', $ubicacion)
+            . '</table>'
+            . '<p style="margin:0;font-size:14px;line-height:1.7;color:#5E534C;">Adjuntamos tu <strong>código QR</strong>. Preséntalo en la entrada del evento para validar tu inscripción.</p>'
+            . '</td></tr>'
+            . '<tr><td style="padding:20px 32px;border-top:1px solid #F6F3EB;text-align:center;font-size:12px;color:#8F8177;">¡Nos vemos en el evento!<br>' . $appNameHtml . '</td></tr>'
+            . '</table></td></tr></table></body></html>';
     }
 
     public function enviarCorreoCertificado($certificado, $pdf) {

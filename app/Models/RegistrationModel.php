@@ -148,7 +148,7 @@ class RegistrationModel extends BaseModel {
     }
 
     public function obtenerPorId($id) {
-        $sql = "SELECT i.*, e.titulo as evento_titulo, e.fecha_evento, e.estado_evento, e.ubicacion
+        $sql = "SELECT i.*, e.titulo as evento_titulo, e.fecha_evento, e.hora_evento, e.estado_evento, e.ubicacion
                 FROM inscripciones i
                 JOIN eventos e ON i.evento_id = e.id
                 WHERE i.id = ?";
