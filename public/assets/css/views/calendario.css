@@ -472,12 +472,12 @@
     background: var(--bg-secondary); cursor: pointer;
     transition: all var(--transition-fast); border: 1px solid transparent;
 }
-.category-item:hover { background: var(--primary-light); border-color: rgba(255,107,53,.2); }
+.category-item:hover { background: var(--primary-light); border-color: rgba(255,122,0,.2); }
 .category-name { font-size: 0.85rem; font-weight: 600; color: var(--text-primary); }
 .category-count {
     font-size: 0.72rem; font-weight: 700; color: var(--primary);
     background: var(--primary-light); padding: 0.15rem 0.55rem;
-    border-radius: var(--radius-full); border: 1px solid rgba(255,107,53,.15);
+    border-radius: var(--radius-full); border: 1px solid rgba(255,122,0,.15);
 }
 
 /* Quick actions */
@@ -493,7 +493,7 @@
     font-family: var(--font-family); width: 100%; text-align: left;
 }
 .action-btn i { color: var(--primary); font-size: 0.95rem; }
-.action-btn:hover { background: var(--primary-light); border-color: rgba(255,107,53,.25); color: var(--primary); }
+.action-btn:hover { background: var(--primary-light); border-color: rgba(255,122,0,.25); color: var(--primary); }
 
 /* ── Event Modal ────────────────────────────────── */
 .event-modal-overlay {
@@ -535,7 +535,7 @@
     background: var(--primary-light); color: var(--primary-dark);
     border-radius: var(--radius-full); font-size: 0.7rem; font-weight: 700;
     text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.65rem;
-    border: 1px solid rgba(255,107,53,.18);
+    border: 1px solid rgba(255,122,0,.18);
 }
 .modal-title { font-size: 1.35rem; font-weight: 800; color: var(--text-primary); margin: 0; line-height: 1.25; letter-spacing: -0.03em; }
 .modal-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1.25rem; padding: 1rem; background: var(--bg-secondary); border-radius: var(--radius-lg); border: 1px solid var(--border-subtle); }

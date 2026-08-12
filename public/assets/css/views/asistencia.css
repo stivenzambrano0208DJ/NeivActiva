@@ -37,7 +37,7 @@
     justify-content: center;
     font-size: 1.3rem;
     flex-shrink: 0;
-    box-shadow: 0 4px 12px rgba(255,107,53,0.28);
+    box-shadow: 0 4px 12px rgba(255,122,0,0.28);
 }
 
 .as-page-title {
@@ -95,14 +95,14 @@
     font-weight: 700;
     cursor: pointer;
     font-family: var(--font-family);
-    box-shadow: 0 4px 12px rgba(255,107,53,0.28);
+    box-shadow: 0 4px 12px rgba(255,122,0,0.28);
     transition: transform var(--transition-fast), box-shadow var(--transition-fast);
     white-space: nowrap;
 }
 
 .as-btn-camera:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(255,107,53,0.38);
+    box-shadow: 0 6px 18px rgba(255,122,0,0.38);
 }
 
 /* ── Main grid ───────────────────────────────────── */
@@ -372,7 +372,7 @@
 }
 
 @keyframes as-row-in {
-    from { background: rgba(255,107,53,0.12); transform: translateY(-6px); }
+    from { background: rgba(255,122,0,0.12); transform: translateY(-6px); }
     to   { background: transparent;           transform: translateY(0); }
 }
 

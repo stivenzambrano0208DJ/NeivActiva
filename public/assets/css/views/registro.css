@@ -59,7 +59,7 @@
     position: absolute;
     inset: 0;
     background:
-        radial-gradient(ellipse 60% 45% at 15% 88%, rgba(255,107,53,.32) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 45% at 15% 88%, rgba(255,122,0,.32) 0%, transparent 60%),
         radial-gradient(ellipse 42% 34% at 82% 20%, rgba(255,179,71,.20) 0%, transparent 62%);
     z-index: 2;
     pointer-events: none;
@@ -89,8 +89,8 @@
     display: inline-flex;
     align-items: center;
     gap: .4rem;
-    background: rgba(255,107,53,.15);
-    border: 1px solid rgba(255,107,53,.38);
+    background: rgba(255,122,0,.15);
+    border: 1px solid rgba(255,122,0,.38);
     backdrop-filter: blur(8px);
     color: #FFB38A;
     padding: .3rem .9rem;
@@ -114,7 +114,7 @@
 
 .rg-hero-content h1 span {
     color: var(--primary);
-    background: linear-gradient(100deg, #FF6B35 0%, #FFB347 45%, #FF6B35 100%);
+    background: linear-gradient(100deg, #FF7A00 0%, #FF9A3D 45%, #FF7A00 100%);
     background-size: 220% 100%;
     -webkit-background-clip: text;
     background-clip: text;
@@ -195,11 +195,11 @@
 .rg-brand-icon {
     width: 36px; height: 36px;
     display: flex; align-items: center; justify-content: center;
-    background: linear-gradient(135deg, var(--primary) 0%, #FFB347 100%);
+    background: linear-gradient(135deg, var(--primary) 0%, #FF9A3D 100%);
     color: #fff;
     border-radius: var(--radius-lg);
     font-size: 1.1rem;
-    box-shadow: 0 5px 14px rgba(255,107,53,.28);
+    box-shadow: 0 5px 14px rgba(255,122,0,.28);
     flex-shrink: 0;
 }
 
@@ -380,7 +380,7 @@
     cursor: pointer;
     font-family: var(--font-family);
     letter-spacing: -.01em;
-    box-shadow: 0 4px 14px rgba(255,107,53,.4), 0 1px 0 rgba(255,255,255,.15) inset;
+    box-shadow: 0 4px 14px rgba(255,122,0,.4), 0 1px 0 rgba(255,255,255,.15) inset;
     transition: all var(--transition-fast);
     position: relative;
     overflow: hidden;
@@ -400,7 +400,7 @@
 
 .rg-submit:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 22px rgba(255,107,53,.5), 0 1px 0 rgba(255,255,255,.15) inset;
+    box-shadow: 0 8px 22px rgba(255,122,0,.5), 0 1px 0 rgba(255,255,255,.15) inset;
 }
 
 .rg-submit:active { transform: translateY(0); }

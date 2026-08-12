@@ -91,7 +91,7 @@
     z-index: 0;
     pointer-events: none;
     background:
-        radial-gradient(38% 42% at 18% 28%, rgba(255,107,53,0.20) 0%, transparent 62%),
+        radial-gradient(38% 42% at 18% 28%, rgba(255,122,0,0.20) 0%, transparent 62%),
         radial-gradient(34% 40% at 82% 22%, rgba(217,119,6,0.16) 0%, transparent 60%),
         radial-gradient(46% 50% at 68% 88%, rgba(255,179,71,0.16) 0%, transparent 64%);
     filter: blur(8px);
@@ -137,7 +137,7 @@
     padding: 0.35rem 0.9rem;
     border-radius: var(--radius-full);
     width: fit-content;
-    border: 1px solid rgba(255,107,53,0.18);
+    border: 1px solid rgba(255,122,0,0.18);
     letter-spacing: 0.3px;
 }
 .hero-text h1 {
@@ -187,7 +187,7 @@
     border-radius: var(--radius-full);
     text-decoration: none;
     transition: transform var(--transition-fast), box-shadow var(--transition-fast);
-    box-shadow: 0 4px 16px rgba(255,107,53,0.28), 0 1px 0 rgba(255,255,255,0.15) inset;
+    box-shadow: 0 4px 16px rgba(255,122,0,0.28), 0 1px 0 rgba(255,255,255,0.15) inset;
     position: relative;
     overflow: hidden;
 }
@@ -204,7 +204,7 @@
 .hero-btn-primary:hover::before { left: 135%; }
 .hero-btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 26px rgba(255,107,53,0.4), 0 1px 0 rgba(255,255,255,0.15) inset;
+    box-shadow: 0 10px 26px rgba(255,122,0,0.4), 0 1px 0 rgba(255,255,255,0.15) inset;
     color: #fff;
     text-decoration: none;
 }
@@ -239,7 +239,7 @@
     content: '';
     position: absolute;
     width: 420px; height: 420px;
-    background: radial-gradient(circle, rgba(255,107,53,0.12) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(255,122,0,0.12) 0%, transparent 70%);
     border-radius: 50%;
     z-index: 0;
 }
@@ -335,8 +335,8 @@
 }
 .category-icon-item:hover .icon-circle {
     background: var(--primary-light);
-    box-shadow: 0 4px 14px rgba(255,107,53,0.2);
-    border-color: rgba(255,107,53,0.3);
+    box-shadow: 0 4px 14px rgba(255,122,0,0.2);
+    border-color: rgba(255,122,0,0.3);
 }
 /* ── Shared section styles ───────────────────────── */
 .landing-section {
@@ -361,7 +361,7 @@
     background: var(--primary-light);
     padding: 0.3rem 0.9rem;
     border-radius: var(--radius-full);
-    border: 1px solid rgba(255,107,53,0.18);
+    border: 1px solid rgba(255,122,0,0.18);
 }
 .section-title {
     font-family: 'Outfit', var(--font-family);
@@ -409,7 +409,7 @@
     position: absolute;
     top: 0; left: 0; right: 0;
     height: 3px;
-    background: linear-gradient(90deg, var(--primary), #FFB347);
+    background: linear-gradient(90deg, var(--primary), #FF9A3D);
     opacity: 0;
     transition: opacity var(--transition-base);
     z-index: 3;
@@ -417,7 +417,7 @@
 .event-showcase-card:hover {
     transform: translateY(-6px);
     box-shadow: var(--shadow-lg);
-    border-color: rgba(255,107,53,0.25);
+    border-color: rgba(255,122,0,0.25);
     text-decoration: none;
     color: inherit;
 }
@@ -516,7 +516,7 @@
     content: '';
     position: absolute;
     width: 380px; height: 380px;
-    background: radial-gradient(circle, rgba(255,107,53,0.1) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(255,122,0,0.1) 0%, transparent 70%);
     border-radius: 50%;
 }
 .how-image-card {
