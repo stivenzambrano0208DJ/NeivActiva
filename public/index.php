@@ -10,7 +10,9 @@ header('Content-Type: text/html; charset=utf-8');
 header('X-Frame-Options: SAMEORIGIN');
 header('X-Content-Type-Options: nosniff');
 header('Referrer-Policy: strict-origin-when-cross-origin');
-header('Permissions-Policy: camera=(), microphone=(), geolocation=()');
+// camera=(self): el escáner QR de Control de Asistencia necesita la cámara
+// en el mismo origen. microphone/geolocation siguen deshabilitados.
+header('Permissions-Policy: camera=(self), microphone=(), geolocation=()');
 ini_set('default_charset', 'utf-8');
 
 define('ROOT_PATH', dirname(__DIR__));
