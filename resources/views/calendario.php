@@ -67,21 +67,6 @@
                 </select>
             </div>
             
-            <div class="filter-group">
-                <label class="filter-label">Vista</label>
-                <div class="view-toggles">
-                    <button class="view-toggle active" data-view="dayGridMonth" title="Mes">
-                        <i class="bi bi-calendar-month"></i>
-                    </button>
-                    <button class="view-toggle" data-view="timeGridWeek" title="Semana">
-                        <i class="bi bi-calendar-week"></i>
-                    </button>
-                    <button class="view-toggle" data-view="timeGridDay" title="Día">
-                        <i class="bi bi-calendar-day"></i>
-                    </button>
-                </div>
-            </div>
-            
             <button class="btn-reset-filters" onclick="resetFilters()">
                 <i class="bi bi-arrow-counterclockwise"></i> Resetear
             </button>
