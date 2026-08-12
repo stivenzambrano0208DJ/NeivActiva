@@ -66,6 +66,53 @@
         </div>
     </header>
 
+    <!-- ── RNF01: Aviso masivo a inscritos ──────────── -->
+    <?php if (($_GET['aviso'] ?? '') === 'ok'): ?>
+        <div class="gi-alert gi-alert--success" style="margin:0 0 1rem;padding:.85rem 1.1rem;border-radius:12px;background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0;">
+            <i class="bi bi-check-circle-fill"></i>
+            Correo enviado a <strong><?php echo (int)($_GET['enviados'] ?? 0); ?></strong> inscrito(s).
+        </div>
+    <?php elseif (($_GET['aviso'] ?? '') === 'error'): ?>
+        <div class="gi-alert gi-alert--error" style="margin:0 0 1rem;padding:.85rem 1.1rem;border-radius:12px;background:#fef2f2;color:#991b1b;border:1px solid #fecaca;">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            Faltan datos: elige un evento y escribe asunto y mensaje.
+        </div>
+    <?php endif; ?>
+
+    <details class="gi-card" style="margin-bottom:1rem;padding:1.1rem 1.25rem;">
+        <summary style="cursor:pointer;font-weight:600;display:flex;align-items:center;gap:.5rem;">
+            <i class="bi bi-envelope-paper-fill" style="color:#f5b400;"></i>
+            Enviar aviso por correo a los inscritos de un evento
+        </summary>
+        <form method="POST" action="?view=gestionar_inscripciones" style="margin-top:1rem;display:grid;gap:.85rem;max-width:640px;">
+            <input type="hidden" name="accion" value="enviar_aviso">
+            <div>
+                <label style="display:block;font-size:.85rem;font-weight:600;margin-bottom:.35rem;">Evento *</label>
+                <select name="evento_id" class="gi-select" required style="width:100%;">
+                    <option value="">Seleccionar evento…</option>
+                    <?php foreach ($lista_eventos as $ev): ?>
+                        <option value="<?php echo (int)($ev['id'] ?? 0); ?>">
+                            <?php echo htmlspecialchars($ev['titulo'] ?? 'Evento'); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div>
+                <label style="display:block;font-size:.85rem;font-weight:600;margin-bottom:.35rem;">Asunto *</label>
+                <input type="text" name="asunto" class="gi-input" required maxlength="150"
+                       placeholder="Ej. Recordatorio: tu evento es mañana" style="width:100%;">
+            </div>
+            <div>
+                <label style="display:block;font-size:.85rem;font-weight:600;margin-bottom:.35rem;">Mensaje *</label>
+                <textarea name="mensaje" class="gi-input" required rows="5"
+                          placeholder="Escribe el mensaje que recibirán los inscritos…" style="width:100%;resize:vertical;"></textarea>
+            </div>
+            <button type="submit" class="gi-btn-apply" style="justify-self:start;">
+                <i class="bi bi-send-fill"></i> Enviar a todos los inscritos
+            </button>
+        </form>
+    </details>
+
     <!-- ── Filters bar ──────────────────────────── -->
     <div class="gi-filters-bar">
         <div class="gi-filter-group gi-filter-search">
@@ -149,6 +196,20 @@
                                         <span class="gi-participant-sub"><?php echo $correo; ?></span>
                                     <?php endif; ?>
                                     <span class="gi-participant-sub"><?php echo $doc; ?></span>
+                                    <?php if (!empty($r['respuestas_campos'])): ?>
+                                        <?php
+                                            $respuestas = json_decode($r['respuestas_campos'], true);
+                                            if (is_array($respuestas)):
+                                                foreach ($respuestas as $lbl => $val):
+                                        ?>
+                                                    <span class="gi-participant-sub" style="color: var(--primary); font-size: 0.75rem;">
+                                                        <strong><?php echo htmlspecialchars($lbl); ?>:</strong> <?php echo htmlspecialchars($val); ?>
+                                                    </span>
+                                        <?php
+                                                endforeach;
+                                            endif;
+                                        ?>
+                                    <?php endif; ?>
                                 </div>
                             </td>
 

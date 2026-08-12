@@ -164,6 +164,7 @@
                                 data-hora="<?php echo htmlspecialchars(substr($ev['hora_evento'] ?? '', 0, 5)); ?>"
                                 data-categoria="<?php echo $cat; ?>"
                                 data-aforo="<?php echo $cupo; ?>"
+                                data-campos="<?php echo htmlspecialchars($ev['formulario_campos'] ?? '[]'); ?>"
                                 data-descripcion="<?php echo htmlspecialchars($ev['descripcion'] ?? ''); ?>">
                                 <i class="bi bi-pencil-square"></i>
                             </button>
@@ -256,6 +257,25 @@
                             <i class="bi bi-x-circle-fill"></i>
                         </button>
                     </div>
+                <div class="ge-field" style="border: 1px dashed rgba(255,255,255,0.15); padding: 15px; border-radius: 8px; margin-top: 15px; margin-bottom: 15px; background: rgba(255,255,255,0.02);">
+                    <label class="ge-label" style="display: flex; align-items: center; justify-content: space-between;">
+                        <span><i class="bi bi-gear-fill"></i> Campos personalizados (Inscripción)</span>
+                    </label>
+                    <div id="fieldsContainerCreate" style="margin-top: 10px; display: flex; flex-direction: column; gap: 8px;"></div>
+                    <div style="display: flex; gap: 8px; margin-top: 10px;">
+                        <input type="text" id="newFieldLabelCreate" class="ge-input" style="flex: 1;" placeholder="Ej: Talla de Camisa, EPS">
+                        <select id="newFieldTypeCreate" class="ge-select" style="width: auto;">
+                            <option value="text">Texto</option>
+                            <option value="select">Selección</option>
+                        </select>
+                        <button type="button" class="ge-btn-icon" id="addFieldBtnCreate" style="background: var(--primary); color: white; padding: 10px 12px; border-radius: 6px; border: none; cursor: pointer;" title="Agregar campo">
+                            <i class="bi bi-plus-lg"></i>
+                        </button>
+                    </div>
+                    <div id="optionsContainerCreate" style="display: none; margin-top: 8px;">
+                        <input type="text" id="newFieldOptionsCreate" class="ge-input" placeholder="Opciones separadas por coma (ej: S, M, L)">
+                    </div>
+                    <input type="hidden" name="formulario_campos" id="formularioCamposCreate">
                 </div>
 
                 <button type="submit" class="ge-btn-submit">
@@ -330,6 +350,27 @@
                         <span class="ge-upload-text">Reemplazar imagen</span>
                     </div>
                 </label>
+            </div>
+
+            <div class="ge-field" style="border: 1px dashed rgba(255,255,255,0.15); padding: 15px; border-radius: 8px; margin-top: 15px; margin-bottom: 15px; background: rgba(255,255,255,0.02);">
+                <label class="ge-label" style="display: flex; align-items: center; justify-content: space-between;">
+                    <span><i class="bi bi-gear-fill"></i> Campos personalizados (Inscripción)</span>
+                </label>
+                <div id="fieldsContainerEdit" style="margin-top: 10px; display: flex; flex-direction: column; gap: 8px;"></div>
+                <div style="display: flex; gap: 8px; margin-top: 10px;">
+                    <input type="text" id="newFieldLabelEdit" class="ge-input" style="flex: 1;" placeholder="Ej: Talla de Camisa, EPS">
+                    <select id="newFieldTypeEdit" class="ge-select" style="width: auto;">
+                        <option value="text">Texto</option>
+                        <option value="select">Selección</option>
+                    </select>
+                    <button type="button" class="ge-btn-icon" id="addFieldBtnEdit" style="background: var(--primary); color: white; padding: 10px 12px; border-radius: 6px; border: none; cursor: pointer;" title="Agregar campo">
+                        <i class="bi bi-plus-lg"></i>
+                    </button>
+                </div>
+                <div id="optionsContainerEdit" style="display: none; margin-top: 8px;">
+                    <input type="text" id="newFieldOptionsEdit" class="ge-input" placeholder="Opciones separadas por coma (ej: S, M, L)">
+                </div>
+                <input type="hidden" name="formulario_campos" id="formularioCamposEdit">
             </div>
 
             <div class="ge-modal-actions">
@@ -409,6 +450,14 @@
             document.getElementById('editCategoria').value   = btn.dataset.categoria    || 'Otro';
             document.getElementById('editAforo').value       = btn.dataset.aforo        || 1;
             document.getElementById('editDescripcion').value = btn.dataset.descripcion  || '';
+            
+            try {
+                const campos = JSON.parse(btn.dataset.campos || '[]');
+                builderEdit.setFields(campos);
+            } catch(e) {
+                builderEdit.setFields([]);
+            }
+            
             pendingSubmit = false;
             openModal(editModal);
         });
@@ -444,6 +493,86 @@
         closeModal(confirmModal);
         editForm.submit();
     });
+    /* ── custom fields builder ──────────────── */
+    function initFieldsBuilder(suffix) {
+        const container = document.getElementById('fieldsContainer' + suffix);
+        const addBtn = document.getElementById('addFieldBtn' + suffix);
+        const labelInput = document.getElementById('newFieldLabel' + suffix);
+        const typeSelect = document.getElementById('newFieldType' + suffix);
+        const optionsContainer = document.getElementById('optionsContainer' + suffix);
+        const optionsInput = document.getElementById('newFieldOptions' + suffix);
+        const hiddenInput = document.getElementById('formularioCampos' + suffix);
+
+        let fields = [];
+
+        typeSelect.addEventListener('change', () => {
+            if (typeSelect.value === 'select') {
+                optionsContainer.style.display = 'block';
+            } else {
+                optionsContainer.style.display = 'none';
+            }
+        });
+
+        function render() {
+            container.innerHTML = '';
+            fields.forEach((f, idx) => {
+                const row = document.createElement('div');
+                row.style.display = 'flex';
+                row.style.alignItems = 'center';
+                row.style.justifyContent = 'space-between';
+                row.style.background = 'rgba(255,255,255,0.05)';
+                row.style.padding = '6px 10px';
+                row.style.borderRadius = '4px';
+                row.style.fontSize = '0.9rem';
+
+                let details = f.type === 'select' ? ` (${f.options.join(', ')})` : '';
+                row.innerHTML = `
+                    <span><strong>${f.label}</strong> <small style="color:var(--text-muted);">${f.type}${details}</small></span>
+                    <button type="button" class="ge-btn-icon" style="color:var(--danger); padding:4px;" title="Quitar campo">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                `;
+                row.querySelector('button').addEventListener('click', () => {
+                    fields.splice(idx, 1);
+                    render();
+                });
+                container.appendChild(row);
+            });
+            hiddenInput.value = JSON.stringify(fields);
+        }
+
+        addBtn.addEventListener('click', () => {
+            const label = labelInput.value.trim();
+            if (!label) return;
+            const type = typeSelect.value;
+            let options = [];
+            if (type === 'select') {
+                options = optionsInput.value.split(',').map(s => s.trim()).filter(s => s);
+                if (options.length === 0) {
+                    alert('Por favor agrega opciones separadas por coma para el campo de selección.');
+                    return;
+                }
+            }
+            fields.push({ label, type, options, required: true });
+            labelInput.value = '';
+            optionsInput.value = '';
+            optionsContainer.style.display = 'none';
+            typeSelect.value = 'text';
+            render();
+        });
+
+        return {
+            getFields: () => fields,
+            setFields: (newFields) => {
+                fields = Array.isArray(newFields) ? newFields : [];
+                render();
+            }
+        };
+    }
+
+    const builderCreate = initFieldsBuilder('Create');
+    const builderEdit = initFieldsBuilder('Edit');
+
 })();
 </script>
 </body>

@@ -102,6 +102,19 @@ class EventController extends Controller {
                 exit();
             }
 
+            // Extract custom fields responses
+            $respuestas = [];
+            $camposConfig = json_decode($eventoDisponible['formulario_campos'] ?? '[]', true);
+            if (is_array($camposConfig)) {
+                foreach ($camposConfig as $campo) {
+                    $postKey = 'custom_' . preg_replace('/[^a-zA-Z0-9]/', '_', $campo['label']);
+                    if (isset($_POST[$postKey])) {
+                        $respuestas[$campo['label']] = trim($_POST[$postKey]);
+                    }
+                }
+            }
+            $respuestasJson = !empty($respuestas) ? json_encode($respuestas, JSON_UNESCAPED_UNICODE) : null;
+
             $tokenQr = bin2hex(random_bytes(32));
             $datos = [
                 'evento_id' => $eventoId,
@@ -113,7 +126,8 @@ class EventController extends Controller {
                 'telefono' => $datosParticipante['telefono'],
                 'categoria_participacion' => 'General',
                 'estado_inscripcion' => 'Confirmada',
-                'token_qr' => $tokenQr
+                'token_qr' => $tokenQr,
+                'respuestas_campos' => $respuestasJson
             ];
 
             $inscripcionId = $this->inscripciones->registrar($datos);
@@ -248,6 +262,18 @@ class EventController extends Controller {
                     exit();
                 }
 
+                $respuestas = [];
+                $camposConfig = json_decode($eventoDisponible['formulario_campos'] ?? '[]', true);
+                if (is_array($camposConfig)) {
+                    foreach ($camposConfig as $campo) {
+                        $postKey = 'custom_' . preg_replace('/[^a-zA-Z0-9]/', '_', $campo['label']);
+                        if (isset($_POST[$postKey])) {
+                            $respuestas[$campo['label']] = trim($_POST[$postKey]);
+                        }
+                    }
+                }
+                $respuestasJson = !empty($respuestas) ? json_encode($respuestas, JSON_UNESCAPED_UNICODE) : null;
+
                 $tokenQr = bin2hex(random_bytes(32));
                 $datos = [
                     'evento_id' => $eventoId,
@@ -259,7 +285,8 @@ class EventController extends Controller {
                     'telefono' => $participanteDatos['telefono'],
                     'categoria_participacion' => $this->validarCategoriaParticipacion($_POST['categoria'] ?? 'Adulto'),
                     'estado_inscripcion' => 'Confirmada',
-                    'token_qr' => $tokenQr
+                    'token_qr' => $tokenQr,
+                    'respuestas_campos' => $respuestasJson
                 ];
 
                 $inscripcionId = $this->inscripciones->registrar($datos);
@@ -495,7 +522,8 @@ class EventController extends Controller {
             'cupo_maximo' => max(1, (int) ($_POST['cupo_maximo'] ?? 1)),
             'categoria' => $_POST['categoria'] ?? 'Otro',
             'descripcion' => trim($_POST['descripcion'] ?? ''),
-            'ruta_imagen' => $rutaImagen
+            'ruta_imagen' => $rutaImagen,
+            'formulario_campos' => $_POST['formulario_campos'] ?? null
         ];
     }
 
@@ -571,6 +599,22 @@ class EventController extends Controller {
             }
 
             header("Location: ?view=gestionar_inscripciones&asistencia=1");
+            exit();
+        }
+
+        // RNF01: envío masivo de correos a los inscritos de un evento.
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['accion'] ?? '') === 'enviar_aviso') {
+            $eventoId = (int) ($_POST['evento_id'] ?? 0);
+            $asunto = trim($_POST['asunto'] ?? '');
+            $mensaje = trim($_POST['mensaje'] ?? '');
+
+            if ($eventoId > 0 && $asunto !== '' && $mensaje !== '') {
+                $destinatarios = $this->inscripciones->obtenerCorreosPorEvento($eventoId);
+                $enviados = (new MailService())->enviarAvisoEvento($destinatarios, $asunto, $mensaje);
+                header("Location: ?view=gestionar_inscripciones&aviso=ok&enviados=" . $enviados);
+            } else {
+                header("Location: ?view=gestionar_inscripciones&aviso=error");
+            }
             exit();
         }
 

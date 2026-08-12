@@ -270,7 +270,8 @@
                                     data-date="<?php echo htmlspecialchars($fechaTexto, ENT_QUOTES, 'UTF-8'); ?>"
                                     data-time="<?php echo htmlspecialchars($horaTexto, ENT_QUOTES, 'UTF-8'); ?>"
                                     data-location="<?php echo htmlspecialchars($e['ubicacion'] ?? 'Lugar por confirmar', ENT_QUOTES, 'UTF-8'); ?>"
-                                    data-seats="<?php echo $cuposLibres; ?>">
+                                    data-seats="<?php echo $cuposLibres; ?>"
+                                    data-campos="<?php echo htmlspecialchars($e['formulario_campos'] ?? '[]'); ?>">
                                 <?php echo htmlspecialchars($e['titulo']); ?> - <?php echo $cuposLibres; ?> cupos
                             </option>
                             <?php endforeach; ?>
@@ -278,6 +279,9 @@
                         </select>
                     </div>
                 </div>
+
+                <!-- Contenedor de campos dinámicos -->
+                <div id="dynamicFieldsContainer" style="margin-top: 15px; display: flex; flex-direction: column; gap: 15px;"></div>
 
                 <div class="input-group-modern">
                     <label>Categoria de participacion</label>
@@ -486,6 +490,93 @@
             setAccountStatus('error', 'Corrige los datos de contrasena antes de continuar.');
         }
     });
+
+    /* ── Render dynamic fields based on selected event ── */
+    const eventoSelect = document.getElementById('eventoSelect');
+    const dynamicFieldsContainer = document.getElementById('dynamicFieldsContainer');
+
+    function renderDynamicFields() {
+        dynamicFieldsContainer.innerHTML = '';
+        const selectedOption = eventoSelect.options[eventoSelect.selectedIndex];
+        if (!selectedOption) return;
+
+        let campos = [];
+        try {
+            campos = JSON.parse(selectedOption.dataset.campos || '[]');
+        } catch(e) {
+            campos = [];
+        }
+
+        if (campos.length > 0) {
+            const sectionTitle = document.createElement('div');
+            sectionTitle.className = 'form-section-title';
+            sectionTitle.innerHTML = '<i class="bi bi-gear-fill"></i><span>Información Adicional Requerida</span>';
+            dynamicFieldsContainer.appendChild(sectionTitle);
+        }
+
+        campos.forEach(c => {
+            const group = document.createElement('div');
+            group.className = 'input-group-modern';
+
+            const label = document.createElement('label');
+            label.textContent = c.label;
+            if (c.required) {
+                const req = document.createElement('span');
+                req.style.color = 'var(--danger)';
+                req.textContent = ' *';
+                label.appendChild(req);
+            }
+            group.appendChild(label);
+
+            const wrapper = document.createElement('div');
+            wrapper.className = 'input-wrapper';
+
+            if (c.type === 'select') {
+                wrapper.classList.add('select-wrapper');
+                const icon = document.createElement('i');
+                icon.className = 'bi bi-list-task';
+                wrapper.appendChild(icon);
+
+                const select = document.createElement('select');
+                select.name = `custom_${c.label.replace(/[^a-zA-Z0-9]/g, '_')}`;
+                select.className = 'form-control-modern';
+                if (c.required) select.required = true;
+
+                const defaultOpt = document.createElement('option');
+                defaultOpt.value = '';
+                defaultOpt.textContent = 'Seleccionar...';
+                select.appendChild(defaultOpt);
+
+                c.options.forEach(opt => {
+                    const option = document.createElement('option');
+                    option.value = opt;
+                    option.textContent = opt;
+                    select.appendChild(option);
+                });
+                wrapper.appendChild(select);
+            } else {
+                const icon = document.createElement('i');
+                icon.className = 'bi bi-pencil-square';
+                wrapper.appendChild(icon);
+
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.name = `custom_${c.label.replace(/[^a-zA-Z0-9]/g, '_')}`;
+                input.className = 'form-control-modern';
+                input.placeholder = `Ingresa tu ${c.label}`;
+                if (c.required) input.required = true;
+                wrapper.appendChild(input);
+            }
+
+            group.appendChild(wrapper);
+            dynamicFieldsContainer.appendChild(group);
+        });
+    }
+
+    if (eventoSelect) {
+        eventoSelect.addEventListener('change', renderDynamicFields);
+        renderDynamicFields();
+    }
 </script>
 
 </body>

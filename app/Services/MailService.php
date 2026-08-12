@@ -42,6 +42,44 @@ class MailService {
         return true;
     }
 
+    /**
+     * RNF01: Envío masivo de correos a los inscritos de un evento.
+     * $destinatarios: array de ['correo' => ..., 'nombre' => ...].
+     * Devuelve la cantidad de correos enviados con éxito.
+     */
+    public function enviarAvisoEvento(array $destinatarios, $asunto, $mensaje) {
+        $enviados = 0;
+        $mail = $this->configureMailer();
+
+        foreach ($destinatarios as $d) {
+            $correo = trim((string) ($d['correo'] ?? ''));
+            if ($correo === '' || !filter_var($correo, FILTER_VALIDATE_EMAIL)) {
+                continue;
+            }
+            $nombre = (string) ($d['nombre'] ?? '');
+
+            if ($this->simularEnvio) {
+                $this->guardarCorreoSimulado($correo, $asunto, $mensaje);
+                $enviados++;
+                continue;
+            }
+
+            try {
+                $mail->clearAddresses();
+                $mail->addAddress($correo, $nombre);
+                $mail->Subject = $asunto;
+                $mail->Body = $mensaje;
+                if ($mail->send()) {
+                    $enviados++;
+                }
+            } catch (Throwable $e) {
+                error_log('Error en MailService (AvisoEvento): ' . $e->getMessage());
+            }
+        }
+
+        return $enviados;
+    }
+
     public function enviarCorreoBienvenida($datos, $passwordPlano) {
         try {
             $mail = $this->configureMailer();

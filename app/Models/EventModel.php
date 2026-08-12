@@ -40,8 +40,8 @@ class EventModel extends BaseModel {
     }
 
     public function crear($datos) {
-        $sql = "INSERT INTO eventos (titulo, descripcion, fecha_evento, hora_evento, ubicacion, categoria, cupo_maximo, ruta_imagen, organizador_id)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO eventos (titulo, descripcion, fecha_evento, hora_evento, ubicacion, categoria, cupo_maximo, ruta_imagen, organizador_id, formulario_campos)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         return $this->db->query($sql, [
             $datos['titulo'],
@@ -52,7 +52,8 @@ class EventModel extends BaseModel {
             $datos['categoria'],
             $datos['cupo_maximo'],
             $datos['ruta_imagen'],
-            $datos['organizador_id'] ?? null
+            $datos['organizador_id'] ?? null,
+            $datos['formulario_campos'] ?? null
         ]);
     }
 
@@ -64,7 +65,8 @@ class EventModel extends BaseModel {
                     hora_evento = ?,
                     ubicacion = ?,
                     categoria = ?,
-                    cupo_maximo = ?";
+                    cupo_maximo = ?,
+                    formulario_campos = ?";
         $params = [
             $datos['titulo'],
             $datos['descripcion'],
@@ -72,7 +74,8 @@ class EventModel extends BaseModel {
             $datos['hora_evento'],
             $datos['ubicacion'],
             $datos['categoria'],
-            $datos['cupo_maximo']
+            $datos['cupo_maximo'],
+            $datos['formulario_campos'] ?? null
         ];
 
         if (!empty($datos['ruta_imagen'])) {

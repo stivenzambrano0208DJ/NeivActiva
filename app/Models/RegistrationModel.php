@@ -20,8 +20,9 @@ class RegistrationModel extends BaseModel {
                     categoria_participacion,
                     estado_inscripcion,
                     datos_qr,
-                    token_qr
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    token_qr,
+                    respuestas_campos
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         
         $this->db->query($sql, [
             $datos['evento_id'],
@@ -34,7 +35,8 @@ class RegistrationModel extends BaseModel {
             $datos['categoria_participacion'],
             $datos['estado_inscripcion'] ?? 'Confirmada',
             $datos['token_qr'],
-            $datos['token_qr']
+            $datos['token_qr'],
+            $datos['respuestas_campos'] ?? null
         ]);
 
         return (int) $this->db->getConnection()->lastInsertId();
@@ -103,6 +105,20 @@ class RegistrationModel extends BaseModel {
                 AND estado_inscripcion <> 'Cancelada'";
 
         return array_map('intval', array_column($this->db->query($sql, [$email])->fetchAll(), 'evento_id'));
+    }
+
+    /**
+     * RNF01: correos únicos de los inscritos (no cancelados) de un evento.
+     */
+    public function obtenerCorreosPorEvento($eventoId) {
+        $sql = "SELECT DISTINCT i.correo_electronico AS correo,
+                       COALESCE(p.nombre_completo, '') AS nombre
+                FROM inscripciones i
+                LEFT JOIN participantes p ON p.id = i.participante_id
+                WHERE i.evento_id = ?
+                  AND i.estado_inscripcion <> 'Cancelada'
+                  AND i.correo_electronico <> ''";
+        return $this->db->query($sql, [$eventoId])->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     public function guardarQr($inscripcionId, $rutaQr) {

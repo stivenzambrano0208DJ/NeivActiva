@@ -34,8 +34,54 @@ class StatisticsService {
             'monthly_participation' => $this->getMonthlyParticipation($dateCondition, $eventCondition, $eventType),
             'user_growth' => $this->getUserGrowth(),
             'weekly_activity' => $this->getWeeklyActivity(),
-            'comparison' => $this->getComparisonWithLastMonth()
+            'comparison' => $this->getComparisonWithLastMonth(),
+            'by_gender' => $this->getParticipationByGender(),
+            'by_age' => $this->getParticipationByAge()
         ];
+    }
+
+    /**
+     * Participación por género (RNF02).
+     * Cuenta inscripciones agrupadas por el género del participante.
+     */
+    private function getParticipationByGender() {
+        $sql = "SELECT COALESCE(NULLIF(TRIM(p.genero), ''), 'Sin especificar') AS genero,
+                       COUNT(*) AS total
+                FROM inscripciones i
+                INNER JOIN participantes p ON p.id = i.participante_id
+                GROUP BY genero
+                ORDER BY total DESC";
+        $stmt = $this->db->query($sql);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Participación por rango de edad (RNF02).
+     * Calcula la edad desde fecha_nacimiento y agrupa en rangos.
+     */
+    private function getParticipationByAge() {
+        $sql = "SELECT rango, COUNT(*) AS total FROM (
+                    SELECT CASE
+                        WHEN p.fecha_nacimiento IS NULL THEN 'Sin especificar'
+                        WHEN TIMESTAMPDIFF(YEAR, p.fecha_nacimiento, CURDATE()) < 18 THEN 'Menor de 18'
+                        WHEN TIMESTAMPDIFF(YEAR, p.fecha_nacimiento, CURDATE()) BETWEEN 18 AND 25 THEN '18-25'
+                        WHEN TIMESTAMPDIFF(YEAR, p.fecha_nacimiento, CURDATE()) BETWEEN 26 AND 35 THEN '26-35'
+                        WHEN TIMESTAMPDIFF(YEAR, p.fecha_nacimiento, CURDATE()) BETWEEN 36 AND 50 THEN '36-50'
+                        ELSE 'Más de 50'
+                    END AS rango
+                    FROM inscripciones i
+                    INNER JOIN participantes p ON p.id = i.participante_id
+                ) t
+                GROUP BY rango";
+        $stmt = $this->db->query($sql);
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        // Ordenar los rangos de forma lógica (SQL agrupa sin orden garantizado).
+        $orden = ['Menor de 18', '18-25', '26-35', '36-50', 'Más de 50', 'Sin especificar'];
+        usort($rows, function ($a, $b) use ($orden) {
+            return array_search($a['rango'], $orden) <=> array_search($b['rango'], $orden);
+        });
+        return $rows;
     }
 
     /**

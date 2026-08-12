@@ -27,7 +27,7 @@ RUN composer install \
 # ---------------------------------------------------------------------------
 # Stage 2 — Runtime (Apache + PHP), slim, non-root
 # ---------------------------------------------------------------------------
-FROM php:8.2-apache
+FROM php:8.3-apache
 
 # --- System libs + PHP extensions required by the app ------------------------
 # - pdo_mysql: database layer (app/Core/Database.php).

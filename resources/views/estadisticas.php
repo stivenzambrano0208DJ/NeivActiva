@@ -207,6 +207,27 @@
             </div>
         </div>
 
+        <!-- RNF02: Participación por género y edad -->
+        <div class="charts-row">
+            <div class="chart-card medium skeleton">
+                <div class="chart-header">
+                    <h3>Participación por Género</h3>
+                </div>
+                <div class="chart-container">
+                    <canvas id="genderChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-card medium skeleton">
+                <div class="chart-header">
+                    <h3>Participación por Rango de Edad</h3>
+                </div>
+                <div class="chart-container">
+                    <canvas id="ageChart"></canvas>
+                </div>
+            </div>
+        </div>
+
         <!-- Tablas y Resúmenes -->
         <div class="tables-row">
             <div class="table-card skeleton">
@@ -521,6 +542,50 @@ new Chart(userGrowthCtx, {
                 grid: { display: false }
             }
         }
+    }
+});
+
+// RNF02: Participación por Género (doughnut)
+const genderCtx = document.getElementById('genderChart').getContext('2d');
+const genderData = metrics.by_gender || [];
+const genderPalette = ['#f5b400', '#3b82f6', '#10b981', '#ef4444', '#8b5cf6', '#94a3b8'];
+new Chart(genderCtx, {
+    type: 'doughnut',
+    data: {
+        labels: genderData.map(g => g.genero),
+        datasets: [{
+            data: genderData.map(g => Number(g.total)),
+            backgroundColor: genderPalette,
+            borderWidth: 0
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { position: 'bottom' } }
+    }
+});
+
+// RNF02: Participación por Rango de Edad (bar)
+const ageCtx = document.getElementById('ageChart').getContext('2d');
+const ageData = metrics.by_age || [];
+new Chart(ageCtx, {
+    type: 'bar',
+    data: {
+        labels: ageData.map(a => a.rango),
+        datasets: [{
+            label: 'Inscripciones',
+            data: ageData.map(a => Number(a.total)),
+            backgroundColor: '#3b82f6',
+            borderRadius: 8,
+            borderSkipped: false
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, grid: { color: '#f1f5f9' } }, x: { grid: { display: false } } }
     }
 });
 
