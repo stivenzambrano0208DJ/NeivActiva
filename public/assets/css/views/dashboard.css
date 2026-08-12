@@ -251,7 +251,26 @@
     position: relative; height: 190px;
     border-radius: 16px; overflow: hidden; background: var(--bg-tertiary); flex-shrink: 0;
 }
-.db-ev-img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .6s cubic-bezier(.16,1,.3,1); }
+/* Branded placeholder shown behind the photo. If the photo is missing or
+   fails to load, the img is removed (onerror) and this stays visible, so a
+   card never shows a broken image. */
+.db-ev-img-ph {
+    position: absolute; inset: 0; z-index: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, #FF8A4C 0%, #C93F10 100%);
+    color: rgba(255,255,255,.92); font-size: 3.4rem;
+}
+.db-ev-img-ph i { filter: drop-shadow(0 3px 10px rgba(0,0,0,.28)); }
+.db-ev-img-ph::after {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(255,255,255,.18) 0%, transparent 60%);
+    pointer-events: none;
+}
+.db-ev-ph-orange .db-ev-img-ph { background: linear-gradient(135deg, #FF8A4C 0%, #C93F10 100%); }
+.db-ev-ph-purple .db-ev-img-ph { background: linear-gradient(135deg, #A78BFA 0%, #6D28D9 100%); }
+.db-ev-ph-blue   .db-ev-img-ph { background: linear-gradient(135deg, #60A5FA 0%, #1D4ED8 100%); }
+.db-ev-ph-teal   .db-ev-img-ph { background: linear-gradient(135deg, #34D399 0%, #07855B 100%); }
+.db-ev-img img { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; object-fit: cover; transition: transform .6s cubic-bezier(.16,1,.3,1); }
 .db-ev-card:hover .db-ev-img img { transform: scale(1.08); }
 .db-ev-img::after {
     content: ''; position: absolute; inset: 0; z-index: 2;

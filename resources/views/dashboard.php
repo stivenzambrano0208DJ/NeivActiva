@@ -19,7 +19,6 @@ foreach (($eventos_inscritos ?? []) as $i) {
 }
 $eventos           = $lista_eventos ?? [];
 $eventosDestacados = array_slice($eventos, 0, 3);
-$imgFallback       = '/assets/img/Capilla_de_La_Inmaculada_Concepción.jpg';
 $fmtFecha = fn($f) => $f ? date('d M Y', strtotime($f)) : 'Por confirmar';
 $fmtHora  = fn($h) => $h ? date('g:i A', strtotime($h)) : '';
 $catIcon  = fn($c) => match($c) {
@@ -136,7 +135,13 @@ $catIcon  = fn($c) => match($c) {
                             $pct       = min(100, round($inscritos / $cupoMax * 100));
                             $inscrito  = in_array($evId, $inscritosIds, true);
                             $lleno     = $cupos <= 0;
-                            $img       = !empty($ev['ruta_imagen']) ? (strpos($ev['ruta_imagen'], '/') === 0 ? $ev['ruta_imagen'] : '/'.ltrim($ev['ruta_imagen'],'/')) : $imgFallback;
+                            $imgReal   = !empty($ev['ruta_imagen']) ? (strpos($ev['ruta_imagen'], '/') === 0 ? $ev['ruta_imagen'] : '/'.ltrim($ev['ruta_imagen'],'/')) : null;
+                            $catColor  = match($cat) {
+                                'Cultural'  => 'purple',
+                                'Deportivo' => 'blue',
+                                'Educativo' => 'teal',
+                                default     => 'orange'
+                            };
                             $canEnroll = !$inscrito && !$lleno && in_array($rol, ['cliente','participante','organizador','admin'], true);
                         ?>
                         <article class="db-ev-card<?php echo $inscrito ? ' db-ev-inscrito' : ''; ?>"
@@ -144,8 +149,11 @@ $catIcon  = fn($c) => match($c) {
                                  data-inscritos="<?php echo $inscritos; ?>"
                                  data-cupos="<?php echo $cupos; ?>">
 
-                            <div class="db-ev-img">
-                                <img src="<?php echo $img; ?>" alt="<?php echo $titulo; ?>" loading="lazy">
+                            <div class="db-ev-img db-ev-ph-<?php echo $catColor; ?>">
+                                <div class="db-ev-img-ph"><i class="bi <?php echo $catIcon($cat); ?>"></i></div>
+                                <?php if ($imgReal): ?>
+                                    <img src="<?php echo $imgReal; ?>" alt="<?php echo $titulo; ?>" loading="lazy" onerror="this.remove()">
+                                <?php endif; ?>
                                 <!-- Overlays -->
                                 <span class="db-ev-cat">
                                     <i class="bi <?php echo $catIcon($cat); ?>"></i> <?php echo htmlspecialchars($cat); ?>
