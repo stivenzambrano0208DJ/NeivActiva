@@ -412,3 +412,49 @@
     .pt-stat-pill { font-size: .7rem; padding: .3rem .65rem; }
     .pt-btn-primary, .pt-btn-secondary { width: 100%; justify-content: center; }
 }
+
+/* ── Boton inscribir + Modal de inscripcion ───────────── */
+.pt-btn-enroll { color: var(--primary); }
+.pt-btn-enroll:hover { background: var(--primary-subtle); border-color: var(--primary); }
+
+.pt-modal[hidden] { display: none; }
+.pt-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+.pt-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(17, 24, 39, .55);
+}
+.pt-modal-card {
+    position: relative;
+    width: 100%;
+    max-width: 440px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-2xl);
+    box-shadow: var(--shadow-xl);
+    overflow: hidden;
+    animation: pt-slide-up .25s cubic-bezier(.16, 1, .3, 1);
+}
+.pt-modal-body {
+    padding: 1.25rem 1.35rem 1.4rem;
+    display: grid;
+    gap: .5rem;
+}
+.pt-modal-text {
+    font-size: .85rem;
+    color: var(--text-secondary);
+    margin: 0 0 .35rem;
+}
+.pt-modal-submit {
+    margin-top: 1rem;
+    width: 100%;
+    justify-content: center;
+}

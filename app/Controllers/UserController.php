@@ -97,6 +97,59 @@ class UserController extends Controller {
         return true;
     }
 
+    /**
+     * Inscribe a un participante existente en un evento desde el panel de admin.
+     * Reutiliza RegistrationModel::registrar (que reactiva inscripciones
+     * canceladas en vez de fallar por el indice unico participante+evento).
+     */
+    protected function inscribirParticipanteEnEvento($participanteId, $eventoId) {
+        if ($participanteId <= 0 || $eventoId <= 0) {
+            header("Location: ?view=participantes&error=inscribir_datos");
+            return;
+        }
+
+        $participante = $this->participantes->find($participanteId);
+        if (!$participante) {
+            header("Location: ?view=participantes&error=no_encontrado");
+            return;
+        }
+
+        if ($this->inscripciones->existeParticipanteEnEvento($participanteId, $eventoId)) {
+            header("Location: ?view=participantes&error=ya_inscrito");
+            return;
+        }
+
+        $evento = $this->eventos->obtenerDisponiblePorId($eventoId);
+        if (!$evento || !$this->eventos->actualizarCupo($eventoId)) {
+            header("Location: ?view=participantes&error=evento_lleno");
+            return;
+        }
+
+        $tokenQr = bin2hex(random_bytes(32));
+        $datos = [
+            'evento_id' => $eventoId,
+            'participante_id' => $participanteId,
+            'usuario_id' => null,
+            'nombre_completo' => $this->participantes->nombreCompletoDe($participante),
+            'correo_electronico' => $this->participantes->correoDe($participante),
+            'documento_identidad' => $this->participantes->documentoDe($participante),
+            'telefono' => $participante['telefono'] ?? '',
+            'categoria_participacion' => 'General',
+            'estado_inscripcion' => 'Confirmada',
+            'token_qr' => $tokenQr,
+            'respuestas_campos' => null,
+        ];
+
+        $inscripcionId = $this->inscripciones->registrar($datos);
+        try {
+            $this->prepararQrInscripcionAdmin($inscripcionId, $tokenQr, $evento['titulo']);
+        } catch (Throwable $e) {
+            $this->logError('No se pudo generar QR al inscribir participante', ['error' => $e->getMessage()]);
+        }
+
+        header("Location: ?view=participantes&msg=inscrito");
+    }
+
     public function participantes() {
         $this->requireRole(['organizador', 'admin']);
 
@@ -123,6 +176,11 @@ class UserController extends Controller {
 
                     $this->participantes->delete($participanteId);
                     header("Location: ?view=participantes&msg=eliminado");
+                    exit();
+                }
+
+                if ($accion === 'inscribir') {
+                    $this->inscribirParticipanteEnEvento($participanteId, (int) ($_POST['evento_id'] ?? 0));
                     exit();
                 }
 
@@ -171,6 +229,7 @@ class UserController extends Controller {
         unset($_SESSION['participantes_form_errors'], $_SESSION['participantes_form_old']);
 
         $lista_participantes = $this->participantes->listar($busqueda);
+        $lista_eventos = $this->eventos->obtenerEventosDisponibles();
         require ROOT_PATH . '/resources/views/participantes.php';
     }
 

@@ -6,11 +6,15 @@ $val      = fn($campo, $def = '') => htmlspecialchars((string)($formData[$campo]
 
 $msgOk  = ['creado'      => 'Participante registrado correctamente.',
            'actualizado' => 'Participante actualizado.',
-           'eliminado'   => 'Participante eliminado.'];
+           'eliminado'   => 'Participante eliminado.',
+           'inscrito'    => 'Participante inscrito al evento correctamente.'];
 $msgErr = ['csrf'          => 'Sesión expirada. Recarga la página.',
            'validacion'    => 'Revisa los campos del formulario.',
            'bd'            => 'Error de base de datos.',
-           'no_encontrado' => 'Participante no encontrado.'];
+           'no_encontrado' => 'Participante no encontrado.',
+           'ya_inscrito'   => 'Ese participante ya está inscrito en el evento.',
+           'evento_lleno'  => 'El evento está lleno o no está disponible.',
+           'inscribir_datos' => 'Selecciona un evento para inscribir.'];
 
 $totalParticipantes = count($lista_participantes);
 $conCorreo = count(array_filter($lista_participantes,
@@ -162,6 +166,10 @@ $iniciales = function($nombre) {
                                     <?php endif; ?>
                                 </td>
                                 <td class="pt-td-actions">
+                                    <button type="button" class="pt-btn-icon pt-btn-enroll" title="Inscribir a un evento"
+                                            data-enroll data-id="<?php echo $pId; ?>" data-name="<?php echo $nombre; ?>">
+                                        <i class="bi bi-calendar-plus"></i>
+                                    </button>
                                     <a href="?view=participantes&editar=<?php echo $pId; ?>#form-panel"
                                        class="pt-btn-icon pt-btn-edit" title="Editar">
                                         <i class="bi bi-pencil-square"></i>
@@ -344,6 +352,39 @@ $iniciales = function($nombre) {
     </div><!-- /.pt-grid -->
 </main>
 
+<!-- Modal: inscribir participante a un evento -->
+<div class="pt-modal" id="enrollModal" hidden>
+    <div class="pt-modal-backdrop" data-close-enroll></div>
+    <div class="pt-modal-card" role="dialog" aria-modal="true" aria-labelledby="enrollTitle">
+        <div class="pt-card-header">
+            <h2 class="pt-card-title" id="enrollTitle"><i class="bi bi-calendar-plus"></i> Inscribir a un evento</h2>
+            <button type="button" class="pt-btn-icon" data-close-enroll aria-label="Cerrar"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <div class="pt-modal-body">
+            <p class="pt-modal-text">Participante: <strong id="enrollNombre"></strong></p>
+            <?php if (empty($lista_eventos)): ?>
+                <p class="pt-empty" style="padding:1rem 0;">No hay eventos con cupo disponible en este momento.</p>
+            <?php else: ?>
+            <form method="POST" action="/admin/participantes">
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrfToken); ?>">
+                <input type="hidden" name="accion" value="inscribir">
+                <input type="hidden" name="participante_id" id="enrollParticipanteId" value="">
+                <label class="pt-label" for="enrollEvento">Evento</label>
+                <select name="evento_id" id="enrollEvento" class="pt-input" required>
+                    <option value="">Selecciona un evento…</option>
+                    <?php foreach ($lista_eventos as $ev): ?>
+                        <option value="<?php echo (int)($ev['id'] ?? 0); ?>"><?php echo htmlspecialchars($ev['titulo'] ?? ''); ?></option>
+                    <?php endforeach; ?>
+                </select>
+                <button type="submit" class="pt-btn-primary pt-modal-submit">
+                    <i class="bi bi-check2-circle"></i> Confirmar inscripción
+                </button>
+            </form>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>
+
 <script>
 (function () {
     /* Auto-dismiss toast after 4s */
@@ -367,6 +408,30 @@ $iniciales = function($nombre) {
         const panel = document.getElementById('form-panel');
         if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
+
+    /* Modal: inscribir participante a un evento */
+    const enrollModal  = document.getElementById('enrollModal');
+    const enrollPid    = document.getElementById('enrollParticipanteId');
+    const enrollNombre = document.getElementById('enrollNombre');
+
+    function openEnroll(id, name) {
+        if (enrollPid) enrollPid.value = id || '';
+        if (enrollNombre) enrollNombre.textContent = name || '';
+        if (enrollModal) enrollModal.hidden = false;
+        document.body.classList.add('modal-open');
+    }
+    function closeEnroll() {
+        if (enrollModal) enrollModal.hidden = true;
+        document.body.classList.remove('modal-open');
+    }
+
+    document.querySelectorAll('[data-enroll]').forEach(btn => {
+        btn.addEventListener('click', () => openEnroll(btn.dataset.id, btn.dataset.name));
+    });
+    document.querySelectorAll('[data-close-enroll]').forEach(btn => {
+        btn.addEventListener('click', closeEnroll);
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeEnroll(); });
 })();
 </script>
 <script src="/assets/js/input-rules.js"></script>
