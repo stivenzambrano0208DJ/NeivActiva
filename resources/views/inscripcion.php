@@ -49,6 +49,32 @@
     $formatearHora = function($hora) {
         return !empty($hora) ? date('g:i A', strtotime($hora)) : 'Por confirmar';
     };
+
+    // Metadatos visuales por categoria (icono + color de placeholder)
+    $catMeta = function($cat) {
+        switch (strtolower(trim((string) $cat))) {
+            case 'cultural':  return ['icon' => 'bi-palette', 'color' => 'purple'];
+            case 'deportivo': return ['icon' => 'bi-trophy', 'color' => 'blue'];
+            case 'educativo': return ['icon' => 'bi-mortarboard', 'color' => 'green'];
+            case 'social':    return ['icon' => 'bi-people', 'color' => 'teal'];
+            case 'musical':   return ['icon' => 'bi-music-note-beamed', 'color' => 'pink'];
+            default:          return ['icon' => 'bi-calendar-event', 'color' => 'orange'];
+        }
+    };
+
+    $resolverImagen = function($ruta) {
+        if (empty($ruta)) return null;
+        return strpos($ruta, '/') === 0 ? $ruta : '/' . ltrim($ruta, '/');
+    };
+
+    // Lista de categorias unicas para los chips de filtro
+    $categoriasDisponibles = [];
+    foreach ($lista_eventos as $eventoDisponible) {
+        $catNombre = trim((string) ($eventoDisponible['categoria'] ?? ''));
+        if ($catNombre !== '' && !in_array($catNombre, $categoriasDisponibles, true)) {
+            $categoriasDisponibles[] = $catNombre;
+        }
+    }
 ?>
 
 <main class="main-wrapper">
@@ -247,38 +273,112 @@
                 <div class="form-section-title">
                     <i class="bi bi-calendar-event"></i>
                     <span>Evento</span>
+                    <?php if (!empty($lista_eventos)): ?>
+                    <span class="section-count"><?php echo count($lista_eventos); ?> disponibles</span>
+                    <?php endif; ?>
                 </div>
 
-                <div class="input-group-modern">
-                    <label>Selecciona el evento</label>
-                    <div class="input-wrapper select-wrapper">
-                        <i class="bi bi-bookmark-star"></i>
-                        <select name="evento_id" id="eventoSelect" class="form-control-modern" required>
-                            <?php if (empty($lista_eventos)): ?>
-                            <option value="">No hay eventos disponibles para inscripcion</option>
-                            <?php else: ?>
-                            <?php foreach ($lista_eventos as $e): ?>
-                            <?php
-                                $cuposLibres = max(0, (int) $e['cupo_maximo'] - (int) $e['inscritos_actuales']);
-                                $fechaTexto = $formatearFecha($e['fecha_evento']);
-                                $horaTexto = $formatearHora($e['hora_evento'] ?? '');
-                                $selected = ($eventoSeleccionadoId && $eventoSeleccionadoId === (int) $e['id']) ? 'selected' : '';
-                            ?>
-                            <option value="<?php echo (int) $e['id']; ?>"
-                                    <?php echo $selected; ?>
-                                    data-title="<?php echo htmlspecialchars($e['titulo'], ENT_QUOTES, 'UTF-8'); ?>"
-                                    data-date="<?php echo htmlspecialchars($fechaTexto, ENT_QUOTES, 'UTF-8'); ?>"
-                                    data-time="<?php echo htmlspecialchars($horaTexto, ENT_QUOTES, 'UTF-8'); ?>"
-                                    data-location="<?php echo htmlspecialchars($e['ubicacion'] ?? 'Lugar por confirmar', ENT_QUOTES, 'UTF-8'); ?>"
-                                    data-seats="<?php echo $cuposLibres; ?>"
-                                    data-campos="<?php echo htmlspecialchars($e['formulario_campos'] ?? '[]'); ?>">
-                                <?php echo htmlspecialchars($e['titulo']); ?> - <?php echo $cuposLibres; ?> cupos
-                            </option>
-                            <?php endforeach; ?>
-                            <?php endif; ?>
-                        </select>
-                    </div>
+                <?php if (empty($lista_eventos)): ?>
+                <div class="event-picker-empty">
+                    <i class="bi bi-calendar-x"></i>
+                    <p>No hay eventos disponibles para inscripcion en este momento.</p>
                 </div>
+                <select name="evento_id" id="eventoSelect" class="event-select-hidden" aria-hidden="true">
+                    <option value="">No hay eventos disponibles</option>
+                </select>
+                <?php else: ?>
+
+                <!-- Barra de filtro: busqueda + categorias -->
+                <div class="event-filter-bar">
+                    <div class="event-search">
+                        <i class="bi bi-search"></i>
+                        <input type="text" id="eventSearch" placeholder="Busca por nombre, lugar o categoria..." autocomplete="off" aria-label="Buscar evento">
+                    </div>
+                    <?php if (count($categoriasDisponibles) > 1): ?>
+                    <div class="event-filter-chips" id="eventFilterChips" role="group" aria-label="Filtrar por categoria">
+                        <button type="button" class="event-chip is-active" data-cat="all">
+                            <i class="bi bi-grid"></i> Todos
+                        </button>
+                        <?php foreach ($categoriasDisponibles as $catNombre): ?>
+                        <?php $chipMeta = $catMeta($catNombre); ?>
+                        <button type="button" class="event-chip" data-cat="<?php echo htmlspecialchars(strtolower($catNombre), ENT_QUOTES, 'UTF-8'); ?>">
+                            <i class="bi <?php echo $chipMeta['icon']; ?>"></i> <?php echo htmlspecialchars($catNombre); ?>
+                        </button>
+                        <?php endforeach; ?>
+                    </div>
+                    <?php endif; ?>
+                </div>
+
+                <!-- Galeria de eventos seleccionables -->
+                <div class="event-picker-grid" id="eventPickerGrid" role="radiogroup" aria-label="Selecciona el evento">
+                    <?php foreach ($lista_eventos as $e): ?>
+                    <?php
+                        $eid = (int) $e['id'];
+                        $cuposLibres = max(0, (int) $e['cupo_maximo'] - (int) $e['inscritos_actuales']);
+                        $catEvento = trim((string) ($e['categoria'] ?? ''));
+                        $meta = $catMeta($catEvento);
+                        $imgReal = $resolverImagen($e['ruta_imagen'] ?? '');
+                        $isSelected = ($eventoSeleccionadoId && $eventoSeleccionadoId === $eid)
+                            || (!$eventoSeleccionadoId && $eventoResumen && (int) $eventoResumen['id'] === $eid);
+                        $searchStr = strtolower($e['titulo'] . ' ' . ($e['ubicacion'] ?? '') . ' ' . $catEvento);
+                    ?>
+                    <button type="button"
+                            class="event-pick-card <?php echo $isSelected ? 'is-selected' : ''; ?>"
+                            data-id="<?php echo $eid; ?>"
+                            data-cat="<?php echo htmlspecialchars(strtolower($catEvento), ENT_QUOTES, 'UTF-8'); ?>"
+                            data-search="<?php echo htmlspecialchars($searchStr, ENT_QUOTES, 'UTF-8'); ?>"
+                            role="radio"
+                            aria-checked="<?php echo $isSelected ? 'true' : 'false'; ?>">
+                        <span class="epc-media epc-ph-<?php echo $meta['color']; ?>">
+                            <?php if ($imgReal): ?>
+                            <img src="<?php echo htmlspecialchars($imgReal); ?>" alt="<?php echo htmlspecialchars($e['titulo']); ?>" loading="lazy" onerror="this.remove()">
+                            <?php endif; ?>
+                            <i class="bi <?php echo $meta['icon']; ?> epc-ph-icon"></i>
+                            <?php if ($catEvento !== ''): ?>
+                            <span class="epc-cat"><?php echo htmlspecialchars($catEvento); ?></span>
+                            <?php endif; ?>
+                            <span class="epc-seats-badge <?php echo $cuposLibres <= 5 ? 'is-low' : ''; ?>">
+                                <i class="bi bi-ticket-perforated"></i> <?php echo $cuposLibres; ?>
+                            </span>
+                            <span class="epc-check"><i class="bi bi-check-lg"></i></span>
+                        </span>
+                        <span class="epc-body">
+                            <span class="epc-title"><?php echo htmlspecialchars($e['titulo']); ?></span>
+                            <span class="epc-meta">
+                                <span><i class="bi bi-calendar-event"></i><?php echo htmlspecialchars($formatearFecha($e['fecha_evento'])); ?></span>
+                                <span><i class="bi bi-clock"></i><?php echo htmlspecialchars($formatearHora($e['hora_evento'] ?? '')); ?></span>
+                                <span><i class="bi bi-geo-alt"></i><?php echo htmlspecialchars($e['ubicacion'] ?? 'Por confirmar'); ?></span>
+                            </span>
+                        </span>
+                    </button>
+                    <?php endforeach; ?>
+                </div>
+                <p class="event-empty-msg" id="eventEmptyMsg" hidden>
+                    <i class="bi bi-search"></i> No se encontraron eventos con ese criterio.
+                </p>
+
+                <!-- Select oculto sincronizado (mantiene la compatibilidad del formulario) -->
+                <select name="evento_id" id="eventoSelect" class="event-select-hidden" required aria-hidden="true" tabindex="-1">
+                    <?php foreach ($lista_eventos as $e): ?>
+                    <?php
+                        $cuposLibres = max(0, (int) $e['cupo_maximo'] - (int) $e['inscritos_actuales']);
+                        $fechaTexto = $formatearFecha($e['fecha_evento']);
+                        $horaTexto = $formatearHora($e['hora_evento'] ?? '');
+                        $selected = ($eventoSeleccionadoId && $eventoSeleccionadoId === (int) $e['id']) ? 'selected' : '';
+                    ?>
+                    <option value="<?php echo (int) $e['id']; ?>"
+                            <?php echo $selected; ?>
+                            data-title="<?php echo htmlspecialchars($e['titulo'], ENT_QUOTES, 'UTF-8'); ?>"
+                            data-date="<?php echo htmlspecialchars($fechaTexto, ENT_QUOTES, 'UTF-8'); ?>"
+                            data-time="<?php echo htmlspecialchars($horaTexto, ENT_QUOTES, 'UTF-8'); ?>"
+                            data-location="<?php echo htmlspecialchars($e['ubicacion'] ?? 'Lugar por confirmar', ENT_QUOTES, 'UTF-8'); ?>"
+                            data-seats="<?php echo $cuposLibres; ?>"
+                            data-campos="<?php echo htmlspecialchars($e['formulario_campos'] ?? '[]'); ?>">
+                        <?php echo htmlspecialchars($e['titulo']); ?> - <?php echo $cuposLibres; ?> cupos
+                    </option>
+                    <?php endforeach; ?>
+                </select>
+                <?php endif; ?>
 
                 <!-- Contenedor de campos dinámicos -->
                 <div id="dynamicFieldsContainer" style="margin-top: 15px; display: flex; flex-direction: column; gap: 15px;"></div>
@@ -492,7 +592,6 @@
     });
 
     /* ── Render dynamic fields based on selected event ── */
-    const eventoSelect = document.getElementById('eventoSelect');
     const dynamicFieldsContainer = document.getElementById('dynamicFieldsContainer');
 
     function renderDynamicFields() {
@@ -576,6 +675,61 @@
     if (eventoSelect) {
         eventoSelect.addEventListener('change', renderDynamicFields);
         renderDynamicFields();
+    }
+
+    /* ── Galeria de eventos: seleccion por tarjeta + filtro ── */
+    const eventPickerGrid = document.getElementById('eventPickerGrid');
+    const eventSearch = document.getElementById('eventSearch');
+    const eventFilterChips = document.getElementById('eventFilterChips');
+    const eventEmptyMsg = document.getElementById('eventEmptyMsg');
+    let activeCat = 'all';
+
+    function selectEventCard(id) {
+        if (!eventoSelect || !id) return;
+        eventoSelect.value = String(id);
+        eventoSelect.dispatchEvent(new Event('change'));
+        eventPickerGrid?.querySelectorAll('.event-pick-card').forEach(card => {
+            const on = card.dataset.id === String(id);
+            card.classList.toggle('is-selected', on);
+            card.setAttribute('aria-checked', on ? 'true' : 'false');
+        });
+    }
+
+    if (eventPickerGrid) {
+        eventPickerGrid.addEventListener('click', event => {
+            const card = event.target.closest('.event-pick-card');
+            if (!card) return;
+            selectEventCard(card.dataset.id);
+            document.getElementById('selectedEventCard')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+    }
+
+    function applyEventFilter() {
+        if (!eventPickerGrid) return;
+        const term = (eventSearch?.value || '').trim().toLowerCase();
+        let visible = 0;
+        eventPickerGrid.querySelectorAll('.event-pick-card').forEach(card => {
+            const matchCat = activeCat === 'all' || card.dataset.cat === activeCat;
+            const matchTerm = !term || (card.dataset.search || '').includes(term);
+            const show = matchCat && matchTerm;
+            card.style.display = show ? '' : 'none';
+            if (show) visible++;
+        });
+        if (eventEmptyMsg) eventEmptyMsg.hidden = visible !== 0;
+    }
+
+    eventSearch?.addEventListener('input', applyEventFilter);
+
+    if (eventFilterChips) {
+        eventFilterChips.addEventListener('click', event => {
+            const chip = event.target.closest('.event-chip');
+            if (!chip) return;
+            activeCat = chip.dataset.cat;
+            eventFilterChips.querySelectorAll('.event-chip').forEach(c => {
+                c.classList.toggle('is-active', c === chip);
+            });
+            applyEventFilter();
+        });
     }
 </script>
 
