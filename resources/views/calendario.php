@@ -193,9 +193,6 @@
                 <a href="#" class="btn btn-primary" id="modalRegisterBtn">
                     <i class="bi bi-ticket-perforated"></i> Inscribirme
                 </a>
-                <button class="btn btn-secondary" onclick="addToGoogleCalendar()">
-                    <i class="bi bi-google"></i> Google Calendar
-                </button>
                 <button class="btn btn-secondary" onclick="shareEvent()">
                     <i class="bi bi-share"></i> Compartir
                 </button>
@@ -413,10 +410,6 @@ function shareCalendar() {
         navigator.clipboard.writeText(window.location.href);
         alert('Enlace copiado al portapapeles');
     }
-}
-
-function addToGoogleCalendar() {
-    alert('Función de Google Calendar próximamente');
 }
 
 function shareEvent() {
