@@ -75,16 +75,25 @@
         <div class="calendar-main">
             <div class="calendar-stats">
                 <div class="stat-item">
-                    <div class="stat-value"><?php echo isset($stats) ? number_format($stats['total_events'] ?? 0) : '0'; ?></div>
-                    <div class="stat-label">Total Eventos</div>
+                    <span class="stat-ico stat-ico--total"><i class="bi bi-calendar3-event"></i></span>
+                    <div class="stat-body">
+                        <div class="stat-value"><?php echo isset($stats) ? number_format($stats['total_events'] ?? 0) : '0'; ?></div>
+                        <div class="stat-label">Total Eventos</div>
+                    </div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-value"><?php echo isset($stats) ? number_format($stats['upcoming_events'] ?? 0) : '0'; ?></div>
-                    <div class="stat-label">Próximos</div>
+                    <span class="stat-ico stat-ico--up"><i class="bi bi-clock-history"></i></span>
+                    <div class="stat-body">
+                        <div class="stat-value"><?php echo isset($stats) ? number_format($stats['upcoming_events'] ?? 0) : '0'; ?></div>
+                        <div class="stat-label">Próximos</div>
+                    </div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-value"><?php echo isset($stats) ? number_format($stats['free_events'] ?? 0) : '0'; ?></div>
-                    <div class="stat-label">Gratuitos</div>
+                    <span class="stat-ico stat-ico--free"><i class="bi bi-gift"></i></span>
+                    <div class="stat-body">
+                        <div class="stat-value"><?php echo isset($stats) ? number_format($stats['free_events'] ?? 0) : '0'; ?></div>
+                        <div class="stat-label">Gratuitos</div>
+                    </div>
                 </div>
             </div>
             
