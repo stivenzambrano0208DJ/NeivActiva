@@ -161,22 +161,6 @@
         <?php endif; ?>
 
         <section class="enroll-container">
-            <?php if (!empty($lista_eventos)): ?>
-            <article class="selected-event-card" id="selectedEventCard">
-                <div class="event-card-icon"><i class="bi bi-calendar2-check"></i></div>
-                <div class="event-card-content">
-                    <span class="event-card-label">Evento seleccionado</span>
-                    <h3 id="summaryTitle"><?php echo htmlspecialchars($eventoResumen['titulo'] ?? 'Selecciona un evento'); ?></h3>
-                    <div class="event-card-meta">
-                        <span><i class="bi bi-calendar-event"></i><strong id="summaryDate"><?php echo htmlspecialchars($formatearFecha($eventoResumen['fecha_evento'] ?? '')); ?></strong></span>
-                        <span><i class="bi bi-clock"></i><strong id="summaryTime"><?php echo htmlspecialchars($formatearHora($eventoResumen['hora_evento'] ?? '')); ?></strong></span>
-                        <span><i class="bi bi-geo-alt"></i><strong id="summaryLocation"><?php echo htmlspecialchars($eventoResumen['ubicacion'] ?? 'Lugar por confirmar'); ?></strong></span>
-                        <span><i class="bi bi-ticket-perforated"></i><strong id="summarySeats"><?php echo max(0, (int) ($eventoResumen['cupo_maximo'] ?? 0) - (int) ($eventoResumen['inscritos_actuales'] ?? 0)); ?></strong> cupos</span>
-                    </div>
-                </div>
-            </article>
-            <?php endif; ?>
-
             <form action="?view=inscripcion" method="POST" class="enrollment-form">
                 <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrfToken ?? ''); ?>">
                 <div class="form-section-title">
