@@ -7,7 +7,7 @@ use Throwable;
 
 class SchemaService {
     // Subir esta version obliga a revalidar el esquema tras un despliegue.
-    private const VERSION = '2026-08-12';
+    private const VERSION = '2026-08-13';
 
     private $db;
 
@@ -70,6 +70,9 @@ class SchemaService {
         $this->agregarColumna('usuarios', 'documento_identidad', 'VARCHAR(50) NULL AFTER correo');
         $this->agregarColumna('usuarios', 'telefono', 'VARCHAR(20) NULL AFTER documento_identidad');
         $this->agregarColumna('usuarios', 'creado_en', 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP AFTER rol');
+        // Contador para invalidar sesiones abiertas al cambiar la contrasena
+        // (compartido en concepto con DJPRO para cerrar sesion en ambas apps).
+        $this->agregarColumna('usuarios', 'token_version', 'INT NOT NULL DEFAULT 0 AFTER rol');
         $this->actualizarRolesUsuario();
         $this->agregarColumna('participantes', 'usuario_id', 'INT NULL AFTER id');
         $this->agregarColumna('participantes', 'nombre', 'VARCHAR(255) NULL AFTER usuario_id');

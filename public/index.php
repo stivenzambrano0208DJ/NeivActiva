@@ -72,6 +72,33 @@ try {
 }
 
 // ──────────────────────────────────────────────────────────────
+// INVALIDACIÓN DE SESIÓN POR CAMBIO DE CONTRASEÑA (token_version)
+// Si la contraseña de la cuenta cambió (aquí o en DJPRO) después de abrir esta
+// sesión, el contador en BD ya no coincide con el guardado en la sesión: la
+// cerramos y mandamos al login. Fail-open: cualquier fallo se registra y sigue.
+// ──────────────────────────────────────────────────────────────
+if (!empty($_SESSION['usuario_id'])) {
+    try {
+        $stmtTv = App\Core\Database::getInstance()->query(
+            'SELECT token_version FROM usuarios WHERE id = ? LIMIT 1',
+            [(int) $_SESSION['usuario_id']]
+        );
+        $filaTv = $stmtTv->fetch();
+        $versionBd = $filaTv ? (int) ($filaTv['token_version'] ?? 0) : 0;
+        $versionSesion = isset($_SESSION['token_version']) ? (int) $_SESSION['token_version'] : 0;
+
+        if (!$filaTv || $versionBd !== $versionSesion) {
+            App\Core\Auth::logout();
+            $appUrl = rtrim($_ENV['APP_URL'] ?? (defined('APP_URL') ? APP_URL : 'http://localhost/NeivActiva'), '/');
+            header('Location: ' . $appUrl . '/login?msg=sesion_cerrada');
+            exit;
+        }
+    } catch (Throwable $e) {
+        error_log('[SessionGuard] token_version: ' . $e->getMessage());
+    }
+}
+
+// ──────────────────────────────────────────────────────────────
 // MODO COMPATIBILIDAD: si viene ?view=X, resolver como ruta limpia sin perder POST.
 // ──────────────────────────────────────────────────────────────
 if (isset($_GET['view'])) {

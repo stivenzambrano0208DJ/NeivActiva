@@ -265,6 +265,21 @@ class UsuarioModel extends BaseModel {
         ]);
     }
 
+    /**
+     * Invalida todas las sesiones abiertas de una cuenta subiendo su token_version.
+     * Se llama tras cada cambio de contrasena. Defensivo: si la columna aun no
+     * existe (esquema no provisionado), no hace nada.
+     */
+    public function incrementarTokenVersion($correo) {
+        if (!$this->columnExists('token_version')) {
+            return false;
+        }
+        return $this->db->query(
+            "UPDATE {$this->table} SET token_version = token_version + 1 WHERE correo = ?",
+            [strtolower(trim((string) $correo))]
+        );
+    }
+
     // ──────────────────────────────────────────────────────────
     //  RECUPERACIÓN DE CONTRASEÑA
     // ──────────────────────────────────────────────────────────
@@ -352,6 +367,8 @@ class UsuarioModel extends BaseModel {
         $this->update((int) $usuario['id'], [
             'password' => password_hash((string) $password, PASSWORD_DEFAULT),
         ]);
+        // Cerrar todas las sesiones abiertas de esta cuenta en NeivActiva.
+        $this->incrementarTokenVersion($usuario['correo']);
         $this->db->query(
             "UPDATE password_resets SET usado = 1 WHERE id = ?",
             [(int) $row['id']]

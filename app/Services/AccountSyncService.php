@@ -107,6 +107,15 @@ class AccountSyncService
                 password_hash($passwordPlano, PASSWORD_DEFAULT),
                 $correo,
             ]);
+
+            // Invalidar las sesiones abiertas de esa cuenta en DJPRO. En su propio
+            // try/catch por si la columna token_version aun no existe alla.
+            try {
+                $pdo->prepare('UPDATE usuarios SET token_version = token_version + 1 WHERE correo = ?')
+                    ->execute([$correo]);
+            } catch (Throwable $e) {
+                error_log('[AccountSync->DJPRO] token_version: ' . $e->getMessage());
+            }
         } catch (Throwable $e) {
             error_log('[AccountSync->DJPRO] alCambiarPassword: ' . $e->getMessage());
         }

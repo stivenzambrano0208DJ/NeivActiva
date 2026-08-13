@@ -39,6 +39,8 @@ class AuthController extends Controller {
                 $_SESSION['usuario_nombre'] = $u['nombre'];
                 $_SESSION['usuario_correo'] = $u['correo'];
                 $_SESSION['rol'] = $u['rol'];
+                // Version de sesion para invalidacion por cambio de contrasena.
+                $_SESSION['token_version'] = (int) ($u['token_version'] ?? 0);
 
                 $this->redirect($this->redireccionPorRol($u['rol']));
             } else {
