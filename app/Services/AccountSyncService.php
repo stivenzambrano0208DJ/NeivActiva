@@ -22,14 +22,31 @@ use Throwable;
  */
 class AccountSyncService
 {
+    /**
+     * Lee una variable de entorno de forma fiable: primero getenv() (lo que
+     * inyecta Docker/Dokploy) y si no, $_ENV (lo que carga phpdotenv en local).
+     */
+    private function env(string $clave, ?string $porDefecto = null): ?string
+    {
+        $v = getenv($clave);
+        if ($v !== false && $v !== '') {
+            return $v;
+        }
+        if (isset($_ENV[$clave]) && $_ENV[$clave] !== '') {
+            return (string) $_ENV[$clave];
+        }
+        return $porDefecto;
+    }
+
     private function conexionDjpro(): PDO
     {
-        $host = $_ENV['DJPRO_DB_HOST'] ?? ($_ENV['DB_HOST'] ?? 'localhost');
-        $name = $_ENV['DJPRO_DB_NAME'] ?? 'djro_db';
-        $user = $_ENV['DJPRO_DB_USER'] ?? ($_ENV['DB_USER'] ?? 'root');
-        $pass = $_ENV['DJPRO_DB_PASS'] ?? ($_ENV['DB_PASS'] ?? '');
+        $host = $this->env('DJPRO_DB_HOST', $this->env('DB_HOST', 'localhost'));
+        $port = $this->env('DJPRO_DB_PORT', '3306');
+        $name = $this->env('DJPRO_DB_NAME', 'djro_db');
+        $user = $this->env('DJPRO_DB_USER', $this->env('DB_USER', 'root'));
+        $pass = $this->env('DJPRO_DB_PASS', $this->env('DB_PASS', ''));
 
-        $dsn = "mysql:host={$host};dbname={$name};charset=utf8mb4";
+        $dsn = "mysql:host={$host};port={$port};dbname={$name};charset=utf8mb4";
         return new PDO($dsn, $user, $pass, [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,

@@ -21,9 +21,9 @@
 
 $apply = in_array('--apply', $argv, true);
 
-function conectar(string $host, string $name, string $user, string $pass): PDO
+function conectar(string $host, string $port, string $name, string $user, string $pass): PDO
 {
-    $dsn = "mysql:host={$host};dbname={$name};charset=utf8mb4";
+    $dsn = "mysql:host={$host};port={$port};dbname={$name};charset=utf8mb4";
     return new PDO($dsn, $user, $pass, [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
@@ -32,11 +32,13 @@ function conectar(string $host, string $name, string $user, string $pass): PDO
 }
 
 $neivHost = getenv('DB_HOST') ?: 'localhost';
+$neivPort = getenv('DB_PORT') ?: '3306';
 $neivName = getenv('DB_NAME') ?: 'neivactiva_db';
 $neivUser = getenv('DB_USER') ?: 'root';
 $neivPass = getenv('DB_PASS'); $neivPass = ($neivPass === false) ? '' : $neivPass;
 
 $djHost = getenv('DJPRO_DB_HOST') ?: $neivHost;
+$djPort = getenv('DJPRO_DB_PORT') ?: '3306';
 $djName = getenv('DJPRO_DB_NAME') ?: 'djro_db';
 $djUser = getenv('DJPRO_DB_USER') ?: $neivUser;
 $djPass = getenv('DJPRO_DB_PASS'); $djPass = ($djPass === false) ? $neivPass : $djPass;
@@ -45,8 +47,8 @@ echo "== Sincronizacion inicial de usuarios ==\n";
 echo $apply ? "MODO: APLICAR CAMBIOS\n\n" : "MODO: SIMULACION (usa --apply para escribir)\n\n";
 
 try {
-    $neiv = conectar($neivHost, $neivName, $neivUser, $neivPass);
-    $dj   = conectar($djHost, $djName, $djUser, $djPass);
+    $neiv = conectar($neivHost, $neivPort, $neivName, $neivUser, $neivPass);
+    $dj   = conectar($djHost, $djPort, $djName, $djUser, $djPass);
 } catch (Throwable $e) {
     fwrite(STDERR, "No se pudo conectar a una de las bases: " . $e->getMessage() . "\n");
     exit(1);
