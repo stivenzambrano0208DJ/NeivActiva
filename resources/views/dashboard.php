@@ -18,7 +18,7 @@ foreach (($eventos_inscritos ?? []) as $i) {
     $inscritosIds[] = (int)($i['evento_id'] ?? $i['id_evento'] ?? $i['id'] ?? 0);
 }
 $eventos           = $lista_eventos ?? [];
-$eventosDestacados = array_slice($eventos, 0, 3);
+$eventosDestacados = $eventos; // se filtran en el cliente por categoria/busqueda
 $fmtFecha = fn($f) => $f ? date('d M Y', strtotime($f)) : 'Por confirmar';
 $fmtHora  = fn($h) => $h ? date('g:i A', strtotime($h)) : '';
 $catIcon  = fn($c) => match($c) {
@@ -133,16 +133,16 @@ $catIcon  = fn($c) => match($c) {
                 <span class="db-kicker">Explorar</span>
                 <h2 class="db-explore-title">¿Qué quieres vivir en Neiva?</h2>
                 <p class="db-explore-sub">Descubre experiencias culturales, deportivas y educativas cerca de ti.</p>
-                <form class="db-explore-search" action="/eventos" method="get" role="search">
+                <form class="db-explore-search" id="dbExploreForm" role="search" onsubmit="return false;">
                     <i class="bi bi-search"></i>
-                    <input type="text" name="q" placeholder="Busca por evento, lugar o categoría…" aria-label="Buscar eventos">
+                    <input type="text" id="dbSearchInput" name="q" placeholder="Busca por evento, lugar o categoría…" aria-label="Buscar eventos" autocomplete="off">
                     <button type="submit"><i class="bi bi-compass"></i> Explorar</button>
                 </form>
-                <div class="db-explore-chips">
-                    <a href="/eventos" class="db-chip db-chip--all"><i class="bi bi-grid-fill"></i> Todos</a>
-                    <a href="/eventos?q=Cultural" class="db-chip"><i class="bi bi-palette-fill"></i> Cultural</a>
-                    <a href="/eventos?q=Deportivo" class="db-chip"><i class="bi bi-trophy-fill"></i> Deportivo</a>
-                    <a href="/eventos?q=Educativo" class="db-chip"><i class="bi bi-mortarboard-fill"></i> Educativo</a>
+                <div class="db-explore-chips" id="dbChips">
+                    <a href="#eventos-listados-dashboard" class="db-chip is-active" data-filter="all"><i class="bi bi-grid-fill"></i> Todos</a>
+                    <a href="#eventos-listados-dashboard" class="db-chip" data-filter="cultural"><i class="bi bi-palette-fill"></i> Cultural</a>
+                    <a href="#eventos-listados-dashboard" class="db-chip" data-filter="deportivo"><i class="bi bi-trophy-fill"></i> Deportivo</a>
+                    <a href="#eventos-listados-dashboard" class="db-chip" data-filter="educativo"><i class="bi bi-mortarboard-fill"></i> Educativo</a>
                     <a href="/calendario" class="db-chip"><i class="bi bi-calendar-month-fill"></i> Calendario</a>
                 </div>
             </div>
@@ -195,7 +195,9 @@ $catIcon  = fn($c) => match($c) {
                         <article class="db-ev-card<?php echo $inscrito ? ' db-ev-inscrito' : ''; ?>"
                                  data-event-id="<?php echo $evId; ?>"
                                  data-inscritos="<?php echo $inscritos; ?>"
-                                 data-cupos="<?php echo $cupos; ?>">
+                                 data-cupos="<?php echo $cupos; ?>"
+                                 data-cat="<?php echo htmlspecialchars(strtolower($cat), ENT_QUOTES); ?>"
+                                 data-search="<?php echo htmlspecialchars(strtolower(($ev['titulo'] ?? '').' '.($ev['ubicacion'] ?? '').' '.$cat), ENT_QUOTES); ?>">
 
                             <a class="db-ev-img db-ev-ph-<?php echo $catColor; ?>" href="/dashboard?view=detalle_evento&id=<?php echo $evId; ?>" aria-label="Ver detalles de <?php echo $titulo; ?>">
                                 <div class="db-ev-img-ph"><i class="bi <?php echo $catIcon($cat); ?>"></i></div>
@@ -254,6 +256,11 @@ $catIcon  = fn($c) => match($c) {
                             </div>
                         </article>
                         <?php endforeach; ?>
+                    </div>
+                    <div class="db-no-results" id="dbNoResults" hidden>
+                        <i class="bi bi-search"></i>
+                        <strong>Sin resultados</strong>
+                        <p>No hay eventos que coincidan con tu búsqueda o filtro.</p>
                     </div>
                 <?php endif; ?>
             </section>
@@ -352,5 +359,41 @@ $catIcon  = fn($c) => match($c) {
 </div>
 
 <script src="/assets/js/dashboard.js?v=<?php echo @filemtime(ROOT_PATH . '/public/assets/js/dashboard.js'); ?>"></script>
+<script>
+/* ── Filtro de eventos en el propio dashboard ── */
+(() => {
+    const grid = document.getElementById('eventos-listados-dashboard');
+    if (!grid) return;
+    const chipsBox = document.getElementById('dbChips');
+    const searchInput = document.getElementById('dbSearchInput');
+    const noResults = document.getElementById('dbNoResults');
+    const cards = Array.from(grid.querySelectorAll('.db-ev-card'));
+    let filtroCat = 'all';
+
+    function aplicar() {
+        const term = (searchInput?.value || '').trim().toLowerCase();
+        let visibles = 0;
+        cards.forEach(card => {
+            const coincideCat = filtroCat === 'all' || (card.dataset.cat || '') === filtroCat;
+            const coincideTexto = !term || (card.dataset.search || '').includes(term);
+            const mostrar = coincideCat && coincideTexto;
+            card.style.display = mostrar ? '' : 'none';
+            if (mostrar) visibles++;
+        });
+        if (noResults) noResults.hidden = visibles !== 0;
+    }
+
+    chipsBox?.addEventListener('click', (e) => {
+        const chip = e.target.closest('.db-chip[data-filter]');
+        if (!chip) return;
+        e.preventDefault();
+        filtroCat = chip.dataset.filter;
+        chipsBox.querySelectorAll('.db-chip[data-filter]').forEach(c => c.classList.toggle('is-active', c === chip));
+        aplicar();
+    });
+
+    searchInput?.addEventListener('input', aplicar);
+})();
+</script>
 </body>
 </html>

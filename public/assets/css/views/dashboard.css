@@ -591,3 +591,23 @@
     }
     .db-hero:hover .db-hero-bg { transform: scale(1.04); }
 }
+
+/* ── Chip de filtro activo + sin resultados (filtrado en dashboard) ── */
+.db-chip.is-active {
+    background: linear-gradient(135deg, var(--primary) 0%, #C85A00 100%);
+    border-color: transparent;
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(255, 122, 0, .3);
+}
+.db-chip.is-active i { color: #fff; }
+.db-chip.is-active:hover { color: #fff; background: linear-gradient(135deg, var(--primary) 0%, #C85A00 100%); }
+
+.db-no-results {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 2.5rem 1rem;
+    color: var(--text-secondary);
+}
+.db-no-results i { font-size: 2rem; color: var(--primary); display: block; margin-bottom: .5rem; }
+.db-no-results strong { display: block; font-size: 1rem; color: var(--text-primary); margin-bottom: .25rem; }
+.db-no-results p { margin: 0; font-size: .85rem; }
