@@ -448,6 +448,11 @@ class EventController extends Controller {
             exit();
         }
 
+        // Saber si el usuario ya tiene una inscripcion activa para el CTA.
+        $correoSesion = $_SESSION['usuario_correo'] ?? '';
+        $yaInscrito = $correoSesion !== ''
+            && $this->inscripciones->existeInscripcionActivaPorEmail($correoSesion, (int) $evento['id']);
+
         require ROOT_PATH . '/resources/views/detalle_evento.php';
     }
 
