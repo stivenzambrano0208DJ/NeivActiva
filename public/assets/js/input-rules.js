@@ -1,7 +1,8 @@
 /**
  * Reglas de entrada compartidas para todos los formularios de NeivActiva.
  *
- * - Cualquier input/textarea de texto: se le quitan los emojis mientras se escribe.
+ * - Cualquier input/textarea (incluida la contraseña): se le quitan los emojis
+ *   mientras se escribe.
  * - data-rule="digits"  -> solo números (documento, teléfono).
  * - data-rule="letters" -> solo letras, espacios, apóstrofe y guion (nombres).
  *
@@ -10,8 +11,8 @@
 (function () {
     'use strict';
 
-    // Rangos de emojis + selectores de variación y ZWJ.
-    var EMOJI = /[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{2300}-\u{23FF}\u{FE00}-\u{FE0F}\u{1F1E6}-\u{1F1FF}]|‍/gu;
+    // Rangos de emojis + selectores de variación (FE00-FE0F) y ZWJ (200D).
+    var EMOJI = /[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{2300}-\u{23FF}\u{FE00}-\u{FE0F}\u{200D}\u{1F1E6}-\u{1F1FF}]/gu;
 
     function quitarEmojis(v) {
         return v.replace(EMOJI, '');
@@ -34,7 +35,9 @@
             return true;
         }
         var tipo = (el.getAttribute('type') || 'text').toLowerCase();
-        return ['text', 'tel', 'search', 'email'].indexOf(tipo) !== -1 || el.hasAttribute('data-rule');
+        // Se incluye 'password': no se permiten emojis en ninguna clave (pero sí
+        // letras, numeros y simbolos normales, que siguen siendo validos).
+        return ['text', 'tel', 'search', 'email', 'password'].indexOf(tipo) !== -1 || el.hasAttribute('data-rule');
     }
 
     function aplicarReglas(el) {
