@@ -355,24 +355,6 @@
                 <!-- Contenedor de campos dinámicos -->
                 <div id="dynamicFieldsContainer" style="margin-top: 15px; display: flex; flex-direction: column; gap: 15px;"></div>
 
-                <div class="input-group-modern">
-                    <label>Categoria de participacion</label>
-                    <div class="radio-group">
-                        <div class="radio-item">
-                            <input type="radio" name="categoria" id="cat-juv" value="Juvenil">
-                            <label for="cat-juv" class="radio-label"><i class="bi bi-stars"></i> Juvenil</label>
-                        </div>
-                        <div class="radio-item">
-                            <input type="radio" name="categoria" id="cat-adu" value="Adulto" checked>
-                            <label for="cat-adu" class="radio-label"><i class="bi bi-person-check"></i> Adulto</label>
-                        </div>
-                        <div class="radio-item">
-                            <input type="radio" name="categoria" id="cat-sen" value="Senior">
-                            <label for="cat-sen" class="radio-label"><i class="bi bi-award"></i> Senior</label>
-                        </div>
-                    </div>
-                </div>
-
                 <button type="submit" class="submit-enrollment" <?php echo (empty($lista_eventos) || !$perfilCompleto) ? 'disabled' : ''; ?>>
                     <span>Inscribirme</span>
                     <i class="bi bi-shield-check"></i>
