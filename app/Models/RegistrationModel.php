@@ -178,10 +178,13 @@ class RegistrationModel extends BaseModel {
     }
 
     public function obtenerPorEmail($email) {
-        $sql = "SELECT i.*, e.titulo as evento_titulo, e.fecha_evento, e.estado_evento 
-                FROM inscripciones i 
-                JOIN eventos e ON i.evento_id = e.id 
-                WHERE i.correo_electronico = ? 
+        // Excluye inscripciones canceladas: no deben generar certificado ni QR
+        // (el QR de una inscripcion cancelada queda inactivo).
+        $sql = "SELECT i.*, e.titulo as evento_titulo, e.fecha_evento, e.estado_evento
+                FROM inscripciones i
+                JOIN eventos e ON i.evento_id = e.id
+                WHERE i.correo_electronico = ?
+                  AND i.estado_inscripcion <> 'Cancelada'
                 ORDER BY e.fecha_evento DESC";
         return $this->db->query($sql, [$email])->fetchAll();
     }
