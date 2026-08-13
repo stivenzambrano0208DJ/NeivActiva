@@ -2414,6 +2414,18 @@ html {
     border-top: 1px solid rgba(17, 24, 39, 0.08) !important;
 }
 
+/* Botones "Iniciar Sesión" y "Crear Cuenta": mismo tamaño (ancho completo).
+   .btn es inline-flex, por lo que sin esto cada botón toma el ancho de su
+   texto y quedan desiguales. */
+.sidebar-session .btn {
+    display: flex !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+.sidebar-session .btn + .btn {
+    margin-top: 8px !important;
+}
+
 /* Buscadores con icono a la izquierda: dar espacio para que no se encime */
 .search-modern { position: relative !important; }
 .search-modern input {
