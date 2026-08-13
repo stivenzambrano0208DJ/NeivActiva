@@ -96,6 +96,15 @@ class AuthController extends Controller {
 
             $usuarioId = $this->usuarios->registrar($datos);
             if ($usuarioId) {
+                // Sincronizar la cuenta con DJPRO (mismo correo+contrasena en ambas
+                // plataformas). No debe bloquear el registro si DJPRO no responde.
+                try {
+                    (new \App\Services\AccountSyncService())
+                        ->alRegistrar($datos['nombre'], $datos['correo'], $datos['password']);
+                } catch (Throwable $e) {
+                    error_log('Registro: fallo al sincronizar con DJPRO: ' . $e->getMessage());
+                }
+
                 // Notificación de bienvenida por correo (no debe bloquear el registro).
                 try {
                     (new MailService())->enviarBienvenidaRegistro($datos);
@@ -176,7 +185,20 @@ class AuthController extends Controller {
                 $this->redirect('/reset-password?token=' . urlencode($token) . '&error=confirmacion');
             }
 
+            // Capturamos el correo del token ANTES de restablecer (el token queda
+            // marcado como usado y ya no se puede consultar despues).
+            $filaToken = $this->usuarios->buscarTokenResetValido($token);
+
             if ($this->usuarios->restablecerPasswordConToken($token, $password)) {
+                // Propagar el cambio de contrasena a DJPRO para mantenerlas iguales.
+                if ($filaToken && !empty($filaToken['correo'])) {
+                    try {
+                        (new \App\Services\AccountSyncService())
+                            ->alCambiarPassword($filaToken['correo'], $password);
+                    } catch (Throwable $e) {
+                        error_log('Reset: fallo al sincronizar con DJPRO: ' . $e->getMessage());
+                    }
+                }
                 $this->redirect('/login?msg=password_actualizada');
             }
             $this->redirect('/reset-password?token=' . urlencode($token) . '&error=token');
