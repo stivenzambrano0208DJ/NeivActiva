@@ -1,0 +1,109 @@
+/* ============================================================
+   PRO-UI — Acabado profesional compartido para TODAS las vistas
+   (participante y admin). Se carga globalmente desde el sidebar.
+   Objetivo: cabeceras tipo panel + marco de tarjetas unificado.
+   ============================================================ */
+
+/* ── CABECERAS COMO PANEL ─────────────────────────────────────
+   Convierte las barras superiores (sticky translucidas) en un
+   panel contenido: borde completo, esquinas redondeadas y sombra.
+   Se usa !important porque la base las define con !important.      */
+.top-navbar,
+.admin-topbar,
+.compact-navbar,
+.page-header,
+.dashboard-header,
+.ge-topbar,
+.gi-topbar,
+.as-topbar,
+.pt-topbar,
+.usr-topbar,
+.ia-topbar,
+.enrollment-navbar {
+    position: static !important;
+    margin: 1.4rem 0 0.9rem !important;
+    padding: 1.25rem 1.5rem !important;
+    background: var(--bg-primary, #fff) !important;
+    border: 1px solid var(--border-primary, #E5E7EB) !important;
+    border-radius: 18px !important;
+    box-shadow: 0 1px 2px rgba(17, 24, 39, 0.05),
+                0 8px 22px -12px rgba(17, 24, 39, 0.10) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    height: auto !important;
+}
+
+/* La cabecera de Mis Eventos ya es un panel: solo homogeneiza margenes */
+.premium-header {
+    margin: 1.4rem 0 0.9rem !important;
+}
+
+/* ── MARCO DE TARJETAS UNIFICADO ──────────────────────────────
+   Da a las tarjetas comunes un mismo borde, radio y sombra suave
+   para un aspecto limpio y consistente. Solo estilo visual; no se
+   tocan display/grid/flex para no romper los layouts.              */
+.kpi-card,
+.metric-card,
+.chart-card,
+.form-card,
+.list-card,
+.panel-card,
+.lg-card,
+.sum-card,
+.pt-card,
+.gi-card,
+.ge-card,
+.usr-card {
+    border: 1px solid var(--border-primary, #E5E7EB) !important;
+    border-radius: 14px !important;
+    box-shadow: 0 1px 2px rgba(17, 24, 39, 0.05),
+                0 8px 22px -14px rgba(17, 24, 39, 0.10) !important;
+    background: var(--bg-primary, #fff) !important;
+    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+
+.kpi-card:hover,
+.metric-card:hover,
+.chart-card:hover,
+.list-card:hover,
+.lg-card:hover,
+.sum-card:hover,
+.pt-card:hover,
+.gi-card:hover,
+.ge-card:hover,
+.usr-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(17, 24, 39, 0.06),
+                0 14px 30px -14px rgba(17, 24, 39, 0.18) !important;
+    border-color: var(--primary, #FF7A00) !important;
+}
+
+/* Pequeños "pills" de estadistica en admin: mismo marco limpio */
+.gi-stat-pill,
+.as-stat-pill,
+.pt-stat-pill,
+.hero-stat {
+    border: 1px solid var(--border-primary, #E5E7EB) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 1px 2px rgba(17, 24, 39, 0.04) !important;
+}
+
+/* En moviles, menos margen lateral perdido */
+@media (max-width: 640px) {
+    .top-navbar,
+    .admin-topbar,
+    .compact-navbar,
+    .page-header,
+    .dashboard-header,
+    .ge-topbar,
+    .gi-topbar,
+    .as-topbar,
+    .pt-topbar,
+    .usr-topbar,
+    .ia-topbar,
+    .enrollment-navbar,
+    .premium-header {
+        margin: 1rem 0 0.75rem !important;
+        padding: 1rem !important;
+    }
+}
