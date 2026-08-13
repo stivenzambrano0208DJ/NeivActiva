@@ -92,9 +92,21 @@ class UserEventsService {
         }
         $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
         $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
-        
+
         $stmt->execute();
-        return $stmt->fetchAll();
+        $rows = $stmt->fetchAll();
+
+        // Evita duplicados: un mismo evento puede tener mas de una inscripcion.
+        // Conserva la primera aparicion (ya viene ordenada por proximidad/fecha).
+        $unicos = [];
+        foreach ($rows as $row) {
+            $eventoId = (int) ($row['evento_id'] ?? 0);
+            if (!isset($unicos[$eventoId])) {
+                $unicos[$eventoId] = $row;
+            }
+        }
+
+        return array_values($unicos);
     }
 
     /**
@@ -103,15 +115,22 @@ class UserEventsService {
     public function getUserMetrics($userId) {
         $userEmail = $_SESSION['usuario_correo'] ?? '';
         
-        $sql = "SELECT 
+        // Cuenta cada evento una sola vez aunque existan inscripciones duplicadas:
+        // primero se elige la inscripcion mas reciente por evento (tabla derivada).
+        $sql = "SELECT
                 COUNT(*) as total_inscritos,
                 SUM(CASE WHEN (e.estado_evento = 'Terminado' OR e.fecha_evento < CURDATE()) THEN 1 ELSE 0 END) as completados,
                 SUM(CASE WHEN (e.estado_evento = 'Activo' AND e.fecha_evento >= CURDATE()) THEN 1 ELSE 0 END) as proximos,
                 SUM(CASE WHEN (COALESCE(i.estado_asistencia, i.asistencia, 'Pendiente') = 'Asistio' AND e.estado_evento = 'Terminado') THEN 1 ELSE 0 END) as certificados_disponibles
-                FROM inscripciones i
-                JOIN eventos e ON i.evento_id = e.id
-                WHERE (i.usuario_id = :user_id OR i.correo_electronico = :user_email)
-                AND i.estado_inscripcion <> 'Cancelada'";
+                FROM (
+                    SELECT MAX(ins.id) AS id
+                    FROM inscripciones ins
+                    WHERE (ins.usuario_id = :user_id OR ins.correo_electronico = :user_email)
+                    AND ins.estado_inscripcion <> 'Cancelada'
+                    GROUP BY ins.evento_id
+                ) uniq
+                JOIN inscripciones i ON i.id = uniq.id
+                JOIN eventos e ON e.id = i.evento_id";
         
         $stmt = $this->db->prepare($sql);
         $stmt->execute([
