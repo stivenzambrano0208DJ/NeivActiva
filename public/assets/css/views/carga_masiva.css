@@ -2,9 +2,86 @@
    CARGA_MASIVA.CSS — Rediseño Premium SaaS NeivActiva
    ============================================================ */
 
+/* ── Topbar estándar (consistente con Participantes/Usuarios/etc.) ── */
+.cm-page {
+    background: var(--bg-secondary);
+    min-height: 100vh;
+    padding: 0;
+}
+
+.cm-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.4rem 2rem 1.2rem;
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border-primary);
+    flex-wrap: wrap;
+}
+
+.cm-topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.cm-page-icon {
+    width: 46px; height: 46px;
+    border-radius: var(--radius-lg);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(255, 122, 0, .28);
+}
+
+.cm-page-title {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin: 0;
+    letter-spacing: -.03em;
+    line-height: 1.2;
+}
+
+.cm-page-sub {
+    font-size: .8rem;
+    color: var(--text-tertiary);
+    margin: .15rem 0 0;
+    font-weight: 500;
+}
+
+.cm-topbar-right {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    flex-wrap: wrap;
+}
+
+.cm-stat-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-full);
+    padding: .38rem .85rem;
+    font-size: .75rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    white-space: nowrap;
+}
+
+.cm-stat-pill--green { background: rgba(16, 185, 129, .12); color: #047857; border-color: rgba(16, 185, 129, .22); }
+.cm-stat-pill--warn  { background: rgba(245, 158, 11, .14); color: #b45309; border-color: rgba(245, 158, 11, .24); }
+.cm-stat-pill--red   { background: rgba(239, 68, 68, .12);  color: #b91c1c; border-color: rgba(239, 68, 68, .22); }
+
 .bulk-page {
     display: grid;
     gap: var(--space-md);
+    padding: 1.75rem 2rem;
 }
 
 .bulk-hero {

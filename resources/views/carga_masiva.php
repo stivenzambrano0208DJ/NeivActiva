@@ -55,58 +55,33 @@ if (isset($_GET['error'], $err[$_GET['error']])) {
 <body>
 <?php include 'partials/sidebar.php'; ?>
 
-<main class="main-wrapper">
-    <nav class="top-navbar admin-topbar">
-        <button class="sidebar-toggle" type="button" data-sidebar-toggle aria-label="Abrir menu">
-            <i class="bi bi-list"></i>
-        </button>
-        <div>
-            <div class="breadcrumbs">
-                <a href="?view=dashboard">Dashboard</a>
-                <i class="bi bi-chevron-right"></i>
-                <span>Carga Masiva</span>
+<main class="main-wrapper cm-page">
+    <header class="cm-topbar">
+        <div class="cm-topbar-left">
+            <button class="sidebar-toggle" type="button" data-sidebar-toggle aria-label="Abrir menu">
+                <i class="bi bi-list"></i>
+            </button>
+            <div class="cm-page-icon"><i class="bi bi-cloud-arrow-up-fill"></i></div>
+            <div>
+                <h1 class="cm-page-title">Importar participantes</h1>
+                <p class="cm-page-sub">Carga masiva de participantes desde CSV o Excel</p>
             </div>
-            <h1 class="page-title">Importar participantes</h1>
         </div>
-        <div class="header-actions">
-            <a class="btn btn-secondary admin-action" href="?view=participantes">
-                <i class="bi bi-people"></i>
-                Participantes
+        <div class="cm-topbar-right">
+            <div class="cm-stat-pill"><i class="bi bi-list-ol"></i> <?php echo $totalPreview; ?> total</div>
+            <div class="cm-stat-pill cm-stat-pill--green"><i class="bi bi-check2-circle"></i> <?php echo $validos; ?> válidos</div>
+            <div class="cm-stat-pill cm-stat-pill--warn"><i class="bi bi-exclamation-triangle"></i> <?php echo $advertencias; ?> adv.</div>
+            <div class="cm-stat-pill cm-stat-pill--red"><i class="bi bi-x-circle"></i> <?php echo $erroresPreview; ?> err.</div>
+            <a class="btn btn-secondary" href="?view=participantes">
+                <i class="bi bi-people"></i> Participantes
             </a>
-            <a class="btn btn-primary admin-action" href="?view=descargar_plantilla_participantes">
-                <i class="bi bi-file-earmark-spreadsheet"></i>
-                Descargar plantilla
+            <a class="btn btn-primary" href="?view=descargar_plantilla_participantes">
+                <i class="bi bi-file-earmark-spreadsheet"></i> Descargar plantilla
             </a>
         </div>
-    </nav>
+    </header>
 
     <div class="dashboard-content bulk-page">
-        <header class="bulk-hero">
-            <div>
-                <span class="eyebrow">Gestion Participantes</span>
-                <h2>Carga masiva desde CSV o Excel</h2>
-                <p>Sube un archivo, revisa los datos detectados y confirma la importacion con validaciones por fila.</p>
-            </div>
-            <div class="bulk-summary">
-                <div class="metric-card">
-                    <span>Total registros</span>
-                    <strong><?php echo $totalPreview; ?></strong>
-                </div>
-                <div class="metric-card ok">
-                    <span>Validos</span>
-                    <strong><?php echo $validos; ?></strong>
-                </div>
-                <div class="metric-card warn">
-                    <span>Advertencias</span>
-                    <strong><?php echo $advertencias; ?></strong>
-                </div>
-                <div class="metric-card bad">
-                    <span>Errores</span>
-                    <strong><?php echo $erroresPreview; ?></strong>
-                </div>
-            </div>
-        </header>
-
         <section class="bulk-layout">
             <aside class="panel-card upload-panel">
                 <div class="panel-title">
@@ -129,12 +104,6 @@ if (isset($_GET['error'], $err[$_GET['error']])) {
                         <span class="file-pill" id="fileName">Ningun archivo seleccionado</span>
                     </label>
 
-                    <div class="format-list">
-                        <div><i class="bi bi-check2-circle"></i> Encabezados reconocidos automaticamente</div>
-                        <div><i class="bi bi-check2-circle"></i> Duplicados por documento o correo</div>
-                        <div><i class="bi bi-check2-circle"></i> Preview antes de importar</div>
-                    </div>
-
                     <button class="btn btn-primary wide-btn" type="submit" id="previewButton">
                         <span class="btn-label"><i class="bi bi-eye"></i> Generar Preview</span>
                         <span class="btn-spinner"></span>
@@ -149,13 +118,6 @@ if (isset($_GET['error'], $err[$_GET['error']])) {
                     <div class="progress-track"><span id="progressBar"></span></div>
                 </div>
 
-                <div class="template-card">
-                    <i class="bi bi-info-circle"></i>
-                    <div>
-                        <strong>Columnas esperadas</strong>
-                        <p>nombre, documento, telefono, correo, fecha_nacimiento, genero, ciudad, institucion, observaciones.</p>
-                    </div>
-                </div>
             </aside>
 
             <section class="panel-card preview-panel">
