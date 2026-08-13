@@ -322,6 +322,13 @@ class EventController extends Controller {
                 exit();
             }
         }
+
+        // Datos del usuario logueado para autocompletar la inscripcion
+        $usuarioInscripcion = null;
+        if (!empty($_SESSION['usuario_correo'])) {
+            $usuarioInscripcion = $this->usuarios->buscarPorCorreo($_SESSION['usuario_correo']);
+        }
+
         require ROOT_PATH . '/resources/views/inscripcion.php';
     }
 

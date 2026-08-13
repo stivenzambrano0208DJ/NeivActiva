@@ -160,45 +160,41 @@
         <?php endif; ?>
         <?php endif; ?>
 
+        <?php
+            // Datos del usuario logueado (autocompletado de la inscripcion)
+            $miNombre = trim((string) ($usuarioInscripcion['nombre'] ?? ($_SESSION['usuario_nombre'] ?? '')));
+            $miCorreo = trim((string) ($usuarioInscripcion['correo'] ?? ($_SESSION['usuario_correo'] ?? '')));
+            $miDocumento = trim((string) ($usuarioInscripcion['documento_identidad'] ?? ''));
+            $miTelefono = trim((string) ($usuarioInscripcion['telefono'] ?? ''));
+            $perfilCompleto = (strlen($miNombre) >= 3 && strlen($miDocumento) >= 4);
+        ?>
         <section class="enroll-container">
+            <?php if (!$perfilCompleto): ?>
+            <div class="form-alert error" style="margin-bottom:1rem;">
+                <i class="bi bi-exclamation-triangle"></i>
+                Para inscribirte automaticamente necesitas tener tu nombre y documento en tu perfil.
+                Completa esos datos en tu cuenta e intenta de nuevo.
+            </div>
+            <?php endif; ?>
+
             <form action="?view=inscripcion" method="POST" class="enrollment-form">
                 <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrfToken ?? ''); ?>">
-                <div class="form-section-title">
-                    <i class="bi bi-person-badge"></i>
-                    <span>Participante</span>
-                </div>
-                
-                <div class="form-grid-two">
-                    <div class="input-group-modern">
-                        <label>Nombre</label>
-                        <div class="input-wrapper">
-                            <i class="bi bi-person"></i>
-                            <input type="text" name="nombre_completo" class="form-control-modern" placeholder="Juan Perez" minlength="2" maxlength="255" required>
-                        </div>
-                    </div>
-                    <div class="input-group-modern">
-                        <label>Correo electronico</label>
-                        <div class="input-wrapper">
-                            <i class="bi bi-envelope"></i>
-                            <input type="email" name="correo_electronico" id="correoParticipante" class="form-control-modern" placeholder="juan@correo.com" maxlength="255">
-                        </div>
-                    </div>
-                </div>
 
-                <div class="form-grid-two">
-                    <div class="input-group-modern">
-                        <label>Documento</label>
-                        <div class="input-wrapper">
-                            <i class="bi bi-card-text"></i>
-                            <input type="text" name="documento_identidad" id="documentoParticipante" class="form-control-modern" placeholder="C.C. / T.I." minlength="4" maxlength="50" required>
-                        </div>
-                    </div>
-                    <div class="input-group-modern">
-                        <label>Telefono</label>
-                        <div class="input-wrapper">
-                            <i class="bi bi-phone"></i>
-                            <input type="tel" name="telefono" class="form-control-modern" placeholder="+57 300 000 0000" minlength="7" maxlength="20" required>
-                        </div>
+                <!-- Datos del participante tomados de la cuenta logueada -->
+                <input type="hidden" name="nombre_completo" value="<?php echo htmlspecialchars($miNombre, ENT_QUOTES, 'UTF-8'); ?>">
+                <input type="hidden" name="correo_electronico" value="<?php echo htmlspecialchars($miCorreo, ENT_QUOTES, 'UTF-8'); ?>">
+                <input type="hidden" name="documento_identidad" value="<?php echo htmlspecialchars($miDocumento, ENT_QUOTES, 'UTF-8'); ?>">
+                <input type="hidden" name="telefono" value="<?php echo htmlspecialchars($miTelefono, ENT_QUOTES, 'UTF-8'); ?>">
+
+                <div class="me-card">
+                    <span class="me-avatar"><?php echo htmlspecialchars(mb_strtoupper(mb_substr($miNombre !== '' ? $miNombre : 'U', 0, 1))); ?></span>
+                    <div class="me-info">
+                        <span class="me-label">Te inscribes como</span>
+                        <strong class="me-name"><?php echo htmlspecialchars($miNombre !== '' ? $miNombre : 'Usuario'); ?></strong>
+                        <span class="me-meta">
+                            <?php if ($miCorreo !== ''): ?><i class="bi bi-envelope"></i><?php echo htmlspecialchars($miCorreo); ?><?php endif; ?>
+                            <?php if ($miDocumento !== ''): ?><i class="bi bi-card-text"></i><?php echo htmlspecialchars($miDocumento); ?><?php endif; ?>
+                        </span>
                     </div>
                 </div>
 
@@ -377,12 +373,46 @@
                     </div>
                 </div>
 
-                <button type="submit" class="submit-enrollment" <?php echo empty($lista_eventos) ? 'disabled' : ''; ?>>
-                    <span>Confirmar Inscripcion Segura</span>
+                <button type="submit" class="submit-enrollment" <?php echo (empty($lista_eventos) || !$perfilCompleto) ? 'disabled' : ''; ?>>
+                    <span>Inscribirme</span>
                     <i class="bi bi-shield-check"></i>
                 </button>
             </form>
         </section>
+    </div>
+
+    <!-- Ventana flotante de confirmacion -->
+    <div class="confirm-overlay" id="confirmOverlay" hidden>
+        <div class="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="confirmModalTitle">
+            <button type="button" class="confirm-close" id="confirmClose" aria-label="Cerrar"><i class="bi bi-x-lg"></i></button>
+            <div class="confirm-icon"><i class="bi bi-calendar2-check"></i></div>
+            <h3 id="confirmModalTitle">Confirmar inscripcion</h3>
+            <p class="confirm-sub">Revisa los datos antes de registrarte.</p>
+            <div class="confirm-details">
+                <div class="confirm-row">
+                    <span class="confirm-key"><i class="bi bi-person"></i> Participante</span>
+                    <span class="confirm-val"><?php echo htmlspecialchars($miNombre !== '' ? $miNombre : 'Usuario'); ?></span>
+                </div>
+                <div class="confirm-row">
+                    <span class="confirm-key"><i class="bi bi-bookmark-star"></i> Evento</span>
+                    <span class="confirm-val" id="confirmEvento">-</span>
+                </div>
+                <div class="confirm-row">
+                    <span class="confirm-key"><i class="bi bi-calendar-event"></i> Fecha</span>
+                    <span class="confirm-val" id="confirmFecha">-</span>
+                </div>
+                <div class="confirm-row">
+                    <span class="confirm-key"><i class="bi bi-ticket-perforated"></i> Cupos</span>
+                    <span class="confirm-val" id="confirmCupos">-</span>
+                </div>
+            </div>
+            <div class="confirm-actions">
+                <button type="button" class="confirm-btn cancel" id="confirmCancel">Cancelar</button>
+                <button type="button" class="confirm-btn accept" id="confirmAccept">
+                    <i class="bi bi-check-lg"></i> Si, inscribirme
+                </button>
+            </div>
+        </div>
     </div>
 </main>
 
@@ -545,26 +575,52 @@
         });
     }
 
+    /* ── Confirmacion en ventana flotante ── */
+    const confirmOverlay = document.getElementById('confirmOverlay');
+    const confirmEvento = document.getElementById('confirmEvento');
+    const confirmFecha = document.getElementById('confirmFecha');
+    const confirmCupos = document.getElementById('confirmCupos');
+    const confirmAccept = document.getElementById('confirmAccept');
+    const confirmCancel = document.getElementById('confirmCancel');
+    const confirmClose = document.getElementById('confirmClose');
+
+    function openConfirmModal() {
+        if (!confirmOverlay || !eventoSelect || !eventoSelect.selectedOptions.length) return;
+        const opt = eventoSelect.selectedOptions[0];
+        if (confirmEvento) confirmEvento.textContent = opt.dataset.title || '-';
+        if (confirmFecha) confirmFecha.textContent = `${opt.dataset.date || ''} · ${opt.dataset.time || ''}`.trim();
+        if (confirmCupos) confirmCupos.textContent = `${opt.dataset.seats || '0'} disponibles`;
+        confirmOverlay.hidden = false;
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeConfirmModal() {
+        if (!confirmOverlay) return;
+        confirmOverlay.hidden = true;
+        document.body.style.overflow = '';
+    }
+
+    // Interceptar el envio para mostrar la confirmacion primero
     enrollmentForm?.addEventListener('submit', event => {
-        const correoValido = correoInput?.checkValidity() ?? true;
-        const documentoValido = (documentoInput?.value.trim().length || 0) >= 4;
+        event.preventDefault();
+        if (!eventoSelect || !eventoSelect.value) return;
+        openConfirmModal();
+    });
 
-        if (!correoValido || !documentoValido) {
-            event.preventDefault();
-            setAccountStatus('error', 'Verifica correo y documento antes de continuar.');
-            return;
-        }
+    // Confirmar -> enviar de verdad (submit() no vuelve a disparar el evento)
+    confirmAccept?.addEventListener('click', () => {
+        confirmAccept.disabled = true;
+        confirmAccept.innerHTML = '<i class="bi bi-hourglass-split"></i> Procesando...';
+        enrollmentForm.submit();
+    });
 
-        if (accountConflict) {
-            event.preventDefault();
-            setAccountStatus('error', 'El correo o documento pertenecen a otra cuenta registrada.');
-            return;
-        }
-
-        if (!validatePasswordsInline()) {
-            event.preventDefault();
-            setAccountStatus('error', 'Corrige los datos de contrasena antes de continuar.');
-        }
+    confirmCancel?.addEventListener('click', closeConfirmModal);
+    confirmClose?.addEventListener('click', closeConfirmModal);
+    confirmOverlay?.addEventListener('click', event => {
+        if (event.target === confirmOverlay) closeConfirmModal();
+    });
+    document.addEventListener('keydown', event => {
+        if (event.key === 'Escape' && confirmOverlay && !confirmOverlay.hidden) closeConfirmModal();
     });
 
     /* ── Render dynamic fields based on selected event ── */
