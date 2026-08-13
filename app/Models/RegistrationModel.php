@@ -9,6 +9,23 @@ class RegistrationModel extends BaseModel {
     }
 
     public function registrar($datos) {
+        // Reinscripcion: existe un indice UNIQUE (participante_id, evento_id), asi
+        // que si ya hay una fila para ese par —normalmente una CANCELADA— un INSERT
+        // fallaria. En ese caso reactivamos la inscripcion existente en lugar de
+        // insertar, dejando al usuario volver a inscribirse tras cancelar.
+        $participanteId = $datos['participante_id'] ?? null;
+        if ($participanteId !== null) {
+            $existente = $this->db->query(
+                "SELECT id FROM {$this->table} WHERE participante_id = ? AND evento_id = ? LIMIT 1",
+                [(int) $participanteId, (int) $datos['evento_id']]
+            )->fetch();
+
+            if ($existente) {
+                $this->reactivarInscripcion((int) $existente['id'], $datos);
+                return (int) $existente['id'];
+            }
+        }
+
         $sql = "INSERT INTO inscripciones (
                     evento_id,
                     participante_id,
@@ -23,7 +40,7 @@ class RegistrationModel extends BaseModel {
                     token_qr,
                     respuestas_campos
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        
+
         $this->db->query($sql, [
             $datos['evento_id'],
             $datos['participante_id'],
@@ -40,6 +57,71 @@ class RegistrationModel extends BaseModel {
         ]);
 
         return (int) $this->db->getConnection()->lastInsertId();
+    }
+
+    /**
+     * Reactiva una inscripcion existente (tipicamente cancelada) como una
+     * inscripcion nueva: la vuelve a 'Confirmada', reinicia la asistencia, y
+     * refresca datos personales y token QR. Usa columnExists para tolerar
+     * esquemas con o sin las columnas de compatibilidad.
+     */
+    private function reactivarInscripcion($id, $datos) {
+        $sets = [
+            'usuario_id = ?',
+            'nombre_completo = ?',
+            'correo_electronico = ?',
+            'documento_identidad = ?',
+            'telefono = ?',
+            'categoria_participacion = ?',
+            'token_qr = ?',
+            'datos_qr = ?',
+        ];
+        $params = [
+            $datos['usuario_id'] ?? null,
+            $datos['nombre_completo'],
+            $datos['correo_electronico'],
+            $datos['documento_identidad'],
+            $datos['telefono'],
+            $datos['categoria_participacion'],
+            $datos['token_qr'],
+            $datos['token_qr'],
+        ];
+
+        foreach (['estado_inscripcion', 'estado'] as $columna) {
+            if ($this->columnExists($columna)) {
+                $sets[] = "$columna = 'Confirmada'";
+            }
+        }
+
+        foreach (['estado_asistencia', 'asistencia'] as $columna) {
+            if ($this->columnExists($columna)) {
+                $sets[] = "$columna = 'Pendiente'";
+            }
+        }
+
+        if ($this->columnExists('asistencia_en')) {
+            $sets[] = 'asistencia_en = NULL';
+        }
+        if ($this->columnExists('asistencia_usuario_id')) {
+            $sets[] = 'asistencia_usuario_id = NULL';
+        }
+        if ($this->columnExists('codigo_qr')) {
+            $sets[] = 'codigo_qr = ?';
+            $params[] = $datos['token_qr'];
+        }
+        if ($this->columnExists('ruta_qr')) {
+            $sets[] = 'ruta_qr = NULL'; // el QR se regenera tras registrar()
+        }
+        if ($this->columnExists('respuestas_campos')) {
+            $sets[] = 'respuestas_campos = ?';
+            $params[] = $datos['respuestas_campos'] ?? null;
+        }
+
+        $params[] = (int) $id;
+        return $this->db->query(
+            "UPDATE {$this->table} SET " . implode(', ', $sets) . " WHERE id = ?",
+            $params
+        );
     }
 
     public function registrarParticipanteEvento($participante, $eventoId, $codigoQr = null) {

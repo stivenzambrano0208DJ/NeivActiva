@@ -221,18 +221,95 @@ class Controller {
     }
 
     protected function generarPdfCertificado($certificado) {
-        $fechaEvento = date('d/m/Y', strtotime($certificado['fecha_evento']));
-        $nombre = $this->textoPdf($certificado['nombre_completo']);
-        $evento = $this->textoPdf($certificado['evento_titulo']);
-        $documento = $this->textoPdf($certificado['documento_identidad']);
-        $fecha = $this->textoPdf($fechaEvento);
-        $ubicacion = $this->textoPdf($certificado['ubicacion'] ?? 'Neiva');
-        $certId = (int) $certificado['id'];
+        // FPDF trabaja en ISO-8859-1: convertimos cada cadena desde UTF-8.
+        // (No usar Helper::textForPdf aqui: ese escapa parentesis/backslash para
+        //  un stream PDF crudo, y FPDF ya hace su propio escape internamente.)
+        $conv = static function ($texto) {
+            $texto = (string) $texto;
+            if (function_exists('iconv')) {
+                $convertido = @iconv('UTF-8', 'ISO-8859-1//TRANSLIT', $texto);
+                if ($convertido !== false) {
+                    return $convertido;
+                }
+            }
+            return $texto;
+        };
 
-        // Dummy PDF string for now, to fix the syntax error
-        // Recomiendo encarecidamente instalar TCPDF o FPDF vía Composer para esto.
-        $pdfContent = "%PDF-1.4\n1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n";
-        return $pdfContent;
+        $fechaEvento = !empty($certificado['fecha_evento'])
+            ? date('d/m/Y', strtotime($certificado['fecha_evento']))
+            : '';
+        $nombre = $conv($certificado['nombre_completo'] ?? '');
+        $evento = $conv($certificado['evento_titulo'] ?? '');
+        $documento = $conv($certificado['documento_identidad'] ?? '');
+        $ubicacion = $conv($certificado['ubicacion'] ?? 'Neiva');
+        $fecha = $conv($fechaEvento);
+        $certId = (int) ($certificado['id'] ?? 0);
+
+        $pdf = new \Fpdf\Fpdf('L', 'mm', 'A4'); // Horizontal A4: 297 x 210 mm
+        $pdf->AddPage();
+        $pdf->SetAutoPageBreak(false);
+
+        // Doble marco decorativo
+        $pdf->SetDrawColor(230, 126, 34); // Naranja NeivActiva
+        $pdf->SetLineWidth(1.5);
+        $pdf->Rect(10, 10, 277, 190);
+        $pdf->SetLineWidth(0.3);
+        $pdf->Rect(14, 14, 269, 182);
+
+        // Marca
+        $pdf->SetY(34);
+        $pdf->SetFont('Arial', 'B', 30);
+        $pdf->SetTextColor(230, 126, 34);
+        $pdf->Cell(0, 16, $conv('NEIVACTIVA'), 0, 1, 'C');
+
+        // Titulo
+        $pdf->SetFont('Arial', 'B', 22);
+        $pdf->SetTextColor(40, 40, 40);
+        $pdf->Cell(0, 14, $conv('CERTIFICADO DE PARTICIPACIÓN'), 0, 1, 'C');
+
+        $pdf->Ln(6);
+        $pdf->SetFont('Arial', '', 14);
+        $pdf->SetTextColor(80, 80, 80);
+        $pdf->Cell(0, 10, $conv('Se certifica que'), 0, 1, 'C');
+
+        // Nombre del participante
+        $pdf->Ln(2);
+        $pdf->SetFont('Arial', 'B', 26);
+        $pdf->SetTextColor(20, 20, 20);
+        $pdf->Cell(0, 14, $nombre, 0, 1, 'C');
+
+        if ($documento !== '') {
+            $pdf->SetFont('Arial', '', 12);
+            $pdf->SetTextColor(110, 110, 110);
+            $pdf->Cell(0, 8, $conv('Documento: ') . $documento, 0, 1, 'C');
+        }
+
+        // Evento
+        $pdf->Ln(4);
+        $pdf->SetFont('Arial', '', 14);
+        $pdf->SetTextColor(80, 80, 80);
+        $pdf->Cell(0, 8, $conv('Participó en el evento'), 0, 1, 'C');
+
+        $pdf->SetFont('Arial', 'B', 18);
+        $pdf->SetTextColor(230, 126, 34);
+        $pdf->MultiCell(0, 10, $evento, 0, 'C');
+
+        // Fecha y lugar
+        $detalle = trim($fecha . (($fecha !== '' && $ubicacion !== '') ? '  -  ' : '') . $ubicacion);
+        if ($detalle !== '') {
+            $pdf->Ln(4);
+            $pdf->SetFont('Arial', '', 13);
+            $pdf->SetTextColor(80, 80, 80);
+            $pdf->Cell(0, 8, $detalle, 0, 1, 'C');
+        }
+
+        // Pie con folio verificable
+        $pdf->SetY(182);
+        $pdf->SetFont('Arial', 'I', 9);
+        $pdf->SetTextColor(150, 150, 150);
+        $pdf->Cell(0, 6, $conv('Certificado N.º ') . $certId . $conv('  ·  Emitido por NeivActiva'), 0, 0, 'C');
+
+        return $pdf->Output('S');
     }
 
     protected function enviarCorreoCertificado($certificado, $pdf) {
