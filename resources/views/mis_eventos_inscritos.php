@@ -284,8 +284,9 @@
                                 <?php endif; ?>
                                 <?php if ($puedeCancelar): ?>
                                     <button type="button" class="btn btn-cancel-inscripcion"
+                                            title="Cancelar inscripcion" aria-label="Cancelar inscripcion"
                                             onclick="cancelarInscripcion(<?php echo (int) $event['inscripcion_id']; ?>, '<?php echo htmlspecialchars(addslashes($event['titulo']), ENT_QUOTES); ?>')">
-                                        <i class="bi bi-x-circle"></i>
+                                        <i class="bi bi-x-lg"></i>
                                         <span>Cancelar</span>
                                     </button>
                                 <?php endif; ?>

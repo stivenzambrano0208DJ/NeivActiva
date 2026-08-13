@@ -1010,3 +1010,46 @@
 @media (max-width: 640px) {
     .premium-header { margin: 1rem; padding: 1.1rem; }
 }
+
+/* ============================================================
+   FOOTER DE TARJETA: una sola fila con acciones-icono limpias
+   ============================================================ */
+.event-card-footer {
+    flex-wrap: nowrap !important;
+    align-items: center;
+    gap: 0.5rem;
+}
+.event-card-footer .btn-view {
+    flex: 1 1 auto;
+    min-width: 0;
+    white-space: nowrap;
+}
+
+/* QR y Cancelar como botones-icono cuadrados del mismo tamano */
+.event-card-footer .btn-qr,
+.event-card-footer .btn-cancel-inscripcion {
+    flex: 0 0 auto;
+    width: 40px;
+    height: 40px;
+    padding: 0 !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    font-size: 1rem;
+}
+
+/* Cancelar: solo icono, en rojo suave y con hover solido */
+.btn-cancel-inscripcion span { display: none; }
+.btn-cancel-inscripcion {
+    background: #FAECE7 !important;
+    border: 1px solid #F0997B !important;
+    color: #C0392B !important;
+    transition: all .2s ease;
+}
+.btn-cancel-inscripcion:hover {
+    background: #D85A30 !important;
+    border-color: #D85A30 !important;
+    color: #fff !important;
+    transform: translateY(-1px);
+}
