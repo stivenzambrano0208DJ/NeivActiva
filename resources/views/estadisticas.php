@@ -665,7 +665,8 @@ function exportToPDF() {
             <h1>NeivActiva - Análisis de Impacto</h1>
             <p>Generado: ${new Date().toLocaleString('es-ES')}</p>
             ${printContent}
-        </body>
+        <script src="/assets/js/input-rules.js"></script>
+</body>
         </html>
     `);
     printWindow.document.close();

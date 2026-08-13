@@ -453,5 +453,6 @@ $usuarioLogueado = isset($_SESSION['usuario_id']);
             targets.forEach(el => io.observe(el));
         })();
     </script>
+<script src="/assets/js/input-rules.js"></script>
 </body>
 </html>

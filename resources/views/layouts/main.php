@@ -40,5 +40,6 @@
             <p>&copy; <?= date('Y') ?> NeivActiva. Todos los derechos reservados.</p>
         </div>
     </footer>
+<script src="/assets/js/input-rules.js"></script>
 </body>
 </html>

@@ -482,6 +482,7 @@ function actualizarContadores() {
 actualizarContadores();
 setInterval(actualizarContadores, 60000);
 </script>
+<script src="/assets/js/input-rules.js"></script>
 </body>
 </html>
 

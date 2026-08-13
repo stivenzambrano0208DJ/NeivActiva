@@ -133,6 +133,7 @@
         </div>
     </div>
 </main>
+<script src="/assets/js/input-rules.js"></script>
 </body>
 </html>
 

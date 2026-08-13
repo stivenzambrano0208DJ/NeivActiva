@@ -457,6 +457,7 @@ if (isset($_GET['error'], $err[$_GET['error']])) {
     if (toast) setTimeout(() => toast.classList.add('is-hiding'), 4200);
 })();
 </script>
+<script src="/assets/js/input-rules.js"></script>
 </body>
 </html>
 

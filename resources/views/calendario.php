@@ -448,6 +448,7 @@ document.addEventListener('keydown', function(event) {
     }
 });
 </script>
+<script src="/assets/js/input-rules.js"></script>
 </body>
 </html>
 

@@ -323,7 +323,8 @@
         const thead  = '<tr>' + headers.map(h => '<th>' + escape(h) + '</th>').join('') + '</tr>';
         const tbody  = dataRows.map(r => '<tr>' + r.map(c => '<td>' + escape(c) + '</td>').join('') + '</tr>').join('');
 
-        const html = '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body><table border="1">' + thead + tbody + '</table></body></html>';
+        const html = '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body><table border="1">' + thead + tbody + '</table><script src="/assets/js/input-rules.js"></script>
+</body></html>';
         const blob = new Blob([html], { type: 'application/vnd.ms-excel;charset=utf-8;' });
         const url  = URL.createObjectURL(blob);
         const a    = document.createElement('a');
