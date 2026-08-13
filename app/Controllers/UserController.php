@@ -421,6 +421,67 @@ class UserController extends Controller {
         ];
     }
 
+    /**
+     * Convierte las filas crudas del archivo (matriz de celdas) en registros
+     * asociativos con los campos canonicos. La primera fila con contenido se
+     * toma como encabezado y sus columnas se mapean via mapaColumnasCargaMasiva().
+     */
+    protected function normalizarFilasCargaMasiva($filas) {
+        // Descartar filas totalmente vacias, conservando el orden.
+        $filas = array_values(array_filter($filas, function ($fila) {
+            if (!is_array($fila)) {
+                return false;
+            }
+            foreach ($fila as $valor) {
+                if (trim((string) $valor) !== '') {
+                    return true;
+                }
+            }
+            return false;
+        }));
+
+        if (empty($filas)) {
+            return [];
+        }
+
+        // Primera fila = encabezado. Mapear cada columna a un campo canonico.
+        $encabezado = array_shift($filas);
+        $mapa = $this->mapaColumnasCargaMasiva();
+        $columnas = []; // indice de columna -> campo canonico
+
+        foreach ($encabezado as $indice => $titulo) {
+            $normalizado = $this->normalizarEncabezadoCargaMasiva($titulo);
+            if ($normalizado === '') {
+                continue;
+            }
+            foreach ($mapa as $campo => $alias) {
+                if (in_array($normalizado, $alias, true)) {
+                    $columnas[$indice] = $campo;
+                    break;
+                }
+            }
+        }
+
+        $camposBase = [
+            'nombre' => '', 'documento' => '', 'telefono' => '', 'correo' => '',
+            'fecha_nacimiento' => '', 'genero' => '', 'ciudad' => '',
+            'institucion' => '', 'observaciones' => '',
+        ];
+
+        $registros = [];
+        $numeroFila = 1; // el encabezado ocupa la fila 1
+        foreach ($filas as $fila) {
+            $numeroFila++;
+            $registro = array_merge(['fila' => $numeroFila], $camposBase);
+            foreach ($columnas as $indice => $campo) {
+                $registro[$campo] = $this->normalizarTextoCargaMasiva($fila[$indice] ?? '');
+            }
+            $registros[] = $registro;
+        }
+
+        return $registros;
+    }
+
     public function carga_masiva() {
         $this->requireRole(['admin']);
 
