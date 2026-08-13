@@ -75,12 +75,15 @@ class UsuarioModel extends BaseModel {
     }
 
     public function registrar($datos, $rol = 'cliente') {
+        // OJO: NO hashear aquí. crear() ya aplica password_hash().
+        // Si se hashea en ambos sitios la contraseña queda doble-hasheada
+        // y password_verify() falla siempre en el login.
         return $this->crear([
             'nombre' => $datos['nombre'],
             'correo' => $datos['correo'],
             'documento_identidad' => $datos['documento_identidad'] ?? null,
             'telefono' => $datos['telefono'] ?? null,
-            'password' => password_hash($datos['password'], PASSWORD_DEFAULT),
+            'password' => $datos['password'],
             'rol' => $rol,
         ]);
     }
