@@ -225,15 +225,21 @@
                                     </div>
                                 </div>
                                 
-                                <?php if ($event['days_remaining'] > 0): ?>
-                                    <div class="event-countdown-modern">
+                                <?php
+                                    $horaParaTs   = !empty($event['hora_evento']) ? $event['hora_evento'] : '00:00:00';
+                                    $eventoTs     = strtotime($event['fecha_evento'] . ' ' . $horaParaTs);
+                                    $faltaSeg     = $eventoTs - time();
+                                    $noCancelado  = ($event['estado_inscripcion'] ?? '') !== 'Cancelada';
+                                ?>
+                                <?php if ($noCancelado && $faltaSeg > 0): ?>
+                                    <div class="event-countdown-modern" data-countdown="<?php echo $eventoTs; ?>">
                                         <div class="countdown-item">
-                                            <span class="countdown-value"><?php echo $event['days_remaining']; ?></span>
+                                            <span class="countdown-value" data-cd-days><?php echo floor($faltaSeg / 86400); ?></span>
                                             <span class="countdown-label">días</span>
                                         </div>
                                         <div class="countdown-divider"></div>
                                         <div class="countdown-item">
-                                            <span class="countdown-value">--</span>
+                                            <span class="countdown-value" data-cd-hours><?php echo floor(($faltaSeg % 86400) / 3600); ?></span>
                                             <span class="countdown-label">horas</span>
                                         </div>
                                     </div>
@@ -458,6 +464,23 @@ window.addEventListener('load', function() {
 // Modo oscuro eliminado: limpiar cualquier estado previo guardado.
 localStorage.removeItem('darkMode');
 document.body.classList.remove('dark-mode');
+
+// Contador en vivo: dias y horas que faltan para cada evento
+function actualizarContadores() {
+    const ahora = Date.now();
+    document.querySelectorAll('.event-countdown-modern[data-countdown]').forEach(el => {
+        const objetivo = parseInt(el.dataset.countdown, 10) * 1000;
+        let restante = Math.max(0, Math.floor((objetivo - ahora) / 1000));
+        const dias = Math.floor(restante / 86400);
+        const horas = Math.floor((restante % 86400) / 3600);
+        const dEl = el.querySelector('[data-cd-days]');
+        const hEl = el.querySelector('[data-cd-hours]');
+        if (dEl) dEl.textContent = dias;
+        if (hEl) hEl.textContent = horas;
+    });
+}
+actualizarContadores();
+setInterval(actualizarContadores, 60000);
 </script>
 </body>
 </html>
