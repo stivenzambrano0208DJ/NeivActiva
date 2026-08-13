@@ -56,7 +56,7 @@
                 <button class="filter-pill" data-status="cancelled">
                     <i class="bi bi-x-circle"></i>
                     <span>Cancelados</span>
-                    <span class="count">0</span>
+                    <span class="count"><?php echo $metrics['cancelados'] ?? 0; ?></span>
                 </button>
                 <button class="filter-pill" data-status="certificate">
                     <i class="bi bi-award"></i>

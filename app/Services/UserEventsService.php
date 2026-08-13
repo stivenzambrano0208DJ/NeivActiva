@@ -96,12 +96,27 @@ class UserEventsService {
         $stmt->execute();
         $rows = $stmt->fetchAll();
 
-        // Evita duplicados: un mismo evento puede tener mas de una inscripcion.
-        // Conserva la primera aparicion (ya viene ordenada por proximidad/fecha).
+        // Evita duplicados: un mismo evento puede tener mas de una inscripcion
+        // (p. ej. una cancelada + una nueva al reinscribirse). Se conserva la
+        // inscripcion ACTIVA y mas reciente; solo se muestra una cancelada si no
+        // existe ninguna activa para ese evento.
         $unicos = [];
         foreach ($rows as $row) {
             $eventoId = (int) ($row['evento_id'] ?? 0);
             if (!isset($unicos[$eventoId])) {
+                $unicos[$eventoId] = $row;
+                continue;
+            }
+
+            $actual = $unicos[$eventoId];
+            $rowActiva = ($row['estado_inscripcion'] ?? '') !== 'Cancelada';
+            $actualActiva = ($actual['estado_inscripcion'] ?? '') !== 'Cancelada';
+
+            $reemplazar = ($rowActiva && !$actualActiva)
+                || ($rowActiva === $actualActiva
+                    && (int) ($row['inscripcion_id'] ?? 0) > (int) ($actual['inscripcion_id'] ?? 0));
+
+            if ($reemplazar) {
                 $unicos[$eventoId] = $row;
             }
         }
@@ -115,18 +130,19 @@ class UserEventsService {
     public function getUserMetrics($userId) {
         $userEmail = $_SESSION['usuario_correo'] ?? '';
         
-        // Cuenta cada evento una sola vez aunque existan inscripciones duplicadas:
-        // primero se elige la inscripcion mas reciente por evento (tabla derivada).
+        // Cuenta cada evento una sola vez aunque existan inscripciones duplicadas.
+        // La tabla derivada toma la inscripcion MAS RECIENTE por evento (este o no
+        // cancelada) para que los contadores reflejen el estado vigente.
         $sql = "SELECT
-                COUNT(*) as total_inscritos,
-                SUM(CASE WHEN (e.estado_evento = 'Terminado' OR e.fecha_evento < CURDATE()) THEN 1 ELSE 0 END) as completados,
-                SUM(CASE WHEN (e.estado_evento = 'Activo' AND e.fecha_evento >= CURDATE()) THEN 1 ELSE 0 END) as proximos,
-                SUM(CASE WHEN (COALESCE(i.estado_asistencia, i.asistencia, 'Pendiente') = 'Asistio' AND e.estado_evento = 'Terminado') THEN 1 ELSE 0 END) as certificados_disponibles
+                SUM(CASE WHEN i.estado_inscripcion <> 'Cancelada' THEN 1 ELSE 0 END) as total_inscritos,
+                SUM(CASE WHEN i.estado_inscripcion = 'Cancelada' THEN 1 ELSE 0 END) as cancelados,
+                SUM(CASE WHEN i.estado_inscripcion <> 'Cancelada' AND (e.estado_evento = 'Terminado' OR e.fecha_evento < CURDATE()) THEN 1 ELSE 0 END) as completados,
+                SUM(CASE WHEN i.estado_inscripcion <> 'Cancelada' AND (e.estado_evento = 'Activo' AND e.fecha_evento >= CURDATE()) THEN 1 ELSE 0 END) as proximos,
+                SUM(CASE WHEN i.estado_inscripcion <> 'Cancelada' AND (COALESCE(i.estado_asistencia, i.asistencia, 'Pendiente') = 'Asistio' AND e.estado_evento = 'Terminado') THEN 1 ELSE 0 END) as certificados_disponibles
                 FROM (
                     SELECT MAX(ins.id) AS id
                     FROM inscripciones ins
                     WHERE (ins.usuario_id = :user_id OR ins.correo_electronico = :user_email)
-                    AND ins.estado_inscripcion <> 'Cancelada'
                     GROUP BY ins.evento_id
                 ) uniq
                 JOIN inscripciones i ON i.id = uniq.id
