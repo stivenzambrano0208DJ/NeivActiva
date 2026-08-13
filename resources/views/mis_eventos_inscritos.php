@@ -42,31 +42,32 @@
         </div>
         
         <!-- Filtros Modernos -->
+        <?php $statusActual = $filters['status'] ?? 'all'; ?>
         <div class="filters-modern">
             <div class="filter-pills">
-                <button class="filter-pill active" data-status="all">
+                <button class="filter-pill<?php echo $statusActual === 'all' ? ' active' : ''; ?>" data-status="all">
                     <i class="bi bi-grid"></i>
                     <span>Todos</span>
                     <span class="count"><?php echo count($events); ?></span>
                 </button>
-                <button class="filter-pill" data-status="upcoming">
+                <button class="filter-pill<?php echo $statusActual === 'upcoming' ? ' active' : ''; ?>" data-status="upcoming">
                     <i class="bi bi-calendar-check"></i>
                     <span>Próximos</span>
                     <span class="count"><?php echo $metrics['proximos'] ?? 0; ?></span>
                 </button>
-                <button class="filter-pill" data-status="completed">
+                <button class="filter-pill<?php echo $statusActual === 'completed' ? ' active' : ''; ?>" data-status="completed">
                     <i class="bi bi-check-circle"></i>
                     <span>Completados</span>
                     <span class="count"><?php echo $metrics['completados'] ?? 0; ?></span>
                 </button>
                 <?php if ($esHistorial): ?>
-                <button class="filter-pill" data-status="cancelled">
+                <button class="filter-pill<?php echo $statusActual === 'cancelled' ? ' active' : ''; ?>" data-status="cancelled">
                     <i class="bi bi-x-circle"></i>
                     <span>Cancelados</span>
                     <span class="count"><?php echo $metrics['cancelados'] ?? 0; ?></span>
                 </button>
                 <?php endif; ?>
-                <button class="filter-pill" data-status="certificate">
+                <button class="filter-pill<?php echo $statusActual === 'certificate' ? ' active' : ''; ?>" data-status="certificate">
                     <i class="bi bi-award"></i>
                     <span>Certificados</span>
                     <span class="count"><?php echo $metrics['certificados_disponibles'] ?? 0; ?></span>
@@ -457,11 +458,6 @@ window.addEventListener('load', function() {
 // Modo oscuro eliminado: limpiar cualquier estado previo guardado.
 localStorage.removeItem('darkMode');
 document.body.classList.remove('dark-mode');
-
-// Marcar filtro activo
-if (currentStatus) {
-    document.querySelector(`.filter-pill[data-status="${currentStatus}"]`)?.classList.add('active');
-}
 </script>
 </body>
 </html>
