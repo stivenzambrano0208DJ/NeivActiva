@@ -1,9 +1,13 @@
+<?php
+    $vistaModo = $vistaModo ?? 'eventos';
+    $esHistorial = ($vistaModo === 'historial');
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NeivActiva - Mis Eventos Inscritos</title>
+    <title>NeivActiva - <?php echo $esHistorial ? 'Mi Historial' : 'Mis Eventos Inscritos'; ?></title>
     <link rel="stylesheet" href="/assets/css/neivactiva-2026.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,8 +24,10 @@
     <header class="premium-header">
         <div class="header-content">
             <div class="header-text">
-                <h1 class="page-title">Mis Eventos Inscritos</h1>
-                <p class="page-subtitle">Gestiona y visualiza todos tus eventos en un solo lugar</p>
+                <h1 class="page-title"><?php echo $esHistorial ? 'Mi Historial' : 'Mis Eventos Inscritos'; ?></h1>
+                <p class="page-subtitle"><?php echo $esHistorial
+                    ? 'Todas tus inscripciones: activas, completadas y canceladas'
+                    : 'Tus eventos activos en un solo lugar'; ?></p>
             </div>
             <div class="header-actions">
                 <div class="search-modern">
@@ -53,11 +59,13 @@
                     <span>Completados</span>
                     <span class="count"><?php echo $metrics['completados'] ?? 0; ?></span>
                 </button>
+                <?php if ($esHistorial): ?>
                 <button class="filter-pill" data-status="cancelled">
                     <i class="bi bi-x-circle"></i>
                     <span>Cancelados</span>
                     <span class="count"><?php echo $metrics['cancelados'] ?? 0; ?></span>
                 </button>
+                <?php endif; ?>
                 <button class="filter-pill" data-status="certificate">
                     <i class="bi bi-award"></i>
                     <span>Certificados</span>

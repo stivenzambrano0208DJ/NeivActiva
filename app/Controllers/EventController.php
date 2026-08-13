@@ -763,6 +763,16 @@ class EventController extends Controller {
     }
 
     public function mis_eventos_inscritos() {
+        // "Mis Eventos" muestra unicamente inscripciones activas (no canceladas).
+        $this->renderEventosUsuario('eventos');
+    }
+
+    public function mi_historial() {
+        // "Mi Historial" muestra todo: activos, completados y cancelados.
+        $this->renderEventosUsuario('historial');
+    }
+
+    private function renderEventosUsuario($vistaModo) {
         $userId = $_SESSION['usuario_id'] ?? null;
         if (!$userId) {
             header("Location: ?view=login");
@@ -770,7 +780,7 @@ class EventController extends Controller {
         }
 
         $userEventsService = new UserEventsService();
-        
+
         // Obtener filtros
         $filters = [
             'status' => $_GET['status'] ?? 'all',
@@ -778,7 +788,13 @@ class EventController extends Controller {
             'limit' => $_GET['limit'] ?? 50,
             'offset' => $_GET['offset'] ?? 0
         ];
-        
+
+        // En "Mis Eventos" se ocultan las inscripciones canceladas; el historial
+        // las conserva.
+        if ($vistaModo === 'eventos') {
+            $filters['exclude_cancelled'] = true;
+        }
+
         // Obtener datos
         $csrfToken = $this->csrfToken();
         $events = $userEventsService->getUserRegisteredEvents($userId, $filters);
@@ -786,7 +802,7 @@ class EventController extends Controller {
         $timeline = $userEventsService->getUserActivityTimeline($userId, 5);
         $attendanceRate = $userEventsService->getUserAttendanceRate($userId);
         $popularCategories = $userEventsService->getPopularEventsForUser($userId, 3);
-        
+
         // Procesar eventos para agregar información adicional
         foreach ($events as &$event) {
             $event['status_info'] = $userEventsService->getEventStatus($event);
@@ -794,7 +810,8 @@ class EventController extends Controller {
             $event['occupancy_rate'] = $userEventsService->getOccupancyRate($event['inscritos_actuales'], $event['cupo_maximo']);
             $event['has_certificate'] = $userEventsService->hasCertificateAvailable($event);
         }
-        
+        unset($event);
+
         require ROOT_PATH . '/resources/views/mis_eventos_inscritos.php';
     }
 

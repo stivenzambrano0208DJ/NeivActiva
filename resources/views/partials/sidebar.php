@@ -50,6 +50,7 @@ $navItem = function ($target, $icon, $label) use ($view) {
             <div class="nav-section-title">Mi Actividad</div>
             <?php $navItem('mis_eventos_inscritos', 'bi-calendar-check', 'Mis Eventos'); ?>
             <?php $navItem('inscripcion', 'bi-ticket-perforated', 'Inscripciones'); ?>
+            <?php $navItem('mi_historial', 'bi-clock-history', 'Mi Historial'); ?>
             <?php $navItem('mis_certificados', 'bi-award', 'Certificados'); ?>
             <?php $navItem('mis_qr', 'bi-qr-code-scan', 'Mis QR'); ?>
         <?php endif; ?>

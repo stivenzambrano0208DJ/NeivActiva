@@ -28,6 +28,11 @@ class UserEventsService {
             ':user_email' => $_SESSION['usuario_correo'] ?? ''
         ];
 
+        // Oculta inscripciones canceladas (usado por la vista "Mis Eventos").
+        if (!empty($filters['exclude_cancelled'])) {
+            $whereConditions[] = "i.estado_inscripcion <> 'Cancelada'";
+        }
+
         // Filtro por estado
         if ($status !== 'all') {
             switch ($status) {
