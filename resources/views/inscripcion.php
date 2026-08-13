@@ -161,14 +161,6 @@
         <?php endif; ?>
 
         <section class="enroll-container">
-            <div class="enroll-header">
-                <div>
-                    <span class="enroll-kicker">Registro</span>
-                    <h2>Datos de inscripcion</h2>
-                </div>
-                <span class="secure-chip"><i class="bi bi-shield-check"></i> Proceso seguro</span>
-            </div>
-
             <?php if (!empty($lista_eventos)): ?>
             <article class="selected-event-card" id="selectedEventCard">
                 <div class="event-card-icon"><i class="bi bi-calendar2-check"></i></div>
