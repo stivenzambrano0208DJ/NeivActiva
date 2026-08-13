@@ -150,5 +150,6 @@ $okMsg = $_GET['msg'] ?? '';
     });
 })();
 </script>
+<script src="/assets/js/input-rules.js"></script>
 </body>
 </html>

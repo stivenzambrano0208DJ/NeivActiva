@@ -103,5 +103,6 @@ document.getElementById('forgotForm')?.addEventListener('submit', () => {
     btn.classList.add('lg-loading');
 });
 </script>
+<script src="/assets/js/input-rules.js"></script>
 </body>
 </html>
