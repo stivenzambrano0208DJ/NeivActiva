@@ -120,10 +120,14 @@ class ParticipantModel extends BaseModel {
 
         if (strlen($datos['nombre']) < 2) {
             $errores[] = 'El nombre es obligatorio.';
+        } elseif (!\App\Core\Validator::esNombreValido($datos['nombre'])) {
+            $errores[] = 'El nombre solo puede contener letras y espacios.';
         }
 
         if (strlen($datos['documento']) < 4) {
             $errores[] = 'El documento debe tener al menos 4 caracteres.';
+        } elseif (!\App\Core\Validator::esDocumentoNumerico($datos['documento'])) {
+            $errores[] = 'El documento debe contener solo numeros.';
         }
 
         if ($datos['correo'] !== '' && !filter_var($datos['correo'], FILTER_VALIDATE_EMAIL)) {
@@ -189,6 +193,7 @@ class ParticipantModel extends BaseModel {
         return [
             'nombre' => $nombre,
             'documento' => trim((string) ($datos['documento'] ?? $datos['documento_identidad'] ?? '')),
+            'tipo_documento' => \App\Core\Validator::tipoDocumento($datos['tipo_documento'] ?? 'CC'),
             'telefono' => trim((string) ($datos['telefono'] ?? '')),
             'correo' => strtolower(trim((string) ($datos['correo'] ?? $datos['correo_electronico'] ?? ''))),
             'fecha_nacimiento' => trim((string) ($datos['fecha_nacimiento'] ?? '')),
@@ -221,6 +226,7 @@ class ParticipantModel extends BaseModel {
             'usuario_id' => $datos['usuario_id'] ?: null,
             'nombre' => $datos['nombre'],
             'documento' => $datos['documento'],
+            'tipo_documento' => $datos['tipo_documento'] ?? 'CC',
             'telefono' => $datos['telefono'],
             'correo' => $datos['correo'] ?: null,
             'fecha_nacimiento' => $datos['fecha_nacimiento'] ?: null,

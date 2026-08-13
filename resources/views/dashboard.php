@@ -339,17 +339,29 @@ $catIcon  = fn($c) => match($c) {
             <div class="db-modal-field">
                 <label>Nombre completo</label>
                 <input type="text" name="nombre_completo" id="profileNombre"
-                       value="<?php echo htmlspecialchars($participante_sesion['nombre_completo'] ?? $nombreUsuario); ?>" required>
+                       value="<?php echo htmlspecialchars($participante_sesion['nombre_completo'] ?? $nombreUsuario); ?>"
+                       data-rule="letters" required>
+            </div>
+            <?php $tdDb = $participante_sesion['tipo_documento'] ?? 'CC'; ?>
+            <div class="db-modal-field">
+                <label>Tipo de documento</label>
+                <select name="tipo_documento" id="profileTipoDoc">
+                    <option value="CC" <?php echo $tdDb === 'CC' ? 'selected' : ''; ?>>Cédula de ciudadanía</option>
+                    <option value="TI" <?php echo $tdDb === 'TI' ? 'selected' : ''; ?>>Tarjeta de identidad</option>
+                    <option value="CE" <?php echo $tdDb === 'CE' ? 'selected' : ''; ?>>Cédula de extranjería</option>
+                </select>
             </div>
             <div class="db-modal-field">
-                <label>Documento de identidad</label>
+                <label>Número de documento</label>
                 <input type="text" name="documento_identidad" id="profileDocumento"
-                       value="<?php echo htmlspecialchars($participante_sesion['documento_identidad'] ?? ''); ?>" required>
+                       value="<?php echo htmlspecialchars($participante_sesion['documento_identidad'] ?? ''); ?>"
+                       inputmode="numeric" data-rule="digits" pattern="\d+" required>
             </div>
             <div class="db-modal-field">
                 <label>Teléfono</label>
                 <input type="text" name="telefono" id="profileTelefono"
-                       value="<?php echo htmlspecialchars($participante_sesion['telefono'] ?? ''); ?>" required>
+                       value="<?php echo htmlspecialchars($participante_sesion['telefono'] ?? ''); ?>"
+                       inputmode="numeric" data-rule="digits" required>
             </div>
             <button type="submit" class="db-btn-primary db-btn-full">
                 <i class="bi bi-qr-code"></i> Confirmar inscripción
@@ -395,5 +407,6 @@ $catIcon  = fn($c) => match($c) {
     searchInput?.addEventListener('input', aplicar);
 })();
 </script>
+<script src="/assets/js/input-rules.js"></script>
 </body>
 </html>

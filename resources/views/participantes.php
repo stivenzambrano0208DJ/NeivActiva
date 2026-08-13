@@ -236,21 +236,34 @@ $iniciales = function($nombre) {
                         <label class="pt-label">Nombre completo <span class="pt-req">*</span></label>
                         <input type="text" name="nombre_completo" class="pt-input"
                                value="<?php echo $val('nombre_completo', $val('nombre')); ?>"
-                               placeholder="Ej: Carlos Andrés Vargas" required maxlength="150">
+                               placeholder="Ej: Carlos Andrés Vargas" data-rule="letters" required maxlength="150">
+                    </div>
+
+                    <?php $tdPt = $val('tipo_documento') ?: 'CC'; ?>
+                    <div class="pt-field-row">
+                        <div class="pt-field">
+                            <label class="pt-label">Tipo de documento <span class="pt-req">*</span></label>
+                            <select name="tipo_documento" class="pt-input">
+                                <option value="CC" <?php echo $tdPt === 'CC' ? 'selected' : ''; ?>>Cédula de ciudadanía</option>
+                                <option value="TI" <?php echo $tdPt === 'TI' ? 'selected' : ''; ?>>Tarjeta de identidad</option>
+                                <option value="CE" <?php echo $tdPt === 'CE' ? 'selected' : ''; ?>>Cédula de extranjería</option>
+                            </select>
+                        </div>
+                        <div class="pt-field">
+                            <label class="pt-label">Número de documento <span class="pt-req">*</span></label>
+                            <input type="text" name="documento_identidad" class="pt-input"
+                                   value="<?php echo $val('documento_identidad', $val('documento')); ?>"
+                                   placeholder="Solo números" inputmode="numeric" data-rule="digits"
+                                   pattern="\d+" required maxlength="30">
+                        </div>
                     </div>
 
                     <div class="pt-field-row">
                         <div class="pt-field">
-                            <label class="pt-label">Documento de identidad <span class="pt-req">*</span></label>
-                            <input type="text" name="documento_identidad" class="pt-input"
-                                   value="<?php echo $val('documento_identidad', $val('documento')); ?>"
-                                   placeholder="CC / TI / CE…" required maxlength="30">
-                        </div>
-                        <div class="pt-field">
                             <label class="pt-label">Teléfono</label>
                             <input type="text" name="telefono" class="pt-input"
                                    value="<?php echo $val('telefono'); ?>"
-                                   placeholder="Ej: 3101234567" maxlength="20">
+                                   placeholder="Ej: 3101234567" inputmode="numeric" data-rule="digits" maxlength="20">
                         </div>
                     </div>
 
@@ -356,5 +369,6 @@ $iniciales = function($nombre) {
     });
 })();
 </script>
+<script src="/assets/js/input-rules.js"></script>
 </body>
 </html>

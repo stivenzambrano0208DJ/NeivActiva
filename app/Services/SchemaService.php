@@ -7,7 +7,7 @@ use Throwable;
 
 class SchemaService {
     // Subir esta version obliga a revalidar el esquema tras un despliegue.
-    private const VERSION = '2026-08-13';
+    private const VERSION = '2026-08-13.2';
 
     private $db;
 
@@ -113,6 +113,12 @@ class SchemaService {
             'fk_inscripciones_participante',
             'FOREIGN KEY (participante_id) REFERENCES participantes(id) ON DELETE SET NULL'
         );
+
+        // Tipo de documento (CC = Cedula, TI = Tarjeta de Identidad, CE = Cedula
+        // de Extranjeria). Se guarda junto al numero de documento.
+        $this->agregarColumna('participantes', 'tipo_documento', "VARCHAR(4) NULL AFTER documento");
+        $this->agregarColumna('usuarios', 'tipo_documento', "VARCHAR(4) NULL AFTER documento_identidad");
+        $this->agregarColumna('inscripciones', 'tipo_documento', "VARCHAR(4) NULL AFTER documento_identidad");
 
         $this->sincronizarColumnasCompatibilidad();
     }

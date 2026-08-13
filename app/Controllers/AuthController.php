@@ -63,6 +63,7 @@ class AuthController extends Controller {
                 'nombre' => $this->limpiarTexto($_POST['nombre'] ?? ''),
                 'correo' => strtolower($this->limpiarTexto($_POST['correo'] ?? '')),
                 'documento_identidad' => $this->limpiarTexto($_POST['documento_identidad'] ?? ''),
+                'tipo_documento' => \App\Core\Validator::tipoDocumento($_POST['tipo_documento'] ?? 'CC'),
                 'telefono' => $this->limpiarTexto($_POST['telefono'] ?? ''),
                 'password' => (string) ($_POST['password'] ?? ''),
             ];
@@ -78,6 +79,14 @@ class AuthController extends Controller {
 
             if (!filter_var($datos['correo'], FILTER_VALIDATE_EMAIL)) {
                 $this->redirect('/register?error=correo');
+            }
+
+            if (!\App\Core\Validator::esNombreValido($datos['nombre'])) {
+                $this->redirect('/register?error=nombre_invalido');
+            }
+
+            if (!\App\Core\Validator::esDocumentoNumerico($datos['documento_identidad'])) {
+                $this->redirect('/register?error=documento_invalido');
             }
 
             if (strlen($datos['password']) < 8) {

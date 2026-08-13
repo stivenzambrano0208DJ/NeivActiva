@@ -57,6 +57,7 @@ class EventController extends Controller {
             'nombre_completo' => $this->limpiarTexto($_POST['nombre_completo'] ?? ($participanteExistente['nombre_completo'] ?? ($_SESSION['usuario_nombre'] ?? ''))),
             'correo_electronico' => $correoSesion,
             'documento_identidad' => $this->limpiarTexto($_POST['documento_identidad'] ?? ($participanteExistente['documento_identidad'] ?? '')),
+            'tipo_documento' => \App\Core\Validator::tipoDocumento($_POST['tipo_documento'] ?? ($participanteExistente['tipo_documento'] ?? 'CC')),
             'telefono' => $this->limpiarTexto($_POST['telefono'] ?? ($participanteExistente['telefono'] ?? '')),
         ];
 

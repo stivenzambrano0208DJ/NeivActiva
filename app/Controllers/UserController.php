@@ -64,10 +64,13 @@ class UserController extends Controller {
 
     protected function datosParticipanteAdminDesdePost() {
         return [
-            'nombre' => $this->limpiarTexto($_POST['nombre'] ?? ''),
-            'documento' => $this->limpiarTexto($_POST['documento'] ?? ''),
+            // El formulario admin envia nombre_completo/documento_identidad/
+            // correo_electronico; aceptamos tambien los nombres cortos por si acaso.
+            'nombre' => $this->limpiarTexto($_POST['nombre_completo'] ?? $_POST['nombre'] ?? ''),
+            'documento' => $this->limpiarTexto($_POST['documento_identidad'] ?? $_POST['documento'] ?? ''),
+            'tipo_documento' => \App\Core\Validator::tipoDocumento($_POST['tipo_documento'] ?? 'CC'),
             'telefono' => $this->limpiarTexto($_POST['telefono'] ?? ''),
-            'correo' => strtolower($this->limpiarTexto($_POST['correo'] ?? '')),
+            'correo' => strtolower($this->limpiarTexto($_POST['correo_electronico'] ?? $_POST['correo'] ?? '')),
             'fecha_nacimiento' => $this->limpiarTexto($_POST['fecha_nacimiento'] ?? ''),
             'genero' => $this->limpiarTexto($_POST['genero'] ?? ''),
             'ciudad' => $this->limpiarTexto($_POST['ciudad'] ?? ''),
@@ -577,6 +580,7 @@ class UserController extends Controller {
             'nombre' => $this->limpiarTexto($_POST['nombre'] ?? ''),
             'correo' => strtolower($this->limpiarTexto($_POST['correo'] ?? '')),
             'documento_identidad' => $this->limpiarTexto($_POST['documento_identidad'] ?? ''),
+            'tipo_documento' => \App\Core\Validator::tipoDocumento($_POST['tipo_documento'] ?? 'CC'),
             'telefono' => $this->limpiarTexto($_POST['telefono'] ?? ''),
             'password' => (string) ($_POST['password'] ?? ''),
             'rol' => $this->limpiarTexto($_POST['rol'] ?? 'cliente'),

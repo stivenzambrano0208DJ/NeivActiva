@@ -203,7 +203,7 @@ $iniciales = function($nombre) {
                     <div class="usr-field">
                         <label class="usr-label">Nombre completo <span class="usr-req">*</span></label>
                         <input type="text" name="nombre" class="usr-input" value="<?php echo $val('nombre'); ?>"
-                               placeholder="Nombre y apellidos" required maxlength="120">
+                               placeholder="Nombre y apellidos" data-rule="letters" required maxlength="120">
                     </div>
 
                     <div class="usr-field">
@@ -212,18 +212,30 @@ $iniciales = function($nombre) {
                                placeholder="correo@ejemplo.com" required maxlength="120">
                     </div>
 
+                    <?php $tdUsr = $val('tipo_documento') ?: 'CC'; ?>
                     <div class="usr-field-row">
                         <div class="usr-field">
-                            <label class="usr-label">Documento de identidad</label>
+                            <label class="usr-label">Tipo de documento</label>
+                            <select name="tipo_documento" class="usr-input">
+                                <option value="CC" <?php echo $tdUsr === 'CC' ? 'selected' : ''; ?>>Cédula de ciudadanía</option>
+                                <option value="TI" <?php echo $tdUsr === 'TI' ? 'selected' : ''; ?>>Tarjeta de identidad</option>
+                                <option value="CE" <?php echo $tdUsr === 'CE' ? 'selected' : ''; ?>>Cédula de extranjería</option>
+                            </select>
+                        </div>
+                        <div class="usr-field">
+                            <label class="usr-label">Número de documento</label>
                             <input type="text" name="documento_identidad" class="usr-input"
                                    value="<?php echo $val('documento_identidad'); ?>"
-                                   placeholder="CC / TI / CE" maxlength="30">
+                                   placeholder="Solo números" inputmode="numeric" data-rule="digits"
+                                   pattern="\d+" maxlength="30">
                         </div>
+                    </div>
+                    <div class="usr-field-row">
                         <div class="usr-field">
                             <label class="usr-label">Teléfono</label>
                             <input type="text" name="telefono" class="usr-input"
                                    value="<?php echo $val('telefono'); ?>"
-                                   placeholder="3101234567" maxlength="20">
+                                   placeholder="3101234567" inputmode="numeric" data-rule="digits" maxlength="20">
                         </div>
                     </div>
 
@@ -271,5 +283,6 @@ $iniciales = function($nombre) {
     });
 })();
 </script>
+<script src="/assets/js/input-rules.js"></script>
 </body>
 </html>

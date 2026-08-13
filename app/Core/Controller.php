@@ -67,6 +67,7 @@ class Controller {
             'nombre_completo' => $this->limpiarTexto($_POST['nombre_completo'] ?? ''),
             'correo_electronico' => strtolower($this->limpiarTexto($_POST['correo_electronico'] ?? '')),
             'documento_identidad' => $this->limpiarTexto($_POST['documento_identidad'] ?? ''),
+            'tipo_documento' => Validator::tipoDocumento($_POST['tipo_documento'] ?? 'CC'),
             'telefono' => $this->limpiarTexto($_POST['telefono'] ?? ''),
         ];
     }

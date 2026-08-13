@@ -68,6 +68,29 @@ class Validator {
     }
 
     /**
+     * Normaliza el tipo de documento a un valor permitido (CC/TI/CE).
+     * CC = Cedula de ciudadania, TI = Tarjeta de identidad, CE = Cedula de extranjeria.
+     */
+    public static function tipoDocumento($valor) {
+        $valor = strtoupper(trim((string) $valor));
+        return in_array($valor, ['CC', 'TI', 'CE'], true) ? $valor : 'CC';
+    }
+
+    /**
+     * El numero de documento debe contener solo digitos.
+     */
+    public static function esDocumentoNumerico($valor) {
+        return (bool) preg_match('/^\d+$/', (string) $valor);
+    }
+
+    /**
+     * El nombre solo admite letras (con tildes y ñ), espacios, apostrofe y guion.
+     */
+    public static function esNombreValido($valor) {
+        return (bool) preg_match('/^[\p{L}\s\'\-]+$/u', (string) $valor);
+    }
+
+    /**
      * Valida que un valor no esté vacío
      */
     public static function required($value) {

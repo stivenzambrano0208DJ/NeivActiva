@@ -82,6 +82,7 @@ class UsuarioModel extends BaseModel {
             'nombre' => $datos['nombre'],
             'correo' => $datos['correo'],
             'documento_identidad' => $datos['documento_identidad'] ?? null,
+            'tipo_documento' => $datos['tipo_documento'] ?? 'CC',
             'telefono' => $datos['telefono'] ?? null,
             'password' => $datos['password'],
             'rol' => $rol,
@@ -93,6 +94,7 @@ class UsuarioModel extends BaseModel {
             'nombre' => trim((string) $datos['nombre']),
             'correo' => strtolower(trim((string) $datos['correo'])),
             'documento_identidad' => $this->valorNullable($datos['documento_identidad'] ?? null),
+            'tipo_documento' => \App\Core\Validator::tipoDocumento($datos['tipo_documento'] ?? 'CC'),
             'telefono' => $this->valorNullable($datos['telefono'] ?? null),
             'password' => password_hash((string) $datos['password'], PASSWORD_DEFAULT),
             'rol' => $this->rolValido($datos['rol'] ?? 'cliente'),
@@ -104,6 +106,7 @@ class UsuarioModel extends BaseModel {
             'nombre' => trim((string) $datos['nombre']),
             'correo' => strtolower(trim((string) $datos['correo'])),
             'documento_identidad' => $this->valorNullable($datos['documento_identidad'] ?? null),
+            'tipo_documento' => \App\Core\Validator::tipoDocumento($datos['tipo_documento'] ?? 'CC'),
             'telefono' => $this->valorNullable($datos['telefono'] ?? null),
             'rol' => $this->rolValido($datos['rol'] ?? 'cliente'),
         ];
@@ -215,6 +218,8 @@ class UsuarioModel extends BaseModel {
 
         if ($nombre === '' || strlen($nombre) < 3) {
             $errores[] = 'El nombre debe tener al menos 3 caracteres.';
+        } elseif (!\App\Core\Validator::esNombreValido($nombre)) {
+            $errores[] = 'El nombre solo puede contener letras y espacios.';
         }
 
         if (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
@@ -223,7 +228,9 @@ class UsuarioModel extends BaseModel {
             $errores[] = 'El correo ya esta registrado.';
         }
 
-        if ($documento !== '' && $this->existeDocumento($documento, $id)) {
+        if ($documento !== '' && !\App\Core\Validator::esDocumentoNumerico($documento)) {
+            $errores[] = 'El documento debe contener solo numeros.';
+        } elseif ($documento !== '' && $this->existeDocumento($documento, $id)) {
             $errores[] = 'El documento ya esta registrado.';
         }
 

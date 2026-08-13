@@ -20,6 +20,8 @@ $msgs = [
     'documento'    => 'Ya existe una cuenta con ese documento.',
     'password'     => 'La contraseña debe tener mínimo 8 caracteres.',
     'confirmacion' => 'Las contraseñas no coinciden.',
+    'documento_invalido' => 'El número de documento debe contener solo números.',
+    'nombre_invalido'    => 'El nombre solo puede contener letras y espacios.',
 ];
 $err = $_GET['error'] ?? '';
 ?>
@@ -81,7 +83,7 @@ $err = $_GET['error'] ?? '';
                         <i class="bi bi-person rg-ico"></i>
                         <input type="text" id="nombre" name="nombre" class="rg-input"
                                placeholder="Ej. Ana García" autocomplete="name"
-                               minlength="3" maxlength="100" required>
+                               data-rule="letters" minlength="3" maxlength="100" required>
                     </div>
                 </div>
 
@@ -100,11 +102,21 @@ $err = $_GET['error'] ?? '';
                 <div class="rg-row">
                     <div class="rg-field">
                         <label class="rg-label" for="doc">Documento</label>
-                        <div class="rg-input-wrap">
-                            <i class="bi bi-card-text rg-ico"></i>
-                            <input type="text" id="doc" name="documento_identidad" class="rg-input"
-                                   placeholder="CC / TI" autocomplete="off"
-                                   minlength="4" maxlength="50" required>
+                        <div style="display:flex; gap:8px; align-items:stretch;">
+                            <select id="tipoDoc" name="tipo_documento" class="rg-input"
+                                    aria-label="Tipo de documento"
+                                    style="flex:0 0 84px; width:84px; padding-left:12px;">
+                                <option value="CC">C.C.</option>
+                                <option value="TI">T.I.</option>
+                                <option value="CE">C.E.</option>
+                            </select>
+                            <div class="rg-input-wrap" style="flex:1 1 auto;">
+                                <i class="bi bi-card-text rg-ico"></i>
+                                <input type="text" id="doc" name="documento_identidad" class="rg-input"
+                                       placeholder="Solo números" autocomplete="off"
+                                       inputmode="numeric" data-rule="digits" pattern="\d+"
+                                       minlength="4" maxlength="50" required>
+                            </div>
                         </div>
                     </div>
                     <div class="rg-field">
@@ -113,6 +125,7 @@ $err = $_GET['error'] ?? '';
                             <i class="bi bi-phone rg-ico"></i>
                             <input type="tel" id="tel" name="telefono" class="rg-input"
                                    placeholder="300 000 0000" autocomplete="tel"
+                                   inputmode="numeric" data-rule="digits"
                                    minlength="7" maxlength="20" required>
                         </div>
                     </div>
@@ -221,5 +234,6 @@ $err = $_GET['error'] ?? '';
     });
 })();
 </script>
+<script src="/assets/js/input-rules.js"></script>
 </body>
 </html>

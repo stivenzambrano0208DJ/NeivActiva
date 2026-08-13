@@ -4,10 +4,26 @@ namespace App\Core;
 
 class Helper {
     /**
-     * Limpia texto de espacios en blanco
+     * Limpia texto: recorta espacios y elimina emojis (no permitidos en
+     * ningun campo). Es el punto unico por donde pasan casi todas las
+     * entradas de la app (via Controller::limpiarTexto).
      */
     public static function cleanText($value) {
-        return trim((string) $value);
+        return trim(self::stripEmojis((string) $value));
+    }
+
+    /**
+     * Elimina emojis y selectores de variacion/ZWJ de una cadena.
+     */
+    public static function stripEmojis($value) {
+        $value = (string) $value;
+        $limpio = preg_replace(
+            '/[\x{1F000}-\x{1FAFF}\x{2600}-\x{27BF}\x{2B00}-\x{2BFF}\x{2300}-\x{23FF}\x{FE00}-\x{FE0F}\x{200D}\x{1F1E6}-\x{1F1FF}]/u',
+            '',
+            $value
+        );
+        // preg_replace devuelve null si falla (p.ej. cadena no UTF-8 valida).
+        return $limpio === null ? $value : $limpio;
     }
 
     /**
