@@ -780,6 +780,7 @@ class EventController extends Controller {
         ];
         
         // Obtener datos
+        $csrfToken = $this->csrfToken();
         $events = $userEventsService->getUserRegisteredEvents($userId, $filters);
         $metrics = $userEventsService->getUserMetrics($userId);
         $timeline = $userEventsService->getUserActivityTimeline($userId, 5);
@@ -795,5 +796,65 @@ class EventController extends Controller {
         }
         
         require ROOT_PATH . '/resources/views/mis_eventos_inscritos.php';
+    }
+
+    public function cancelar_inscripcion() {
+        $userId = (int) ($_SESSION['usuario_id'] ?? 0);
+        $userEmail = strtolower(trim((string) ($_SESSION['usuario_correo'] ?? '')));
+
+        if (!$userId) {
+            header("Location: ?view=login");
+            exit();
+        }
+
+        if (!$this->validarCsrf()) {
+            header("Location: ?view=mis_eventos_inscritos&cancel_error=csrf");
+            exit();
+        }
+
+        $inscripcionId = (int) ($_POST['inscripcion_id'] ?? 0);
+        $inscripcion = $inscripcionId ? $this->inscripciones->obtenerPorId($inscripcionId) : null;
+
+        if (!$inscripcion) {
+            header("Location: ?view=mis_eventos_inscritos&cancel_error=no_encontrada");
+            exit();
+        }
+
+        // Solo el dueno de la inscripcion puede cancelarla.
+        $esDueno = ((int) ($inscripcion['usuario_id'] ?? 0) === $userId)
+            || ($userEmail !== '' && strtolower(trim((string) ($inscripcion['correo_electronico'] ?? ''))) === $userEmail);
+
+        if (!$esDueno) {
+            header("Location: ?view=mis_eventos_inscritos&cancel_error=no_autorizado");
+            exit();
+        }
+
+        if (($inscripcion['estado_inscripcion'] ?? '') === 'Cancelada') {
+            header("Location: ?view=mis_eventos_inscritos&cancel_info=ya_cancelada");
+            exit();
+        }
+
+        $pdo = Database::getInstance()->getConnection();
+        try {
+            $pdo->beginTransaction();
+
+            // Al cancelar, el QR queda inactivo (buscar_por_qr rechaza estados
+            // distintos de 'Confirmada') y se libera el cupo del evento.
+            if ($this->inscripciones->cancelarInscripcion($inscripcionId)) {
+                $this->eventos->liberarCupo((int) $inscripcion['evento_id']);
+            }
+
+            $pdo->commit();
+        } catch (Throwable $e) {
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
+            $this->logError('Error al cancelar inscripcion', ['error' => $e->getMessage()]);
+            header("Location: ?view=mis_eventos_inscritos&cancel_error=general");
+            exit();
+        }
+
+        header("Location: ?view=mis_eventos_inscritos&cancel=1");
+        exit();
     }
 }

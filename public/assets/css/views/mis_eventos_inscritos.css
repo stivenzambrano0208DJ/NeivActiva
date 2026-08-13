@@ -791,3 +791,133 @@
     color: #fff;
     text-decoration: none;
 }
+
+/* ============================================================
+   CANCELAR INSCRIPCION: boton, banners y modal
+   ============================================================ */
+
+.btn-cancel-inscripcion {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border: 1px solid #F0997B;
+    background: #FAECE7;
+    color: #993C1D;
+    border-radius: var(--radius-full, 999px);
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 0.5rem 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.btn-cancel-inscripcion:hover {
+    background: #D85A30;
+    border-color: #D85A30;
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+/* Banners de resultado */
+.mei-banner {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    border-radius: 14px;
+    padding: 0.9rem 1.1rem;
+    margin-bottom: 1.25rem;
+    border: 1px solid transparent;
+}
+.mei-banner i { font-size: 1.4rem; flex: 0 0 auto; }
+.mei-banner strong { display: block; font-weight: 700; }
+.mei-banner p { margin: 0; font-size: 0.85rem; opacity: 0.9; }
+.mei-banner.success { background: #E1F5EE; border-color: #9FE1CB; color: #0F6E56; }
+.mei-banner.info    { background: #E6F1FB; border-color: #B5D4F4; color: #185FA5; }
+.mei-banner.error   { background: #FCEBEB; border-color: #F7C1C1; color: #A32D2D; }
+
+/* Modal de confirmacion */
+.cancel-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background: rgba(17, 24, 39, 0.55);
+    backdrop-filter: blur(3px);
+    animation: cancelOverlayIn 0.18s ease;
+}
+.cancel-overlay[hidden] { display: none; }
+@keyframes cancelOverlayIn { from { opacity: 0; } to { opacity: 1; } }
+
+.cancel-modal {
+    width: 100%;
+    max-width: 420px;
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 24px 60px -12px rgba(17, 24, 39, 0.35);
+    padding: 1.75rem 1.5rem 1.5rem;
+    text-align: center;
+    animation: cancelModalIn 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes cancelModalIn {
+    from { opacity: 0; transform: translateY(16px) scale(0.96); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.cancel-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 0.9rem;
+    border-radius: 50%;
+    background: #FAECE7;
+    color: #D85A30;
+    font-size: 1.8rem;
+}
+.cancel-modal h3 { font-size: 1.2rem; font-weight: 800; color: #111827; margin: 0 0 0.35rem; }
+.cancel-sub { font-size: 0.9rem; color: #4B5563; margin: 0 0 1rem; }
+.cancel-sub strong { color: #111827; }
+.cancel-note {
+    display: flex;
+    gap: 0.5rem;
+    text-align: left;
+    background: #FEF6F2;
+    border: 1px solid #F5D9CC;
+    color: #8A4B32;
+    border-radius: 12px;
+    padding: 0.7rem 0.85rem;
+    font-size: 0.8rem;
+    margin-bottom: 1.25rem;
+}
+.cancel-note i { color: #D85A30; flex: 0 0 auto; margin-top: 1px; }
+
+.cancel-actions { display: flex; gap: 0.6rem; }
+.cancel-btn {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    min-height: 46px;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.cancel-btn.keep {
+    background: #fff;
+    border: 1px solid #E5E7EB;
+    color: #374151;
+}
+.cancel-btn.keep:hover { border-color: #9CA3AF; color: #111827; }
+.cancel-btn.confirm {
+    background: #D85A30;
+    border: none;
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(216, 90, 48, 0.3);
+}
+.cancel-btn.confirm:hover:not(:disabled) { background: #C24E28; transform: translateY(-2px); }
+.cancel-btn.confirm:disabled { opacity: 0.7; cursor: default; }

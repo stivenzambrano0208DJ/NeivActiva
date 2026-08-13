@@ -283,6 +283,21 @@ class RegistrationModel extends BaseModel {
         );
     }
 
+    /**
+     * Cancela una inscripcion activa. Devuelve true solo si realmente cambio
+     * de estado (evita liberar cupo dos veces por doble envio).
+     */
+    public function cancelarInscripcion($inscripcionId) {
+        $stmt = $this->db->query(
+            "UPDATE {$this->table}
+             SET estado_inscripcion = 'Cancelada'
+             WHERE id = ? AND estado_inscripcion <> 'Cancelada'",
+            [(int) $inscripcionId]
+        );
+
+        return $stmt->rowCount() > 0;
+    }
+
     private function extraerTokenQr($codigoQr) {
         $codigoQr = trim($codigoQr);
         $payload = json_decode($codigoQr, true);

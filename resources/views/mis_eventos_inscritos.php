@@ -68,6 +68,35 @@
     </header>
 
     <div class="dashboard-content">
+        <?php
+            $cancelMensajesError = [
+                'csrf' => 'La sesion expiro. Recarga la pagina e intenta de nuevo.',
+                'no_encontrada' => 'No se encontro la inscripcion.',
+                'no_autorizado' => 'No puedes cancelar una inscripcion que no es tuya.',
+                'general' => 'No se pudo cancelar la inscripcion. Intentalo nuevamente.',
+            ];
+            $cancelErrorActual = $_GET['cancel_error'] ?? '';
+        ?>
+        <?php if (isset($_GET['cancel'])): ?>
+        <div class="mei-banner success">
+            <i class="bi bi-check-circle-fill"></i>
+            <div>
+                <strong>Inscripcion cancelada</strong>
+                <p>Tu cupo fue liberado y tu codigo QR quedo inactivo.</p>
+            </div>
+        </div>
+        <?php elseif (($_GET['cancel_info'] ?? '') === 'ya_cancelada'): ?>
+        <div class="mei-banner info">
+            <i class="bi bi-info-circle-fill"></i>
+            <div><strong>Esta inscripcion ya estaba cancelada.</strong></div>
+        </div>
+        <?php elseif (isset($cancelMensajesError[$cancelErrorActual])): ?>
+        <div class="mei-banner error">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <div><strong><?php echo $cancelMensajesError[$cancelErrorActual]; ?></strong></div>
+        </div>
+        <?php endif; ?>
+
         <!-- KPIs Horizontales Premium -->
         <div class="kpi-horizontal">
             <div class="kpi-card-horizontal skeleton">
@@ -224,6 +253,11 @@
                                 </div>
                             </div>
                             
+                            <?php
+                                $puedeCancelar = ($event['estado_inscripcion'] ?? '') !== 'Cancelada'
+                                    && ($event['estado_evento'] ?? '') === 'Activo'
+                                    && strtotime($event['fecha_evento']) >= strtotime('today');
+                            ?>
                             <div class="event-card-footer">
                                 <?php if ($event['has_certificate']): ?>
                                     <button class="btn btn-certificate" onclick="downloadCertificate(<?php echo $event['inscripcion_id']; ?>)">
@@ -238,6 +272,13 @@
                                 <?php if ($event['ruta_qr']): ?>
                                     <button class="btn btn-qr" onclick="viewQR(<?php echo $event['inscripcion_id']; ?>)">
                                         <i class="bi bi-qr-code"></i>
+                                    </button>
+                                <?php endif; ?>
+                                <?php if ($puedeCancelar): ?>
+                                    <button type="button" class="btn btn-cancel-inscripcion"
+                                            onclick="cancelarInscripcion(<?php echo (int) $event['inscripcion_id']; ?>, '<?php echo htmlspecialchars(addslashes($event['titulo']), ENT_QUOTES); ?>')">
+                                        <i class="bi bi-x-circle"></i>
+                                        <span>Cancelar</span>
                                     </button>
                                 <?php endif; ?>
                             </div>
@@ -329,6 +370,31 @@
             </div>
         </div>
     </div>
+
+    <!-- Formulario oculto para cancelar (POST seguro con CSRF) -->
+    <form id="cancelForm" action="?view=cancelar_inscripcion" method="POST" style="display:none;">
+        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrfToken ?? ''); ?>">
+        <input type="hidden" name="inscripcion_id" id="cancelInscripcionId" value="">
+    </form>
+
+    <!-- Modal de confirmacion de cancelacion -->
+    <div class="cancel-overlay" id="cancelOverlay" hidden>
+        <div class="cancel-modal" role="dialog" aria-modal="true" aria-labelledby="cancelModalTitle">
+            <div class="cancel-icon"><i class="bi bi-x-circle"></i></div>
+            <h3 id="cancelModalTitle">Cancelar inscripcion</h3>
+            <p class="cancel-sub">¿Seguro que quieres cancelar tu inscripcion a <strong id="cancelEventoNombre">este evento</strong>?</p>
+            <div class="cancel-note">
+                <i class="bi bi-info-circle"></i>
+                Se liberara tu cupo y tu codigo QR quedara inactivo. Podras volver a inscribirte si hay cupos.
+            </div>
+            <div class="cancel-actions">
+                <button type="button" class="cancel-btn keep" id="cancelKeep">No, conservar</button>
+                <button type="button" class="cancel-btn confirm" id="cancelConfirm">
+                    <i class="bi bi-x-circle"></i> Si, cancelar
+                </button>
+            </div>
+        </div>
+    </div>
 </main>
 
 <script>
@@ -402,6 +468,41 @@ function downloadCertificate(inscripcionId) {
 function viewQR(inscripcionId) {
     window.location.href = `?view=mis_qr`;
 }
+
+// Cancelacion de inscripcion con modal de confirmacion
+const cancelOverlay = document.getElementById('cancelOverlay');
+const cancelForm = document.getElementById('cancelForm');
+const cancelInscripcionId = document.getElementById('cancelInscripcionId');
+const cancelEventoNombre = document.getElementById('cancelEventoNombre');
+const cancelConfirmBtn = document.getElementById('cancelConfirm');
+const cancelKeepBtn = document.getElementById('cancelKeep');
+
+function cancelarInscripcion(inscripcionId, titulo) {
+    if (!cancelOverlay) return;
+    if (cancelInscripcionId) cancelInscripcionId.value = inscripcionId;
+    if (cancelEventoNombre) cancelEventoNombre.textContent = titulo || 'este evento';
+    cancelOverlay.hidden = false;
+    document.body.style.overflow = 'hidden';
+}
+
+function closeCancelModal() {
+    if (!cancelOverlay) return;
+    cancelOverlay.hidden = true;
+    document.body.style.overflow = '';
+}
+
+cancelConfirmBtn?.addEventListener('click', () => {
+    cancelConfirmBtn.disabled = true;
+    cancelConfirmBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Cancelando...';
+    cancelForm?.submit();
+});
+cancelKeepBtn?.addEventListener('click', closeCancelModal);
+cancelOverlay?.addEventListener('click', (e) => {
+    if (e.target === cancelOverlay) closeCancelModal();
+});
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && cancelOverlay && !cancelOverlay.hidden) closeCancelModal();
+});
 
 function exportEvents() {
     let csvContent = "data:text/csv;charset=utf-8,";

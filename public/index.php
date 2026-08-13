@@ -89,6 +89,7 @@ if (isset($_GET['view'])) {
         'mis_qr'                 => '/mis-qr',
         'mis_certificados'       => '/mis-certificados',
         'mis_eventos_inscritos'  => '/mis-eventos',
+        'cancelar_inscripcion'   => '/mis-eventos/cancelar',
         'gestionar_eventos'      => '/admin/eventos',
         'gestionar_inscripciones'=> '/admin/inscripciones',
         'asistencia'             => '/admin/asistencia',
@@ -155,6 +156,7 @@ $router->post('/inscripcion',       ['App\Controllers\EventController', 'inscrip
 $router->get('/mis-qr',             ['App\Controllers\EventController', 'mis_qr']);
 $router->get('/mis-certificados',   ['App\Controllers\EventController', 'mis_certificados']);
 $router->get('/mis-eventos',        ['App\Controllers\EventController', 'mis_eventos_inscritos']);
+$router->post('/mis-eventos/cancelar', ['App\Controllers\EventController', 'cancelar_inscripcion']);
 
 // --- Evento detalle ---
 $router->get('/evento',             ['App\Controllers\EventController', 'detalle_evento']);

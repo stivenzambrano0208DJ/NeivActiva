@@ -113,6 +113,15 @@ class EventModel extends BaseModel {
         return $stmt->rowCount() > 0;
     }
 
+    public function liberarCupo($eventoId) {
+        return $this->db->query(
+            "UPDATE eventos
+             SET inscritos_actuales = GREATEST(inscritos_actuales - 1, 0)
+             WHERE id = ?",
+            [(int) $eventoId]
+        );
+    }
+
     public function marcarTerminado($eventoId) {
         return $this->db->query("UPDATE eventos SET estado_evento = 'Terminado' WHERE id = ?", [$eventoId]);
     }
