@@ -168,14 +168,6 @@
         <div class="events-section">
             <div class="section-header">
                 <h2 class="section-title">Tus Eventos</h2>
-                <div class="section-actions">
-                    <button class="btn btn-secondary btn-sm" onclick="toggleView('grid')">
-                        <i class="bi bi-grid"></i>
-                    </button>
-                    <button class="btn btn-secondary btn-sm" onclick="toggleView('list')">
-                        <i class="bi bi-list"></i>
-                    </button>
-                </div>
             </div>
 
             <?php if (($metrics['proximos'] ?? 0) === 0 && ($metrics['total_inscritos'] ?? 0) >= 0): ?>
@@ -374,16 +366,6 @@ function applySearch(search) {
     window.searchTimeout = setTimeout(() => {
         window.location.href = url.toString();
     }, 500);
-}
-
-// Toggle vista
-function toggleView(view) {
-    const grid = document.getElementById('eventsGrid');
-    if (view === 'list') {
-        grid.classList.add('list-view');
-    } else {
-        grid.classList.remove('list-view');
-    }
 }
 
 // Modo oscuro
