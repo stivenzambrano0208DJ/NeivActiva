@@ -665,8 +665,7 @@ function exportToPDF() {
             <h1>NeivActiva - Análisis de Impacto</h1>
             <p>Generado: ${new Date().toLocaleString('es-ES')}</p>
             ${printContent}
-        <script src="/assets/js/input-rules.js"></script>
-</body>
+        </body>
         </html>
     `);
     printWindow.document.close();
@@ -709,6 +708,7 @@ function applyFilters() {
     window.location.href = url.toString();
 }
 </script>
+<script src="/assets/js/input-rules.js"></script>
 </body>
 </html>
 
