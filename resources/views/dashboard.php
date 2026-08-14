@@ -183,6 +183,8 @@ $catIcon  = fn($c) => match($c) {
                             $pct       = min(100, round($inscritos / $cupoMax * 100));
                             $inscrito  = in_array($evId, $inscritosIds, true);
                             $lleno     = $cupos <= 0;
+                            // El evento ya termino si su fecha/hora ya paso.
+                            $termino   = $fecha && strtotime($fecha . ' ' . ($hora !== '' ? $hora : '23:59:59')) < time();
                             $imgReal   = !empty($ev['ruta_imagen']) ? (strpos($ev['ruta_imagen'], '/') === 0 ? $ev['ruta_imagen'] : '/'.ltrim($ev['ruta_imagen'],'/')) : null;
                             $catColor  = match($cat) {
                                 'Cultural'  => 'purple',
@@ -190,7 +192,7 @@ $catIcon  = fn($c) => match($c) {
                                 'Educativo' => 'teal',
                                 default     => 'orange'
                             };
-                            $canEnroll = !$inscrito && !$lleno && in_array($rol, ['cliente','participante','organizador','admin'], true);
+                            $canEnroll = !$inscrito && !$lleno && !$termino && in_array($rol, ['cliente','participante','organizador','admin'], true);
                         ?>
                         <article class="db-ev-card<?php echo $inscrito ? ' db-ev-inscrito' : ''; ?>"
                                  data-event-id="<?php echo $evId; ?>"
@@ -242,11 +244,13 @@ $catIcon  = fn($c) => match($c) {
                                     <strong>Gratis</strong>
                                 </div>
                                 <button type="button"
-                                        class="db-ev-btn-enroll<?php echo $inscrito ? ' is-registered' : ($lleno ? ' is-full' : ''); ?>"
+                                        class="db-ev-btn-enroll<?php echo $inscrito ? ' is-registered' : (($lleno || $termino) ? ' is-full' : ''); ?>"
                                         data-action="inscribir-evento"
                                         <?php echo !$canEnroll ? 'disabled' : ''; ?>>
                                     <?php if ($inscrito): ?>
                                         <i class="bi bi-check2-circle"></i> Ya inscrito
+                                    <?php elseif ($termino): ?>
+                                        <i class="bi bi-slash-circle"></i> Finalizado
                                     <?php elseif ($lleno): ?>
                                         <i class="bi bi-x-circle"></i> Lleno
                                     <?php else: ?>

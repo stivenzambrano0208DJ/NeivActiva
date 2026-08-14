@@ -28,6 +28,7 @@ class EventModel extends BaseModel {
         return $this->db->query("SELECT * FROM eventos
                 WHERE estado_evento = 'Activo'
                 AND inscritos_actuales < cupo_maximo
+                AND TIMESTAMP(fecha_evento, COALESCE(hora_evento, '23:59:59')) >= NOW()
                 ORDER BY fecha_evento ASC, hora_evento ASC")->fetchAll();
     }
 
@@ -36,7 +37,17 @@ class EventModel extends BaseModel {
                 WHERE id = ?
                 AND estado_evento = 'Activo'
                 AND inscritos_actuales < cupo_maximo
+                AND TIMESTAMP(fecha_evento, COALESCE(hora_evento, '23:59:59')) >= NOW()
                 LIMIT 1", [$eventoId])->fetch();
+    }
+
+    /** True si el evento sigue vigente (su fecha/hora aun no ha pasado). */
+    public function eventoVigente($evento) {
+        if (empty($evento['fecha_evento'])) {
+            return true;
+        }
+        $hora = !empty($evento['hora_evento']) ? $evento['hora_evento'] : '23:59:59';
+        return strtotime($evento['fecha_evento'] . ' ' . $hora) >= time();
     }
 
     public function crear($datos) {

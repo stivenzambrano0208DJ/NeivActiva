@@ -24,7 +24,10 @@
     $horaEvento   = !empty($evento['hora_evento']) ? date('g:i A', strtotime($evento['hora_evento'])) : 'Por confirmar';
     $fechaLarga   = !empty($evento['fecha_evento']) ? date('d/m/Y', strtotime($evento['fecha_evento'])) : 'Por confirmar';
     $estado       = $evento['estado_evento'] ?? 'Activo';
-    $esActivo     = ($estado === 'Activo') && ($cuposLibres > 0);
+    // El evento sigue abierto solo si su fecha/hora aun no ha pasado.
+    $horaFin      = !empty($evento['hora_evento']) ? $evento['hora_evento'] : '23:59:59';
+    $vigente      = empty($evento['fecha_evento']) || strtotime($evento['fecha_evento'] . ' ' . $horaFin) >= time();
+    $esActivo     = ($estado === 'Activo') && ($cuposLibres > 0) && $vigente;
     $descripcion  = trim((string) ($evento['descripcion'] ?? ''));
 
     $dias = ['Sunday'=>'Domingo','Monday'=>'Lunes','Tuesday'=>'Martes','Wednesday'=>'Miercoles','Thursday'=>'Jueves','Friday'=>'Viernes','Saturday'=>'Sabado'];
