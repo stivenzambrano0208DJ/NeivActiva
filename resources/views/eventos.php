@@ -62,7 +62,7 @@
                         ?>
                         <article class="card public-event-card" data-event-card data-search="<?php echo htmlspecialchars(strtolower($titulo . ' ' . $ubicacion . ' ' . $categoria), ENT_QUOTES, 'UTF-8'); ?>">
                             <div class="public-event-media">
-                                <img src="<?php echo htmlspecialchars($imagen); ?>" alt="<?php echo htmlspecialchars($titulo); ?>">
+                                <img src="<?php echo htmlspecialchars($imagen); ?>" alt="<?php echo htmlspecialchars($titulo); ?>" loading="lazy" decoding="async">
                                 <span class="event-badge"><?php echo htmlspecialchars($categoria); ?></span>
                             </div>
                             <div class="public-event-body">

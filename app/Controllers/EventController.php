@@ -570,15 +570,76 @@ class EventController extends Controller {
             mkdir($directorioDestino, 0775, true);
         }
 
+        $tmp = $_FILES['imagen']['tmp_name'];
+
+        // Si GD esta disponible, redimensionar (max 1280px de ancho) y recomprimir
+        // como JPEG calidad 80: reduce mucho el peso y acelera la carga de la pagina.
+        if (function_exists('imagejpeg')) {
+            $nombreArchivo = uniqid('evento_', true) . '.jpg';
+            $rutaDestino = $directorioDestino . '/' . $nombreArchivo;
+            if ($this->optimizarImagenSubida($tmp, $tipoArchivo, $rutaDestino, 1280, 80)) {
+                return '/uploads/eventos/' . $nombreArchivo;
+            }
+        }
+
+        // Fallback: si no hay GD, mover el archivo tal cual.
         $nombreArchivo = uniqid('evento_', true) . '.' . $tiposPermitidos[$tipoArchivo];
         $rutaDestino = $directorioDestino . '/' . $nombreArchivo;
 
-        if (!move_uploaded_file($_FILES['imagen']['tmp_name'], $rutaDestino)) {
+        if (!move_uploaded_file($tmp, $rutaDestino)) {
             header("Location: ?view=gestionar_eventos&error=subida");
             exit();
         }
 
         return '/uploads/eventos/' . $nombreArchivo;
+    }
+
+    /**
+     * Redimensiona (ancho maximo) y recomprime la imagen subida como JPEG.
+     * Convierte PNG/WebP a JPEG (fondo blanco) para reducir el peso.
+     * Devuelve true si se guardo correctamente.
+     */
+    protected function optimizarImagenSubida($origen, $tipoMime, $destino, $maxAncho = 1280, $calidad = 80) {
+        try {
+            switch ($tipoMime) {
+                case 'image/png':
+                    $img = @imagecreatefrompng($origen);
+                    break;
+                case 'image/webp':
+                    $img = function_exists('imagecreatefromwebp') ? @imagecreatefromwebp($origen) : false;
+                    break;
+                default:
+                    $img = @imagecreatefromjpeg($origen);
+                    break;
+            }
+            if (!$img) {
+                return false;
+            }
+
+            $w = imagesx($img);
+            $h = imagesy($img);
+            if ($w < 1 || $h < 1) {
+                imagedestroy($img);
+                return false;
+            }
+
+            $anchoFinal = $w > $maxAncho ? $maxAncho : $w;
+            $altoFinal = (int) round($h * $anchoFinal / $w);
+
+            $dst = imagecreatetruecolor($anchoFinal, $altoFinal);
+            // Fondo blanco para aplanar transparencias al pasar a JPEG.
+            $blanco = imagecolorallocate($dst, 255, 255, 255);
+            imagefilledrectangle($dst, 0, 0, $anchoFinal, $altoFinal, $blanco);
+            imagecopyresampled($dst, $img, 0, 0, 0, 0, $anchoFinal, $altoFinal, $w, $h);
+            imagedestroy($img);
+
+            $ok = imagejpeg($dst, $destino, $calidad);
+            imagedestroy($dst);
+            return (bool) $ok;
+        } catch (Throwable $e) {
+            $this->logError('No se pudo optimizar la imagen subida', ['error' => $e->getMessage()]);
+            return false;
+        }
     }
 
     protected function datosEventoDesdePost($rutaImagen = null) {

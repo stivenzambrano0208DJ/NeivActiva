@@ -138,7 +138,7 @@ $usuarioLogueado = isset($_SESSION['usuario_id']);
                         ?>
                         <a href="/evento/<?php echo $eventoId; ?>" class="event-showcase-card">
                             <div class="event-card-img">
-                                <img src="<?php echo htmlspecialchars($imagen); ?>" alt="<?php echo htmlspecialchars($titulo); ?>">
+                                <img src="<?php echo htmlspecialchars($imagen); ?>" alt="<?php echo htmlspecialchars($titulo); ?>" loading="lazy" decoding="async">
                                 <span class="event-card-badge"><?php echo htmlspecialchars($categoria); ?></span>
                             </div>
                             <div class="event-card-body">

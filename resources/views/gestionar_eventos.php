@@ -127,7 +127,7 @@
                     <article class="ge-event-row">
                         <div class="ge-event-thumb">
                             <?php if ($img): ?>
-                                <img src="<?php echo $img; ?>" alt="<?php echo $titulo; ?>">
+                                <img src="<?php echo $img; ?>" alt="<?php echo $titulo; ?>" loading="lazy" decoding="async">
                             <?php else: ?>
                                 <div class="ge-thumb-placeholder ge-thumb-<?php echo $catColor; ?>">
                                     <i class="bi bi-<?php echo match($cat) { 'Cultural'=>'palette', 'Deportivo'=>'trophy', 'Educativo'=>'mortarboard', default=>'calendar-event' }; ?>"></i>

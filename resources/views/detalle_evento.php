@@ -49,7 +49,7 @@
         <article class="de-wrap">
             <!-- Hero -->
             <header class="de-hero">
-                <img src="<?php echo htmlspecialchars($imagen); ?>" alt="<?php echo htmlspecialchars($evento['titulo']); ?>"
+                <img src="<?php echo htmlspecialchars($imagen); ?>" alt="<?php echo htmlspecialchars($evento['titulo']); ?>" decoding="async"
                      onerror="this.style.display='none'; this.parentElement.classList.add('de-hero--noimg')">
                 <div class="de-hero-overlay"></div>
                 <div class="de-hero-content">
