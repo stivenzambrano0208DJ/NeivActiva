@@ -34,6 +34,7 @@ class DashboardController extends Controller {
 
     public function landing() {
         $eventos = $this->eventos->obtenerEventosPublicados(6);
+        $resenas = (new \App\Models\ReviewModel())->listarDestacadas(3);
         require ROOT_PATH . '/resources/views/landing.php';
     }
 

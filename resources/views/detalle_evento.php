@@ -132,6 +132,83 @@
                     </div>
                 </aside>
             </div>
+
+            <!-- Reseñas del evento -->
+            <section class="de-reviews">
+                <h3 class="de-section-title">
+                    <i class="bi bi-chat-quote"></i> Reseñas
+                    <?php if ((int) ($resumenResenas['total'] ?? 0) > 0): ?>
+                        <span class="de-reviews-avg">
+                            <i class="bi bi-star-fill"></i> <?php echo number_format((float) $resumenResenas['promedio'], 1); ?>
+                            <small>(<?php echo (int) $resumenResenas['total']; ?>)</small>
+                        </span>
+                    <?php endif; ?>
+                </h3>
+
+                <?php if (isset($_GET['resena'])): ?>
+                    <div class="de-review-flash de-review-flash--ok"><i class="bi bi-check-circle-fill"></i> ¡Gracias! Tu reseña se publicó.</div>
+                <?php elseif (isset($_GET['resena_error'])): ?>
+                    <?php
+                        $rerr = [
+                            'csrf'        => 'Sesión expirada, intenta de nuevo.',
+                            'datos'       => 'Escribe un comentario y elige una calificación.',
+                            'no_elegible' => 'Solo puedes reseñar eventos a los que asististe y que ya finalizaron.',
+                            'general'     => 'No se pudo guardar la reseña.',
+                        ];
+                        $msgR = $rerr[$_GET['resena_error']] ?? 'No se pudo guardar la reseña.';
+                    ?>
+                    <div class="de-review-flash de-review-flash--err"><i class="bi bi-exclamation-circle-fill"></i> <?php echo htmlspecialchars($msgR); ?></div>
+                <?php endif; ?>
+
+                <?php if (!empty($puedeReseniar)): ?>
+                    <form class="de-review-form" method="POST" action="/resena">
+                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(\App\Core\Csrf::token()); ?>">
+                        <input type="hidden" name="evento_id" value="<?php echo (int) $evento['id']; ?>">
+                        <span class="de-review-label">Tu calificación</span>
+                        <div class="de-rate">
+                            <?php for ($s = 5; $s >= 1; $s--): ?>
+                                <input type="radio" name="calificacion" id="star<?php echo $s; ?>" value="<?php echo $s; ?>"<?php echo $s === 5 ? ' checked' : ''; ?>>
+                                <label for="star<?php echo $s; ?>" title="<?php echo $s; ?> estrellas">★</label>
+                            <?php endfor; ?>
+                        </div>
+                        <label class="de-review-label" for="comentario">Tu comentario</label>
+                        <textarea name="comentario" id="comentario" class="de-review-textarea" rows="3" maxlength="600" required placeholder="Cuéntanos cómo estuvo el evento…"></textarea>
+                        <button type="submit" class="de-cta de-cta--review"><i class="bi bi-send"></i> Publicar reseña</button>
+                    </form>
+                <?php endif; ?>
+
+                <?php if (empty($resenasEvento)): ?>
+                    <p class="de-desc de-desc--empty">Este evento aún no tiene reseñas.</p>
+                <?php else: ?>
+                    <div class="de-review-list">
+                        <?php foreach ($resenasEvento as $r):
+                            $rn   = trim((string) ($r['nombre'] ?? 'Participante'));
+                            $rini = strtoupper(mb_substr($rn, 0, 1, 'UTF-8'));
+                            $rp   = preg_split('/\s+/', $rn);
+                            if (count($rp) > 1) { $rini .= strtoupper(mb_substr(end($rp), 0, 1, 'UTF-8')); }
+                            $rc   = max(1, min(5, (int) ($r['calificacion'] ?? 5)));
+                        ?>
+                        <article class="de-review">
+                            <div class="de-review-avatar"><?php echo htmlspecialchars($rini); ?></div>
+                            <div class="de-review-body">
+                                <div class="de-review-head">
+                                    <strong><?php echo htmlspecialchars($rn); ?></strong>
+                                    <span class="de-review-stars">
+                                        <?php for ($i = 1; $i <= 5; $i++): ?>
+                                            <i class="bi bi-star<?php echo $i <= $rc ? '-fill' : ''; ?>"></i>
+                                        <?php endfor; ?>
+                                    </span>
+                                </div>
+                                <?php if (!empty($r['rol_texto'])): ?>
+                                    <span class="de-review-role"><?php echo htmlspecialchars($r['rol_texto']); ?></span>
+                                <?php endif; ?>
+                                <p><?php echo nl2br(htmlspecialchars((string) ($r['comentario'] ?? ''))); ?></p>
+                            </div>
+                        </article>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+            </section>
         </article>
     </div>
 </main>

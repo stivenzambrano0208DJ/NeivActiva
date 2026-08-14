@@ -7,7 +7,7 @@ use Throwable;
 
 class SchemaService {
     // Subir esta version obliga a revalidar el esquema tras un despliegue.
-    private const VERSION = '2026-08-13.2';
+    private const VERSION = '2026-08-14.1';
 
     private $db;
 
@@ -119,6 +119,25 @@ class SchemaService {
         $this->agregarColumna('participantes', 'tipo_documento', "VARCHAR(4) NULL AFTER documento");
         $this->agregarColumna('usuarios', 'tipo_documento', "VARCHAR(4) NULL AFTER documento_identidad");
         $this->agregarColumna('inscripciones', 'tipo_documento', "VARCHAR(4) NULL AFTER documento_identidad");
+
+        // Resenas de eventos: solo quien asistio a un evento terminado puede dejar
+        // una. UNIQUE(inscripcion_id) => una resena por asistencia.
+        $this->db->query(
+            "CREATE TABLE IF NOT EXISTS resenas (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                evento_id INT NOT NULL,
+                inscripcion_id INT NULL,
+                usuario_id INT NULL,
+                nombre VARCHAR(120) NOT NULL,
+                rol_texto VARCHAR(80) NULL,
+                calificacion TINYINT NOT NULL DEFAULT 5,
+                comentario TEXT NOT NULL,
+                aprobada TINYINT(1) NOT NULL DEFAULT 1,
+                creado_en DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                UNIQUE KEY uq_resena_inscripcion (inscripcion_id),
+                INDEX idx_resena_evento (evento_id)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4"
+        );
 
         $this->sincronizarColumnasCompatibilidad();
     }

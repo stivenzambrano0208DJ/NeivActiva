@@ -288,3 +288,83 @@
 @media (max-width: 520px) {
     .de-facts { grid-template-columns: 1fr; }
 }
+
+/* ── Reseñas del evento ─────────────────────────────── */
+.de-reviews { margin-top: 2rem; }
+.de-reviews-avg {
+    font-size: .9rem;
+    font-weight: 700;
+    color: #f5a623;
+    margin-left: .5rem;
+}
+.de-reviews-avg small { color: var(--text-tertiary); font-weight: 600; }
+
+.de-review-flash {
+    display: flex; align-items: center; gap: .55rem;
+    padding: .7rem .9rem;
+    border-radius: var(--radius-md);
+    font-size: .85rem; font-weight: 600;
+    margin-bottom: 1rem;
+}
+.de-review-flash--ok  { background: var(--success-light, #ecfdf5); color: var(--success-dark, #047857); }
+.de-review-flash--err { background: var(--danger-light, #fef2f2);  color: var(--danger-dark, #b91c1c); }
+
+.de-review-form {
+    display: grid;
+    gap: .55rem;
+    padding: 1.1rem 1.2rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-lg);
+    margin-bottom: 1.5rem;
+}
+.de-review-label { font-size: .8rem; font-weight: 700; color: var(--text-secondary); }
+
+/* Selector de estrellas (radios en orden inverso) */
+.de-rate { display: inline-flex; flex-direction: row-reverse; justify-content: flex-end; gap: 4px; }
+.de-rate input { position: absolute; opacity: 0; width: 0; height: 0; }
+.de-rate label {
+    font-size: 1.7rem; line-height: 1;
+    color: var(--border-primary);
+    cursor: pointer;
+    transition: color .12s;
+}
+.de-rate label:hover,
+.de-rate label:hover ~ label,
+.de-rate input:checked ~ label { color: #f5a623; }
+
+.de-review-textarea {
+    width: 100%;
+    padding: .7rem .85rem;
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-md);
+    font-family: inherit; font-size: .9rem;
+    resize: vertical;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+}
+.de-review-textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-subtle); }
+.de-cta--review { width: fit-content; }
+
+.de-review-list { display: grid; gap: 1rem; }
+.de-review {
+    display: flex; gap: .9rem;
+    padding: 1rem 1.1rem;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-lg);
+}
+.de-review-avatar {
+    flex-shrink: 0;
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    display: grid; place-items: center;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: #fff; font-weight: 700; font-size: .85rem;
+}
+.de-review-body { flex: 1; }
+.de-review-head { display: flex; align-items: center; justify-content: space-between; gap: .5rem; flex-wrap: wrap; }
+.de-review-head strong { color: var(--text-primary); font-size: .95rem; }
+.de-review-stars { color: #f5a623; font-size: .8rem; }
+.de-review-role { display: block; font-size: .75rem; color: var(--text-tertiary); font-weight: 600; margin-top: .1rem; }
+.de-review-body p { margin: .45rem 0 0; color: var(--text-secondary); font-size: .9rem; line-height: 1.5; }

@@ -127,6 +127,7 @@ if (isset($_GET['view'])) {
         'estadisticas'           => '/admin/estadisticas',
         'configuracion'          => '/admin/configuracion',
         'detalle_evento'         => '/evento',
+        'guardar_resena'         => '/resena',
         'ver_qr'                 => '/qr/ver',
         'descargar_qr'           => '/qr/descargar',
         'enviar_qr'              => '/qr/enviar',
@@ -190,6 +191,7 @@ $router->post('/mis-eventos/cancelar', ['App\Controllers\EventController', 'canc
 // --- Evento detalle ---
 $router->get('/evento',             ['App\Controllers\EventController', 'detalle_evento']);
 $router->get('/evento/{id}',        ['App\Controllers\EventController', 'detalle_evento']);
+$router->post('/resena',            ['App\Controllers\EventController', 'guardar_resena']);
 
 // --- QR ---
 $router->get('/qr/ver',             ['App\Controllers\EventController', 'ver_qr']);

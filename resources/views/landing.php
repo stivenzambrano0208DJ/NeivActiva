@@ -328,6 +328,7 @@ $usuarioLogueado = isset($_SESSION['usuario_id']);
                 <p class="section-subtitle">Personas reales que disfrutan los eventos de Neiva con NeivActiva.</p>
             </div>
             <div class="testimonials-grid">
+                <?php if (empty($resenas ?? [])): ?>
                 <article class="testimonial-card">
                     <div class="testimonial-stars">
                         <i class="bi bi-star-fill"></i>
@@ -381,6 +382,33 @@ $usuarioLogueado = isset($_SESSION['usuario_id']);
                         </div>
                     </div>
                 </article>
+                <?php else: ?>
+                <?php foreach ($resenas as $rz):
+                    $rzn = trim((string) ($rz['nombre'] ?? 'Participante'));
+                    $rzi = strtoupper(mb_substr($rzn, 0, 1, 'UTF-8'));
+                    $rzp = preg_split('/\s+/', $rzn);
+                    if (count($rzp) > 1) { $rzi .= strtoupper(mb_substr(end($rzp), 0, 1, 'UTF-8')); }
+                    $rzc = max(1, min(5, (int) ($rz['calificacion'] ?? 5)));
+                    $rzrol = trim((string) ($rz['rol_texto'] ?? '')) !== '' ? (string) $rz['rol_texto'] : 'Asistente';
+                    if (!empty($rz['evento_titulo'])) { $rzrol .= ' · ' . $rz['evento_titulo']; }
+                ?>
+                <article class="testimonial-card">
+                    <div class="testimonial-stars">
+                        <?php for ($i = 1; $i <= 5; $i++): ?>
+                            <i class="bi bi-star<?php echo $i <= $rzc ? '-fill' : ''; ?>"></i>
+                        <?php endfor; ?>
+                    </div>
+                    <blockquote><?php echo htmlspecialchars('"' . ($rz['comentario'] ?? '') . '"'); ?></blockquote>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar"><?php echo htmlspecialchars($rzi); ?></div>
+                        <div class="testimonial-author-info">
+                            <h4><?php echo htmlspecialchars($rzn); ?></h4>
+                            <p><?php echo htmlspecialchars($rzrol); ?></p>
+                        </div>
+                    </div>
+                </article>
+                <?php endforeach; ?>
+                <?php endif; ?>
             </div>
         </section>
     </main>

@@ -454,7 +454,67 @@ class EventController extends Controller {
         $yaInscrito = $correoSesion !== ''
             && $this->inscripciones->existeInscripcionActivaPorEmail($correoSesion, (int) $evento['id']);
 
+        // Reseñas del evento + si el usuario puede dejar una (asistio y ya termino).
+        $reviews = new \App\Models\ReviewModel();
+        $eventoId = (int) $evento['id'];
+        $resenasEvento = $reviews->obtenerPorEvento($eventoId);
+        $resumenResenas = $reviews->resumenEvento($eventoId);
+        $usuarioIdSesion = (int) ($_SESSION['usuario_id'] ?? 0) ?: null;
+        $puedeReseniar = $reviews->inscripcionReseniable($eventoId, $correoSesion, $usuarioIdSesion) !== null;
+
         require ROOT_PATH . '/resources/views/detalle_evento.php';
+    }
+
+    public function guardar_resena() {
+        $this->requireRole(['cliente', 'organizador', 'admin']);
+
+        $eventoId = (int) ($_POST['evento_id'] ?? 0);
+        $volver = '/evento?id=' . $eventoId;
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !$this->validarCsrf()) {
+            $this->redirect($volver . '&resena_error=csrf');
+        }
+
+        $calificacion = (int) ($_POST['calificacion'] ?? 0);
+        $comentario = mb_substr($this->limpiarTexto($_POST['comentario'] ?? ''), 0, 600);
+
+        if ($eventoId <= 0 || $calificacion < 1 || $calificacion > 5 || mb_strlen($comentario) < 4) {
+            $this->redirect($volver . '&resena_error=datos');
+        }
+
+        $reviews = new \App\Models\ReviewModel();
+        $correo = $_SESSION['usuario_correo'] ?? '';
+        $usuarioId = (int) ($_SESSION['usuario_id'] ?? 0) ?: null;
+        $inscripcionId = $reviews->inscripcionReseniable($eventoId, $correo, $usuarioId);
+
+        if (!$inscripcionId) {
+            $this->redirect($volver . '&resena_error=no_elegible');
+        }
+
+        try {
+            $reviews->crear([
+                'evento_id' => $eventoId,
+                'inscripcion_id' => $inscripcionId,
+                'usuario_id' => $usuarioId,
+                'nombre' => $_SESSION['usuario_nombre'] ?? 'Participante',
+                'rol_texto' => $this->rolTextoResena($_SESSION['rol'] ?? 'cliente'),
+                'calificacion' => $calificacion,
+                'comentario' => $comentario,
+            ]);
+        } catch (Throwable $e) {
+            $this->logError('Error al guardar resena', ['error' => $e->getMessage()]);
+            $this->redirect($volver . '&resena_error=general');
+        }
+
+        $this->redirect($volver . '&resena=1');
+    }
+
+    protected function rolTextoResena($rol) {
+        switch ($rol) {
+            case 'organizador': return 'Organizador de eventos';
+            case 'admin':       return 'Equipo NeivActiva';
+            default:            return 'Participante';
+        }
     }
 
     public function descargar_certificado() {
