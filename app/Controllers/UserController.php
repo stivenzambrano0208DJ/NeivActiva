@@ -98,31 +98,33 @@ class UserController extends Controller {
     }
 
     /**
-     * Inscribe a un participante existente en un evento desde el panel de admin.
-     * Reutiliza RegistrationModel::registrar (que reactiva inscripciones
-     * canceladas en vez de fallar por el indice unico participante+evento).
+     * Nucleo de la inscripcion admin: inscribe UN participante en un evento y
+     * devuelve un codigo de resultado (sin redirigir), para poder reutilizarlo
+     * tanto en la inscripcion individual como en la masiva.
+     * Reutiliza RegistrationModel::registrar (reactiva inscripciones canceladas
+     * en vez de fallar por el indice unico participante+evento).
+     *
+     * @return string 'ok' | 'ya_inscrito' | 'no_encontrado' | 'evento_lleno' | 'datos'
      */
-    protected function inscribirParticipanteEnEvento($participanteId, $eventoId) {
+    protected function enrolarParticipante($participanteId, $eventoId) {
+        $participanteId = (int) $participanteId;
+        $eventoId = (int) $eventoId;
         if ($participanteId <= 0 || $eventoId <= 0) {
-            header("Location: ?view=participantes&error=inscribir_datos");
-            return;
+            return 'datos';
         }
 
         $participante = $this->participantes->find($participanteId);
         if (!$participante) {
-            header("Location: ?view=participantes&error=no_encontrado");
-            return;
+            return 'no_encontrado';
         }
 
         if ($this->inscripciones->existeParticipanteEnEvento($participanteId, $eventoId)) {
-            header("Location: ?view=participantes&error=ya_inscrito");
-            return;
+            return 'ya_inscrito';
         }
 
         $evento = $this->eventos->obtenerDisponiblePorId($eventoId);
         if (!$evento || !$this->eventos->actualizarCupo($eventoId)) {
-            header("Location: ?view=participantes&error=evento_lleno");
-            return;
+            return 'evento_lleno';
         }
 
         $tokenQr = bin2hex(random_bytes(32));
@@ -147,7 +149,46 @@ class UserController extends Controller {
             $this->logError('No se pudo generar QR al inscribir participante', ['error' => $e->getMessage()]);
         }
 
-        header("Location: ?view=participantes&msg=inscrito");
+        return 'ok';
+    }
+
+    /** Inscripcion individual desde el panel: inscribe y redirige con el mensaje. */
+    protected function inscribirParticipanteEnEvento($participanteId, $eventoId) {
+        $resultado = $this->enrolarParticipante($participanteId, $eventoId);
+        $mapa = [
+            'ok'            => 'msg=inscrito',
+            'ya_inscrito'   => 'error=ya_inscrito',
+            'no_encontrado' => 'error=no_encontrado',
+            'evento_lleno'  => 'error=evento_lleno',
+            'datos'         => 'error=inscribir_datos',
+        ];
+        header('Location: ?view=participantes&' . ($mapa[$resultado] ?? 'error=inscribir_datos'));
+    }
+
+    /** Inscripcion masiva: inscribe varios participantes seleccionados en un evento. */
+    protected function inscribirParticipantesMasivo($ids, $eventoId) {
+        $eventoId = (int) $eventoId;
+        $ids = array_values(array_unique(array_filter(array_map('intval', (array) $ids))));
+
+        if ($eventoId <= 0 || empty($ids)) {
+            header('Location: ?view=participantes&error=inscribir_datos');
+            return;
+        }
+
+        $ok = 0; $ya = 0; $err = 0; $lleno = false;
+        foreach ($ids as $pid) {
+            $resultado = $this->enrolarParticipante($pid, $eventoId);
+            if ($resultado === 'ok') {
+                $ok++;
+            } elseif ($resultado === 'ya_inscrito') {
+                $ya++;
+            } else {
+                $err++;
+                if ($resultado === 'evento_lleno') { $lleno = true; break; }
+            }
+        }
+
+        header("Location: ?view=participantes&msg=masivo&ok={$ok}&ya={$ya}&err={$err}" . ($lleno ? '&lleno=1' : ''));
     }
 
     public function participantes() {
@@ -181,6 +222,11 @@ class UserController extends Controller {
 
                 if ($accion === 'inscribir') {
                     $this->inscribirParticipanteEnEvento($participanteId, (int) ($_POST['evento_id'] ?? 0));
+                    exit();
+                }
+
+                if ($accion === 'inscribir_masivo') {
+                    $this->inscribirParticipantesMasivo($_POST['participante_ids'] ?? [], (int) ($_POST['evento_id'] ?? 0));
                     exit();
                 }
 

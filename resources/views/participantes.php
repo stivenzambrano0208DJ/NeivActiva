@@ -14,7 +14,18 @@ $msgErr = ['csrf'          => 'Sesión expirada. Recarga la página.',
            'no_encontrado' => 'Participante no encontrado.',
            'ya_inscrito'   => 'Ese participante ya está inscrito en el evento.',
            'evento_lleno'  => 'El evento está lleno o no está disponible.',
-           'inscribir_datos' => 'Selecciona un evento para inscribir.'];
+           'inscribir_datos' => 'Selecciona un evento y al menos un participante.'];
+
+// Mensaje dinamico de la inscripcion masiva (con conteos).
+if (($_GET['msg'] ?? '') === 'masivo') {
+    $mOk = (int) ($_GET['ok'] ?? 0);
+    $mYa = (int) ($_GET['ya'] ?? 0);
+    $mErr = (int) ($_GET['err'] ?? 0);
+    $partes = [$mOk . ' inscrito' . ($mOk === 1 ? '' : 's')];
+    if ($mYa > 0)  { $partes[] = $mYa . ' ya estaba' . ($mYa === 1 ? '' : 'n'); }
+    if ($mErr > 0) { $partes[] = $mErr . ' sin inscribir' . (!empty($_GET['lleno']) ? ' (evento lleno)' : ''); }
+    $msgOk['masivo'] = 'Inscripción masiva: ' . implode(', ', $partes) . '.';
+}
 
 $totalParticipantes = count($lista_participantes);
 $conCorreo = count(array_filter($lista_participantes,
@@ -116,6 +127,17 @@ $iniciales = function($nombre) {
                 <span class="pt-count-badge"><?php echo $totalParticipantes; ?> participantes</span>
             </div>
 
+            <!-- Barra de accion masiva (visible al seleccionar) -->
+            <div class="pt-bulkbar" id="bulkBar" hidden>
+                <span class="pt-bulkbar-count"><i class="bi bi-check2-square"></i> <strong id="bulkCount">0</strong> seleccionados</span>
+                <button type="button" class="pt-btn-primary pt-btn-sm" id="bulkEnrollBtn">
+                    <i class="bi bi-calendar-plus"></i> Inscribir a un evento
+                </button>
+                <button type="button" class="pt-btn-secondary pt-btn-sm" id="bulkClearBtn">
+                    <i class="bi bi-x-lg"></i> Quitar selección
+                </button>
+            </div>
+
             <?php if (empty($lista_participantes)): ?>
                 <div class="pt-empty">
                     <i class="bi bi-person-x"></i>
@@ -126,6 +148,7 @@ $iniciales = function($nombre) {
                     <table class="pt-table">
                         <thead>
                             <tr>
+                                <th class="pt-th-check"><input type="checkbox" id="checkAll" title="Seleccionar todos"></th>
                                 <th>Participante</th>
                                 <th>Documento</th>
                                 <th>Teléfono</th>
@@ -145,6 +168,9 @@ $iniciales = function($nombre) {
                                 $esEditando = $editando && (int)($participanteEditar['id'] ?? 0) === $pId;
                             ?>
                             <tr class="pt-row<?php echo $esEditando ? ' pt-row-editing' : ''; ?>">
+                                <td class="pt-td-check">
+                                    <input type="checkbox" class="pt-row-check" value="<?php echo $pId; ?>" data-name="<?php echo $nombre; ?>">
+                                </td>
                                 <td class="pt-td-participant">
                                     <div class="pt-avatar"><?php echo $ini; ?></div>
                                     <div class="pt-pinfo">
@@ -385,6 +411,39 @@ $iniciales = function($nombre) {
     </div>
 </div>
 
+<!-- Modal: inscripcion masiva -->
+<div class="pt-modal" id="bulkModal" hidden>
+    <div class="pt-modal-backdrop" data-close-bulk></div>
+    <div class="pt-modal-card" role="dialog" aria-modal="true" aria-labelledby="bulkTitle">
+        <div class="pt-card-header">
+            <h2 class="pt-card-title" id="bulkTitle"><i class="bi bi-people-fill"></i> Inscribir seleccionados</h2>
+            <button type="button" class="pt-btn-icon" data-close-bulk aria-label="Cerrar"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <div class="pt-modal-body">
+            <p class="pt-modal-text"><strong id="bulkModalCount">0</strong> participante(s) seleccionados</p>
+            <?php if (empty($lista_eventos)): ?>
+                <p class="pt-empty" style="padding:1rem 0;">No hay eventos con cupo disponible en este momento.</p>
+            <?php else: ?>
+            <form method="POST" action="/admin/participantes" id="bulkForm">
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrfToken); ?>">
+                <input type="hidden" name="accion" value="inscribir_masivo">
+                <div id="bulkIdsContainer"></div>
+                <label class="pt-label" for="bulkEvento">Evento</label>
+                <select name="evento_id" id="bulkEvento" class="pt-input" required>
+                    <option value="">Selecciona un evento…</option>
+                    <?php foreach ($lista_eventos as $ev): ?>
+                        <option value="<?php echo (int)($ev['id'] ?? 0); ?>"><?php echo htmlspecialchars($ev['titulo'] ?? ''); ?></option>
+                    <?php endforeach; ?>
+                </select>
+                <button type="submit" class="pt-btn-primary pt-modal-submit">
+                    <i class="bi bi-check2-circle"></i> Inscribir a todos
+                </button>
+            </form>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>
+
 <script>
 (function () {
     /* Auto-dismiss toast after 4s */
@@ -431,7 +490,64 @@ $iniciales = function($nombre) {
     document.querySelectorAll('[data-close-enroll]').forEach(btn => {
         btn.addEventListener('click', closeEnroll);
     });
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeEnroll(); });
+
+    /* Seleccion multiple + inscripcion masiva */
+    const checkAll       = document.getElementById('checkAll');
+    const rowChecks      = Array.from(document.querySelectorAll('.pt-row-check'));
+    const bulkBar        = document.getElementById('bulkBar');
+    const bulkCount      = document.getElementById('bulkCount');
+    const bulkModal      = document.getElementById('bulkModal');
+    const bulkModalCount = document.getElementById('bulkModalCount');
+    const bulkIds        = document.getElementById('bulkIdsContainer');
+
+    function seleccionados() { return rowChecks.filter(c => c.checked); }
+
+    function refrescarSeleccion() {
+        const n = seleccionados().length;
+        if (bulkCount) bulkCount.textContent = n;
+        if (bulkBar) bulkBar.hidden = n === 0;
+        if (checkAll) {
+            checkAll.checked = n > 0 && n === rowChecks.length;
+            checkAll.indeterminate = n > 0 && n < rowChecks.length;
+        }
+    }
+
+    rowChecks.forEach(c => c.addEventListener('change', refrescarSeleccion));
+    checkAll?.addEventListener('change', () => {
+        rowChecks.forEach(c => { c.checked = checkAll.checked; });
+        refrescarSeleccion();
+    });
+    document.getElementById('bulkClearBtn')?.addEventListener('click', () => {
+        rowChecks.forEach(c => { c.checked = false; });
+        if (checkAll) { checkAll.checked = false; checkAll.indeterminate = false; }
+        refrescarSeleccion();
+    });
+
+    function openBulk() {
+        const sel = seleccionados();
+        if (sel.length === 0) return;
+        if (bulkIds) {
+            bulkIds.innerHTML = '';
+            sel.forEach(c => {
+                const inp = document.createElement('input');
+                inp.type = 'hidden';
+                inp.name = 'participante_ids[]';
+                inp.value = c.value;
+                bulkIds.appendChild(inp);
+            });
+        }
+        if (bulkModalCount) bulkModalCount.textContent = sel.length;
+        if (bulkModal) bulkModal.hidden = false;
+        document.body.classList.add('modal-open');
+    }
+    function closeBulk() {
+        if (bulkModal) bulkModal.hidden = true;
+        document.body.classList.remove('modal-open');
+    }
+    document.getElementById('bulkEnrollBtn')?.addEventListener('click', openBulk);
+    document.querySelectorAll('[data-close-bulk]').forEach(btn => btn.addEventListener('click', closeBulk));
+
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeEnroll(); closeBulk(); } });
 })();
 </script>
 <script src="/assets/js/input-rules.js"></script>

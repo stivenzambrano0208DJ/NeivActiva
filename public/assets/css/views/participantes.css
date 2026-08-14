@@ -458,3 +458,22 @@
     width: 100%;
     justify-content: center;
 }
+
+/* ── Seleccion multiple / inscripcion masiva ──────────── */
+.pt-bulkbar {
+    display: flex; align-items: center; gap: .75rem;
+    padding: .7rem 1.35rem;
+    background: var(--primary-subtle);
+    border-bottom: 1px solid var(--border-subtle);
+    flex-wrap: wrap;
+}
+.pt-bulkbar[hidden] { display: none; }
+.pt-bulkbar-count { font-size: .82rem; font-weight: 700; color: var(--primary-dark); }
+.pt-bulkbar-count strong { font-size: .95rem; }
+
+.pt-th-check, .pt-td-check { width: 40px; text-align: center; }
+.pt-th-check input, .pt-row-check {
+    width: 16px; height: 16px;
+    cursor: pointer;
+    accent-color: var(--primary);
+}
