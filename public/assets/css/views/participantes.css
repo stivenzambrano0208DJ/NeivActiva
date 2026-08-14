@@ -14,7 +14,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    padding: 1.4rem 2rem 1.2rem;
+    padding: 1.4rem 0.75rem 1.2rem;
     background: var(--bg-primary);
     border-bottom: 1px solid var(--border-primary);
     flex-wrap: wrap;
@@ -138,9 +138,9 @@
 /* ── Main grid ───────────────────────────────────── */
 .pt-grid {
     display: grid;
-    grid-template-columns: 1fr 380px;
-    gap: 1.5rem;
-    padding: 1.75rem 2rem;
+    grid-template-columns: 1fr 340px;
+    gap: 1.25rem;
+    padding: 1.5rem 0.75rem;
     align-items: start;
 }
 
